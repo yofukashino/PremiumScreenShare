@@ -1,14 +1,15 @@
 /* eslint-disable eqeqeq */
 import { Injector, Logger, settings } from "replugged";
-import { defaultSettings, defaultParameters } from "./lib/consts.jsx";
+import { defaultParameters, defaultSettings } from "./lib/consts.jsx";
 import * as Utils from "./lib/utils.jsx";
+import "./style.css";
 import { ApplicationStreamingOptionStore, TextTags, WebRTCUtils } from "./lib/requiredModules.jsx";
 import { registerSettings } from "./Components/Settings.jsx";
 const PluginInjector = new Injector();
 export const PluginLogger = Logger.plugin("PremiumScreenShare");
 
 export const pss = await settings.init("Tharki.PremiumScreenShare", defaultSettings);
-const streamingConstants = {
+const streamingConstants = () => ({
   get fps() {
     return Object.values(pss.get("fps", defaultSettings.fps))
       .sort(Utils.ascending)
@@ -36,43 +37,11 @@ const streamingConstants = {
       ...this.resolution,
     ];
   },
-};
-const customParameters = {
-  LY: Object.assign(
-    {},
-    ...streamingConstants.resolution.map((resolution) => {
-      const label = `RESOLUTION_${resolution == 0 ? "SOURCE" : resolution}`;
-      return { [resolution]: label, [label]: resolution };
-    }),
-  ),
-  ND: streamingConstants.resolutionWithPresets
-    .map((resolution) => streamingConstants.fpsWithPresets.map((fps) => ({ resolution, fps })))
-    .flat(Infinity),
-  WC: streamingConstants.resolution
-    .filter((resolution) => resolution !== pss.get("resolution", defaultSettings.resolution)[1])
-    .map((resolution) => ({ value: resolution, label: resolution == 0 ? "Source" : resolution })),
-  af: streamingConstants.fps.map((fps) => ({ value: fps, label: `${fps} FPS` })),
-  k0: streamingConstants.fps.map((fps) => ({ value: fps, label: fps })),
-  km: streamingConstants.resolution.map((res) => ({
-    value: res,
-    label: res == 0 ? "Source" : `${res}p`,
-  })),
-  no: {
-    1: [pss.get("smoothVideo", defaultSettings.smoothVideo)],
-    2: [pss.get("betterReadability", defaultSettings.betterReadability)],
-    3: [],
-  },
-  ws: Object.assign(
-    {},
-    ...streamingConstants.fps.map((res) => {
-      const label = `FPS_${res}`;
-      return { [res]: label, [label]: res };
-    }),
-  ),
-};
+});
+
 const patchQualityStore = () => {
-  const maxResolution = Math.max(...streamingConstants.resolutionWithPresets);
-  const maxFPS = Math.max(...streamingConstants.fpsWithPresets);
+  const maxResolution = Math.max(...streamingConstants().resolutionWithPresets);
+  const maxFPS = Math.max(...streamingConstants().fpsWithPresets);
   const maxVideoQuality = Object.freeze({
     width: maxResolution * (16 / 9),
     height: maxResolution,
@@ -121,11 +90,56 @@ const setStreamParameters = (Parameters) => {
     });
   }
 };
+const setCustomParameters = () => {
+  const customParameters = {
+    LY: Object.assign(
+      {},
+      ...streamingConstants().resolution.map((resolution) => {
+        const label = `RESOLUTION_${resolution == 0 ? "SOURCE" : resolution}`;
+        return { [resolution]: label, [label]: resolution };
+      }),
+    ),
+    ND: streamingConstants()
+      .resolutionWithPresets.map((resolution) =>
+        streamingConstants().fpsWithPresets.map((fps) => ({ resolution, fps })),
+      )
+      .flat(Infinity),
+    WC: streamingConstants()
+      .resolution.filter(
+        (resolution) => resolution !== pss.get("resolution", defaultSettings.resolution)[1],
+      )
+      .map((resolution) => ({ value: resolution, label: resolution == 0 ? "Source" : resolution })),
+    af: streamingConstants().fps.map((fps) => ({ value: fps, label: `${fps} FPS` })),
+    k0: streamingConstants().fps.map((fps) => ({ value: fps, label: fps })),
+    km: streamingConstants().resolution.map((res) => ({
+      value: res,
+      label: res == 0 ? "Source" : `${res}p`,
+    })),
+    no: {
+      1: [pss.get("smoothVideo", defaultSettings.smoothVideo)],
+      2: [pss.get("betterReadability", defaultSettings.betterReadability)],
+      3: [],
+    },
+    ws: Object.assign(
+      {},
+      ...streamingConstants().fps.map((res) => {
+        const label = `FPS_${res}`;
+        return { [res]: label, [label]: res };
+      }),
+    ),
+  };
+  setStreamParameters(customParameters);
+};
+const addChangeListener = () => {
+  PluginInjector.after(pss, "set", () => {
+    setCustomParameters();
+  });
+};
 export const start = () => {
   registerSettings();
   applyInjections();
-  setStreamParameters(customParameters);
-  console.log(ApplicationStreamingOptionStore);
+  setCustomParameters();
+  addChangeListener();
 };
 
 export const stop = () => {

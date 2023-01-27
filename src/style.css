@@ -1,0 +1,74 @@
+.select {
+  position: relative;
+  cursor: pointer;
+  color: var(--text-normal);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--deprecated-text-input-bg);
+  border: 1px solid var(--deprecated-text-input-border);
+  border-radius: 3px;
+  padding: 8px 8px 8px 12px;
+  transition: 150ms ease border-color;
+}
+
+.select:hover,
+.select.menu-open {
+  border-color: var(--background-tertiary);
+}
+
+.select.select-transparent {
+  align-items: flex-start;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.select-icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.select-clear,
+.select-arrow {
+  margin-left: 5px;
+  fill: var(--interactive-normal);
+}
+
+.select .select-options {
+  position: absolute;
+  background: var(--background-secondary);
+  border-radius: 0 0 3px 3px;
+  max-height: 125px;
+  min-width: 100%;
+  overflow-y: auto;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 5px 0;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-top: 0;
+  margin-top: -1px;
+  margin-left: -13px;
+  z-index: 2;
+  top: 100%;
+}
+
+.select-transparent .select-options {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  margin-top: 3px;
+  border-radius: 3px;
+}
+
+.select .select-option {
+  padding: 8px 12px;
+  cursor: pointer;
+  white-space: pre;
+}
+
+.select .select-option:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.select .select-option.selected {
+  background: rgba(0, 0, 0, 0.2);
+}
