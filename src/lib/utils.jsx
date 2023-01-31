@@ -5,3 +5,10 @@ export const removeDuplicate = (item, pos, self) => {
 export const ascending = (a, b) => {
   return a - b;
 };
+export const filterOutObjectKey = (object, keys) =>
+  Object.keys(object)
+    .filter((key) => !keys.includes(key))
+    .reduce((obj, key) => {
+      obj[key] = object[key];
+      return obj;
+    }, {});

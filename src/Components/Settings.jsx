@@ -1,15 +1,9 @@
-import { common, components, webpack } from "replugged";
+import { common } from "replugged";
 import { pss } from "../index.jsx";
 const { React } = common;
-const { Text } = components;
 import { defaultSettings, fpsOptions, resoOptions } from "../lib/consts.jsx";
-const searchableSelectModule = webpack.getBySource(".maxVisibleItems");
-const searchableSelectKey = Object.keys(searchableSelectModule).find((m) =>
-  [".onChange,", ".jsx)", "isSelected:function"].every((s) =>
-    searchableSelectModule[m].toString().includes(s),
-  ),
-);
-const Select = searchableSelectModule[searchableSelectKey];
+import { SettingsGroup } from "./SettingsGroup.jsx";
+import { Dropdown } from "./Dropdown.jsx";
 export const registerSettings = () => {
   for (const [key, value] of Object.entries(defaultSettings)) {
     if (pss.has(key)) return;
@@ -44,22 +38,11 @@ export const Settings = () => {
   );
   return (
     <div>
-      <div
-        {...{
-          style: {
-            padding: "50px 50px 0px 50px",
-          },
-        }}>
-        <Text
+      <SettingsGroup {...{ name: "FPS (Depends on your screen FPS)", shown: false }}>
+        <Dropdown
           {...{
-            style: {
-              padding: "0px 10px 5px 0px",
-            },
-          }}>
-          FPS
-        </Text>
-        <Select
-          {...{
+            name: "FPS 15",
+            note: "Replace 15 FPS with custom FPS",
             clearable: true,
             disabled: false,
             options: fpsOptions,
@@ -70,9 +53,12 @@ export const Settings = () => {
               pss.set("fps", fpsValues);
             },
             value: FPS15,
-          }}></Select>
-        <Select
+          }}
+        />
+        <Dropdown
           {...{
+            name: "FPS 30",
+            note: "Replace 30 FPS with custom FPS",
             clearable: true,
             disabled: false,
             options: fpsOptions,
@@ -83,9 +69,12 @@ export const Settings = () => {
               pss.set("fps", fpsValues);
             },
             value: FPS30,
-          }}></Select>
-        <Select
+          }}
+        />
+        <Dropdown
           {...{
+            name: "FPS 60",
+            note: "Replace 60 FPS with custom FPS",
             clearable: true,
             disabled: false,
             options: fpsOptions,
@@ -96,25 +85,15 @@ export const Settings = () => {
               pss.set("fps", fpsValues);
             },
             value: FPS60,
-          }}></Select>
-      </div>
+          }}
+        />
+      </SettingsGroup>
 
-      <div
-        {...{
-          style: {
-            padding: "50px 50px 0px 50px",
-          },
-        }}>
-        <Text
+      <SettingsGroup {...{ name: "Resolution (Depends on your screen resolution)", shown: false }}>
+        <Dropdown
           {...{
-            style: {
-              padding: "0px 10px 5px 0px",
-            },
-          }}>
-          Resolution
-        </Text>
-        <Select
-          {...{
+            name: "480p",
+            note: "Replace 480p with custom resolution",
             clearable: true,
             disabled: false,
             options: resoOptions,
@@ -125,9 +104,12 @@ export const Settings = () => {
               pss.set("resolution", resolutionValues);
             },
             value: Resolution480,
-          }}></Select>
-        <Select
+          }}
+        />
+        <Dropdown
           {...{
+            name: "720p",
+            note: "Replace 720p with custom resolution",
             clearable: true,
             disabled: false,
             options: resoOptions,
@@ -138,38 +120,31 @@ export const Settings = () => {
               pss.set("resolution", resolutionValues);
             },
             value: Resolution720,
-          }}></Select>
-        <Select
+          }}
+        />
+        <Dropdown
           {...{
+            name: "1080p",
+            note: "Replace 1080p with custom resolution",
             clearable: true,
             disabled: false,
             options: resoOptions,
             onChange: (value) => {
               setResoltuion1080(value);
-              const resolutionValues = pss.get("resolution", defaultSettings.resolution);
+              const resolutionValues = pss.get("resolutio", defaultSettings.resolution);
               resolutionValues[3] = value;
               pss.set("resolution", resolutionValues);
             },
             value: Resolution1080,
-          }}></Select>
-      </div>
+          }}
+        />
+      </SettingsGroup>
 
-      <div
-        {...{
-          style: {
-            padding: "50px 50px 0px 50px",
-          },
-        }}>
-        <Text
+      <SettingsGroup {...{ name: "Preset Smoother Video", shown: false }}>
+        <Dropdown
           {...{
-            style: {
-              padding: "0px 10px 5px 0px",
-            },
-          }}>
-          Smooth Video Preset
-        </Text>
-        <Select
-          {...{
+            name: "Resolution",
+            note: "Change Smoother Video preset resolution",
             clearable: true,
             disabled: false,
             options: resoOptions,
@@ -180,9 +155,12 @@ export const Settings = () => {
               pss.set("resolution", smoothVideoValues);
             },
             value: SmoothVideoResoltuion,
-          }}></Select>
-        <Select
+          }}
+        />
+        <Dropdown
           {...{
+            name: "FPS",
+            note: "Change smoother video preset FPS",
             clearable: true,
             disabled: false,
             options: fpsOptions,
@@ -193,25 +171,15 @@ export const Settings = () => {
               pss.set("smoothVideo", smoothVideoValues);
             },
             value: SmoothVideoFPS,
-          }}></Select>
-      </div>
+          }}
+        />
+      </SettingsGroup>
 
-      <div
-        {...{
-          style: {
-            padding: "50px 50px 0px 50px",
-          },
-        }}>
-        <Text
+      <SettingsGroup {...{ name: "Preset Better Readability", shown: false }}>
+        <Dropdown
           {...{
-            style: {
-              padding: "0px 10px 5px 0px",
-            },
-          }}>
-          Better Readability Preset
-        </Text>
-        <Select
-          {...{
+            name: "Resolution",
+            note: "Change Better Readability preset resolution",
             clearable: true,
             disabled: false,
             options: resoOptions,
@@ -225,9 +193,12 @@ export const Settings = () => {
               pss.set("resolution", betterReadabilityValues);
             },
             value: BetterReadabilityResoltuion,
-          }}></Select>
-        <Select
+          }}
+        />
+        <Dropdown
           {...{
+            name: "FPS",
+            note: "Change Better Readability preset FPS",
             clearable: true,
             disabled: false,
             options: fpsOptions,
@@ -241,8 +212,9 @@ export const Settings = () => {
               pss.set("betterReadability", betterReadabilityValues);
             },
             value: BetterReadabilityFPS,
-          }}></Select>
-      </div>
+          }}
+        />
+      </SettingsGroup>
     </div>
   );
 };
