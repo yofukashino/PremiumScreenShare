@@ -47,7 +47,6 @@ export const Settings = () => {
             disabled: false,
             options: fpsOptions,
             onChange: (value) => {
-              console.log(value);
               setFPS15(value);
               const fpsValues = pss.get("fps", defaultSettings.fps);
               fpsValues[1] = value;
