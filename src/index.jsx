@@ -7,7 +7,6 @@ import { ApplicationStreamingOptionStore, TextTags, WebRTCUtils } from "./lib/re
 import { registerSettings } from "./Components/Settings.jsx";
 const PluginInjector = new Injector();
 export const PluginLogger = Logger.plugin("PremiumScreenShare");
-
 export const pss = await settings.init("Tharki.PremiumScreenShare", defaultSettings);
 const streamingConstants = () => ({
   get fps() {

@@ -47,6 +47,7 @@ export const Settings = () => {
             disabled: false,
             options: fpsOptions,
             onChange: (value) => {
+              console.log(value);
               setFPS15(value);
               const fpsValues = pss.get("fps", defaultSettings.fps);
               fpsValues[1] = value;
@@ -88,7 +89,6 @@ export const Settings = () => {
           }}
         />
       </SettingsGroup>
-
       <SettingsGroup {...{ name: "Resolution (Depends on your screen resolution)", shown: false }}>
         <Dropdown
           {...{
@@ -139,7 +139,6 @@ export const Settings = () => {
           }}
         />
       </SettingsGroup>
-
       <SettingsGroup {...{ name: "Preset Smoother Video", shown: false }}>
         <Dropdown
           {...{
@@ -174,7 +173,6 @@ export const Settings = () => {
           }}
         />
       </SettingsGroup>
-
       <SettingsGroup {...{ name: "Preset Better Readability", shown: false }}>
         <Dropdown
           {...{

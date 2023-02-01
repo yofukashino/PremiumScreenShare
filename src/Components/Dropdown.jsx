@@ -2,7 +2,6 @@ import { common, components } from "replugged";
 const { React } = common;
 const { Text, Divider } = components;
 import { Select } from "../lib/requiredModules.jsx";
-import * as Utils from "../lib/utils.jsx";
 export class Dropdown extends React.Component {
   render() {
     return (
@@ -15,13 +14,7 @@ export class Dropdown extends React.Component {
           }}>
           <Text.H3>{this.props.name}</Text.H3>
         </div>
-        <Select
-          {...{
-            ...Utils.filterOutObjectKey(this.props, ["onChange", "value"]),
-            onChange: ({ value }) => this.props.onChange(value),
-            value: this.props.value,
-          }}
-        />
+        <Select {...this.props} />
         <div
           {...{
             style: {
