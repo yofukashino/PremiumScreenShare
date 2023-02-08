@@ -1,9 +1,8 @@
-import { common } from "replugged";
+import { common, components } from "replugged";
 import { pss } from "../index.jsx";
 const { React } = common;
+const { SelectItem, Category } = components;
 import { defaultSettings, fpsOptions, resoOptions } from "../lib/consts.jsx";
-import { SettingsGroup } from "./SettingsGroup.jsx";
-import { Dropdown } from "./Dropdown.jsx";
 export const registerSettings = () => {
   for (const [key, value] of Object.entries(defaultSettings)) {
     if (pss.has(key)) return;
@@ -38,10 +37,10 @@ export const Settings = () => {
   );
   return (
     <div>
-      <SettingsGroup {...{ name: "FPS (Depends on your screen FPS)", shown: false }}>
-        <Dropdown
+      <Category {...{ title: "FPS", note: "Depends on your screen FPS", open: false }}>
+        <SelectItem
           {...{
-            name: "FPS 15",
+            title: "FPS 15",
             note: "Replace 15 FPS with custom FPS",
             clearable: true,
             disabled: false,
@@ -55,9 +54,9 @@ export const Settings = () => {
             value: FPS15,
           }}
         />
-        <Dropdown
+        <SelectItem
           {...{
-            name: "FPS 30",
+            title: "FPS 30",
             note: "Replace 30 FPS with custom FPS",
             clearable: true,
             disabled: false,
@@ -71,9 +70,9 @@ export const Settings = () => {
             value: FPS30,
           }}
         />
-        <Dropdown
+        <SelectItem
           {...{
-            name: "FPS 60",
+            title: "FPS 60",
             note: "Replace 60 FPS with custom FPS",
             clearable: true,
             disabled: false,
@@ -87,11 +86,12 @@ export const Settings = () => {
             value: FPS60,
           }}
         />
-      </SettingsGroup>
-      <SettingsGroup {...{ name: "Resolution (Depends on your screen resolution)", shown: false }}>
-        <Dropdown
+      </Category>
+      <Category
+        {...{ title: "Resolution", note: "Depends on your screen resolution", open: false }}>
+        <SelectItem
           {...{
-            name: "480p",
+            title: "480p",
             note: "Replace 480p with custom resolution",
             clearable: true,
             disabled: false,
@@ -105,9 +105,9 @@ export const Settings = () => {
             value: Resolution480,
           }}
         />
-        <Dropdown
+        <SelectItem
           {...{
-            name: "720p",
+            title: "720p",
             note: "Replace 720p with custom resolution",
             clearable: true,
             disabled: false,
@@ -121,9 +121,9 @@ export const Settings = () => {
             value: Resolution720,
           }}
         />
-        <Dropdown
+        <SelectItem
           {...{
-            name: "1080p",
+            title: "1080p",
             note: "Replace 1080p with custom resolution",
             clearable: true,
             disabled: false,
@@ -137,11 +137,11 @@ export const Settings = () => {
             value: Resolution1080,
           }}
         />
-      </SettingsGroup>
-      <SettingsGroup {...{ name: "Preset Smoother Video", shown: false }}>
-        <Dropdown
+      </Category>
+      <Category {...{ title: "Preset Smoother Video", shown: false }}>
+        <SelectItem
           {...{
-            name: "Resolution",
+            title: "Resolution",
             note: "Change Smoother Video preset resolution",
             clearable: true,
             disabled: false,
@@ -155,9 +155,9 @@ export const Settings = () => {
             value: SmoothVideoResoltuion,
           }}
         />
-        <Dropdown
+        <SelectItem
           {...{
-            name: "FPS",
+            title: "FPS",
             note: "Change smoother video preset FPS",
             clearable: true,
             disabled: false,
@@ -171,11 +171,11 @@ export const Settings = () => {
             value: SmoothVideoFPS,
           }}
         />
-      </SettingsGroup>
-      <SettingsGroup {...{ name: "Preset Better Readability", shown: false }}>
-        <Dropdown
+      </Category>
+      <Category {...{ title: "Preset Better Readability", shown: false }}>
+        <SelectItem
           {...{
-            name: "Resolution",
+            title: "Resolution",
             note: "Change Better Readability preset resolution",
             clearable: true,
             disabled: false,
@@ -192,9 +192,9 @@ export const Settings = () => {
             value: BetterReadabilityResoltuion,
           }}
         />
-        <Dropdown
+        <SelectItem
           {...{
-            name: "FPS",
+            title: "FPS",
             note: "Change Better Readability preset FPS",
             clearable: true,
             disabled: false,
@@ -211,7 +211,7 @@ export const Settings = () => {
             value: BetterReadabilityFPS,
           }}
         />
-      </SettingsGroup>
+      </Category>
     </div>
   );
 };
