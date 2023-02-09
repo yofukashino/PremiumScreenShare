@@ -1,4 +1,4 @@
-import { common, components, util } from "replugged";
+import { common, components } from "replugged";
 import { SettingValues } from "../index.jsx";
 const { React } = common;
 const { SelectItem, Category } = components;
@@ -11,7 +11,6 @@ export const registerSettings = () => {
   }
 };
 export const Settings = () => {
-  console.log(util.useSetting(SettingValues, "fps[1]"));
   const [FPS15, setFPS15] = React.useState(SettingValues.get("fps", defaultSettings.fps)[1]);
   const [FPS30, setFPS30] = React.useState(SettingValues.get("fps", defaultSettings.fps)[2]);
   const [FPS60, setFPS60] = React.useState(SettingValues.get("fps", defaultSettings.fps)[3]);
@@ -41,7 +40,6 @@ export const Settings = () => {
       <Category {...{ title: "FPS", note: "Depends on your screen FPS", open: false }}>
         <SelectItem
           {...{
-            title: "FPS 15",
             note: "Replace 15 FPS with custom FPS",
             clearable: true,
             disabled: false,
@@ -53,11 +51,12 @@ export const Settings = () => {
               SettingValues.set("fps", fpsValues);
             },
             value: FPS15,
-          }}
-        />
+          }}>
+          {" "}
+          FPS 15
+        </SelectItem>
         <SelectItem
           {...{
-            title: "FPS 30",
             note: "Replace 30 FPS with custom FPS",
             clearable: true,
             disabled: false,
@@ -69,11 +68,12 @@ export const Settings = () => {
               SettingValues.set("fps", fpsValues);
             },
             value: FPS30,
-          }}
-        />
+          }}>
+          {" "}
+          FPS 30
+        </SelectItem>
         <SelectItem
           {...{
-            title: "FPS 60",
             note: "Replace 60 FPS with custom FPS",
             clearable: true,
             disabled: false,
@@ -85,14 +85,15 @@ export const Settings = () => {
               SettingValues.set("fps", fpsValues);
             },
             value: FPS60,
-          }}
-        />
+          }}>
+          {" "}
+          FPS 60{" "}
+        </SelectItem>
       </Category>
       <Category
         {...{ title: "Resolution", note: "Depends on your screen resolution", open: false }}>
         <SelectItem
           {...{
-            title: "480p",
             note: "Replace 480p with custom resolution",
             clearable: true,
             disabled: false,
@@ -104,11 +105,12 @@ export const Settings = () => {
               SettingValues.set("resolution", resolutionValues);
             },
             value: Resolution480,
-          }}
-        />
+          }}>
+          {" "}
+          480p{" "}
+        </SelectItem>
         <SelectItem
           {...{
-            title: "720p",
             note: "Replace 720p with custom resolution",
             clearable: true,
             disabled: false,
@@ -120,11 +122,12 @@ export const Settings = () => {
               SettingValues.set("resolution", resolutionValues);
             },
             value: Resolution720,
-          }}
-        />
+          }}>
+          {" "}
+          720p{" "}
+        </SelectItem>
         <SelectItem
           {...{
-            title: "1080p",
             note: "Replace 1080p with custom resolution",
             clearable: true,
             disabled: false,
@@ -136,13 +139,14 @@ export const Settings = () => {
               SettingValues.set("resolution", resolutionValues);
             },
             value: Resolution1080,
-          }}
-        />
+          }}>
+          {" "}
+          1080p{" "}
+        </SelectItem>
       </Category>
       <Category {...{ title: "Preset Smoother Video", shown: false }}>
         <SelectItem
           {...{
-            title: "Resolution",
             note: "Change Smoother Video preset resolution",
             clearable: true,
             disabled: false,
@@ -157,11 +161,12 @@ export const Settings = () => {
               SettingValues.set("resolution", smoothVideoValues);
             },
             value: SmoothVideoResoltuion,
-          }}
-        />
+          }}>
+          {" "}
+          Resolution{" "}
+        </SelectItem>
         <SelectItem
           {...{
-            title: "FPS",
             note: "Change smoother video preset FPS",
             clearable: true,
             disabled: false,
@@ -176,13 +181,14 @@ export const Settings = () => {
               SettingValues.set("smoothVideo", smoothVideoValues);
             },
             value: SmoothVideoFPS,
-          }}
-        />
+          }}>
+          {" "}
+          FPS{" "}
+        </SelectItem>
       </Category>
       <Category {...{ title: "Preset Better Readability", shown: false }}>
         <SelectItem
           {...{
-            title: "Resolution",
             note: "Change Better Readability preset resolution",
             clearable: true,
             disabled: false,
@@ -197,11 +203,12 @@ export const Settings = () => {
               SettingValues.set("resolution", betterReadabilityValues);
             },
             value: BetterReadabilityResoltuion,
-          }}
-        />
+          }}>
+          {" "}
+          Resolution
+        </SelectItem>
         <SelectItem
           {...{
-            title: "FPS",
             note: "Change Better Readability preset FPS",
             clearable: true,
             disabled: false,
@@ -216,8 +223,10 @@ export const Settings = () => {
               SettingValues.set("betterReadability", betterReadabilityValues);
             },
             value: BetterReadabilityFPS,
-          }}
-        />
+          }}>
+          {" "}
+          FPS{" "}
+        </SelectItem>
       </Category>
     </div>
   );
