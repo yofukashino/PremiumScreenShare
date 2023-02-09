@@ -7,23 +7,23 @@ import { ApplicationStreamingOptionStore, TextTags, WebRTCUtils } from "./lib/re
 import { registerSettings } from "./Components/Settings.jsx";
 const PluginInjector = new Injector();
 export const PluginLogger = Logger.plugin("PremiumScreenShare");
-export const pss = await settings.init("Tharki.PremiumScreenShare", defaultSettings);
+export const SettingValues = await settings.init("Tharki.PremiumScreenShare", defaultSettings);
 const streamingConstants = () => ({
   get fps() {
-    return Object.values(pss.get("fps", defaultSettings.fps))
+    return Object.values(SettingValues.get("fps", defaultSettings.fps))
       .sort(Utils.ascending)
       .filter((item, pos, self) => Utils.removeDuplicate(item, pos, self));
   },
   get fpsWithPresets() {
     return [
-      pss.get("betterReadability", defaultSettings.betterReadability).fps,
-      pss.get("smoothVideo", defaultSettings.smoothVideo).fps,
+      SettingValues.get("betterReadability", defaultSettings.betterReadability).fps,
+      SettingValues.get("smoothVideo", defaultSettings.smoothVideo).fps,
       ...this.fps,
     ];
   },
   get resolution() {
     return [
-      ...Object.values(pss.get("resolution", defaultSettings.resolution))
+      ...Object.values(SettingValues.get("resolution", defaultSettings.resolution))
         .sort(Utils.ascending)
         .filter((item, pos, self) => Utils.removeDuplicate(item, pos, self)),
       0,
@@ -31,8 +31,8 @@ const streamingConstants = () => ({
   },
   get resolutionWithPresets() {
     return [
-      pss.get("betterReadability", defaultSettings.betterReadability).resolution,
-      pss.get("smoothVideo", defaultSettings.smoothVideo).resolution,
+      SettingValues.get("betterReadability", defaultSettings.betterReadability).resolution,
+      SettingValues.get("smoothVideo", defaultSettings.smoothVideo).resolution,
       ...this.resolution,
     ];
   },
@@ -70,9 +70,11 @@ const fixBetterReadablityText = () => {
       props.children = props.children.replace(
         "(Source)",
         `(${
-          pss.get("betterReadability", defaultSettings.betterReadability).resolution == 0
+          SettingValues.get("betterReadability", defaultSettings.betterReadability).resolution == 0
             ? "Source"
-            : `${pss.get("betterReadability", defaultSettings.betterReadability).resolution}P`
+            : `${
+                SettingValues.get("betterReadability", defaultSettings.betterReadability).resolution
+              }P`
         })`,
       );
   });
@@ -105,7 +107,8 @@ const setCustomParameters = () => {
       .flat(Infinity),
     WC: streamingConstants()
       .resolution.filter(
-        (resolution) => resolution !== pss.get("resolution", defaultSettings.resolution)[1],
+        (resolution) =>
+          resolution !== SettingValues.get("resolution", defaultSettings.resolution)[1],
       )
       .map((resolution) => ({ value: resolution, label: resolution == 0 ? "Source" : resolution })),
     af: streamingConstants().fps.map((fps) => ({ value: fps, label: `${fps} FPS` })),
@@ -115,8 +118,8 @@ const setCustomParameters = () => {
       label: res == 0 ? "Source" : `${res}p`,
     })),
     no: {
-      1: [pss.get("smoothVideo", defaultSettings.smoothVideo)],
-      2: [pss.get("betterReadability", defaultSettings.betterReadability)],
+      1: [SettingValues.get("smoothVideo", defaultSettings.smoothVideo)],
+      2: [SettingValues.get("betterReadability", defaultSettings.betterReadability)],
       3: [],
     },
     ws: Object.assign(
@@ -130,7 +133,7 @@ const setCustomParameters = () => {
   setStreamParameters(customParameters);
 };
 const addChangeListener = () => {
-  PluginInjector.after(pss, "set", () => {
+  PluginInjector.after(SettingValues, "set", () => {
     setCustomParameters();
   });
 };

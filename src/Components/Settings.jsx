@@ -1,39 +1,40 @@
-import { common, components } from "replugged";
-import { pss } from "../index.jsx";
+import { common, components, util } from "replugged";
+import { SettingValues } from "../index.jsx";
 const { React } = common;
 const { SelectItem, Category } = components;
 import { defaultSettings, fpsOptions, resoOptions } from "../lib/consts.jsx";
 export const registerSettings = () => {
   for (const [key, value] of Object.entries(defaultSettings)) {
-    if (pss.has(key)) return;
+    if (SettingValues.has(key)) return;
     PluginLogger.log(`Adding new setting ${key} with value`, value);
-    pss.set(key, value);
+    SettingValues.set(key, value);
   }
 };
 export const Settings = () => {
-  const [FPS15, setFPS15] = React.useState(pss.get("fps", defaultSettings.fps)[1]);
-  const [FPS30, setFPS30] = React.useState(pss.get("fps", defaultSettings.fps)[2]);
-  const [FPS60, setFPS60] = React.useState(pss.get("fps", defaultSettings.fps)[3]);
+  console.log(util.useSetting(SettingValues, "fps[1]"));
+  const [FPS15, setFPS15] = React.useState(SettingValues.get("fps", defaultSettings.fps)[1]);
+  const [FPS30, setFPS30] = React.useState(SettingValues.get("fps", defaultSettings.fps)[2]);
+  const [FPS60, setFPS60] = React.useState(SettingValues.get("fps", defaultSettings.fps)[3]);
   const [Resolution480, setResoltuion480] = React.useState(
-    pss.get("resolution", defaultSettings.resolution)[1],
+    SettingValues.get("resolution", defaultSettings.resolution)[1],
   );
   const [Resolution720, setResoltuion720] = React.useState(
-    pss.get("resolution", defaultSettings.resolution)[2],
+    SettingValues.get("resolution", defaultSettings.resolution)[2],
   );
   const [Resolution1080, setResoltuion1080] = React.useState(
-    pss.get("resolution", defaultSettings.resolution)[3],
+    SettingValues.get("resolution", defaultSettings.resolution)[3],
   );
   const [SmoothVideoResoltuion, setSmoothVideoResoltuion] = React.useState(
-    pss.get("smoothVideo", defaultSettings.smoothVideo).resolution,
+    SettingValues.get("smoothVideo", defaultSettings.smoothVideo).resolution,
   );
   const [SmoothVideoFPS, setSmoothVideoFPS] = React.useState(
-    pss.get("smoothVideo", defaultSettings.smoothVideo).fps,
+    SettingValues.get("smoothVideo", defaultSettings.smoothVideo).fps,
   );
   const [BetterReadabilityResoltuion, setBetterReadabilityResoltuion] = React.useState(
-    pss.get("betterReadability", defaultSettings.betterReadability).resolution,
+    SettingValues.get("betterReadability", defaultSettings.betterReadability).resolution,
   );
   const [BetterReadabilityFPS, setBetterReadabilityFPS] = React.useState(
-    pss.get("betterReadability", defaultSettings.betterReadability).fps,
+    SettingValues.get("betterReadability", defaultSettings.betterReadability).fps,
   );
   return (
     <div>
@@ -47,9 +48,9 @@ export const Settings = () => {
             options: fpsOptions,
             onChange: (value) => {
               setFPS15(value);
-              const fpsValues = pss.get("fps", defaultSettings.fps);
+              const fpsValues = SettingValues.get("fps", defaultSettings.fps);
               fpsValues[1] = value;
-              pss.set("fps", fpsValues);
+              SettingValues.set("fps", fpsValues);
             },
             value: FPS15,
           }}
@@ -63,9 +64,9 @@ export const Settings = () => {
             options: fpsOptions,
             onChange: (value) => {
               setFPS30(value);
-              const fpsValues = pss.get("fps", defaultSettings.fps);
+              const fpsValues = SettingValues.get("fps", defaultSettings.fps);
               fpsValues[2] = value;
-              pss.set("fps", fpsValues);
+              SettingValues.set("fps", fpsValues);
             },
             value: FPS30,
           }}
@@ -79,9 +80,9 @@ export const Settings = () => {
             options: fpsOptions,
             onChange: (value) => {
               setFPS60(value);
-              const fpsValues = pss.get("fps", defaultSettings.fps);
+              const fpsValues = SettingValues.get("fps", defaultSettings.fps);
               fpsValues[3] = value;
-              pss.set("fps", fpsValues);
+              SettingValues.set("fps", fpsValues);
             },
             value: FPS60,
           }}
@@ -98,9 +99,9 @@ export const Settings = () => {
             options: resoOptions,
             onChange: (value) => {
               setResoltuion480(value);
-              const resolutionValues = pss.get("resolution", defaultSettings.resolution);
+              const resolutionValues = SettingValues.get("resolution", defaultSettings.resolution);
               resolutionValues[1] = value;
-              pss.set("resolution", resolutionValues);
+              SettingValues.set("resolution", resolutionValues);
             },
             value: Resolution480,
           }}
@@ -114,9 +115,9 @@ export const Settings = () => {
             options: resoOptions,
             onChange: (value) => {
               setResoltuion720(value);
-              const resolutionValues = pss.get("resolution", defaultSettings.resolution);
+              const resolutionValues = SettingValues.get("resolution", defaultSettings.resolution);
               resolutionValues[2] = value;
-              pss.set("resolution", resolutionValues);
+              SettingValues.set("resolution", resolutionValues);
             },
             value: Resolution720,
           }}
@@ -130,9 +131,9 @@ export const Settings = () => {
             options: resoOptions,
             onChange: (value) => {
               setResoltuion1080(value);
-              const resolutionValues = pss.get("resolutio", defaultSettings.resolution);
+              const resolutionValues = SettingValues.get("resolutio", defaultSettings.resolution);
               resolutionValues[3] = value;
-              pss.set("resolution", resolutionValues);
+              SettingValues.set("resolution", resolutionValues);
             },
             value: Resolution1080,
           }}
@@ -148,9 +149,12 @@ export const Settings = () => {
             options: resoOptions,
             onChange: (value) => {
               setSmoothVideoResoltuion(value);
-              const smoothVideoValues = pss.get("smoothVideo", defaultSettings.smoothVideo);
+              const smoothVideoValues = SettingValues.get(
+                "smoothVideo",
+                defaultSettings.smoothVideo,
+              );
               smoothVideoValues.resolution = value;
-              pss.set("resolution", smoothVideoValues);
+              SettingValues.set("resolution", smoothVideoValues);
             },
             value: SmoothVideoResoltuion,
           }}
@@ -164,9 +168,12 @@ export const Settings = () => {
             options: fpsOptions,
             onChange: (value) => {
               setSmoothVideoFPS(value);
-              const smoothVideoValues = pss.get("smoothVideo", defaultSettings.smoothVideo);
+              const smoothVideoValues = SettingValues.get(
+                "smoothVideo",
+                defaultSettings.smoothVideo,
+              );
               smoothVideoValues.fps = value;
-              pss.set("smoothVideo", smoothVideoValues);
+              SettingValues.set("smoothVideo", smoothVideoValues);
             },
             value: SmoothVideoFPS,
           }}
@@ -182,12 +189,12 @@ export const Settings = () => {
             options: resoOptions,
             onChange: (value) => {
               setBetterReadabilityResoltuion(value);
-              const betterReadabilityValues = pss.get(
+              const betterReadabilityValues = SettingValues.get(
                 "betterReadability",
                 defaultSettings.betterReadability,
               );
               smoothVideoValues.resolution = value;
-              pss.set("resolution", betterReadabilityValues);
+              SettingValues.set("resolution", betterReadabilityValues);
             },
             value: BetterReadabilityResoltuion,
           }}
@@ -201,12 +208,12 @@ export const Settings = () => {
             options: fpsOptions,
             onChange: (value) => {
               setBetterReadabilityFPS(value);
-              const betterReadabilityValues = pss.get(
+              const betterReadabilityValues = SettingValues.get(
                 "betterReadability",
                 defaultSettings.betterReadability,
               );
               betterReadabilityValues.fps = value;
-              pss.set("betterReadability", betterReadabilityValues);
+              SettingValues.set("betterReadability", betterReadabilityValues);
             },
             value: BetterReadabilityFPS,
           }}
