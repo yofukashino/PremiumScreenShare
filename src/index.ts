@@ -63,8 +63,7 @@ const patchQualityStore = (): void => {
   });
 };
 const fixBetterReadablityText = (): void => {
-  const render = "render" as never;
-  PluginInjector.before(TextTags, render, ([args]: Types.TextArgs) => {
+  PluginInjector.before(TextTags, "render", ([args]: Types.TextArgs) => {
     if (args?.title !== "Resolution" || !args?.children?.props?.children) return;
     const {
       children: { props },

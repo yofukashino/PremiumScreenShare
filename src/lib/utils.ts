@@ -1,4 +1,8 @@
+import { common } from "replugged";
+import * as lodash from "lodash";
 import * as Types from "../types";
+import { SettingValues } from "../index";
+const { React } = common;
 export const removeDuplicate = (item: unknown, pos: number, self: unknown[]): boolean => {
   return self.indexOf(item) == pos;
 };
@@ -12,38 +16,26 @@ export const filterOutObjectKey = (object: object, keys: Array<string | number |
       obj[key] = object[key];
       return obj;
     }, {});
-export const findInTree = (
-  tree: object,
-  searchFilter: Types.DefaultTypes.AnyFunction,
-  { walkable = null, ignore = [] } = {},
-): unknown => {
-  if (typeof searchFilter === "string") {
-    if (Object.hasOwnProperty.call(tree, searchFilter)) return tree[searchFilter];
-  } else if (searchFilter(tree)) {
-    return tree;
-  }
-  if (typeof tree !== "object" || tree == null) return;
+export const useSetting = (
+  settingsManager: typeof SettingValues,
+  path: string,
+  defaultValue?: string,
+): {
+  value: string;
+  onChange: (newValue: string) => void;
+} => {
+  const [key, ...realPath] = path.split(".");
+  const realPathJoined = realPath.join(".");
+  const settingObject = settingsManager.get(key as keyof Types.Settings);
+  const initial = lodash.get(settingObject, realPathJoined, defaultValue);
+  const [value, setValue] = React.useState(initial);
 
-  let tempReturn;
-  if (Array.isArray(tree)) {
-    for (const value of tree) {
-      tempReturn = findInTree(value, searchFilter, { walkable, ignore });
-      if (typeof tempReturn !== "undefined") return tempReturn;
-    }
-  } else {
-    const toWalk = walkable == null ? Object.keys(tree) : walkable;
-    for (const key of toWalk) {
-      if (!Object.hasOwnProperty.call(tree, key) || ignore.includes(key)) continue;
-      tempReturn = findInTree(tree[key], searchFilter, { walkable, ignore });
-      if (typeof tempReturn !== "undefined") return tempReturn;
-    }
-  }
-  return tempReturn;
-};
-
-export const findInReactTree = (
-  tree: Types.ReactElement,
-  searchFilter: Types.DefaultTypes.AnyFunction,
-): unknown | Types.ReactElement => {
-  return findInTree(tree, searchFilter, { walkable: ["props", "children", "child", "sibling"] });
+  return {
+    value,
+    onChange: (newValue) => {
+      setValue(newValue);
+      lodash.set(settingObject, realPathJoined, newValue);
+      settingsManager.set(key as keyof Types.Settings, settingObject);
+    },
+  };
 };

@@ -13,5 +13,5 @@ export const TextTagsModule = webpack.getBySource(
 ) as unknown as Types.DefaultTypes.ObjectExports;
 export const TextTags = Object.values(TextTagsModule).find((m: Types.TextTags) =>
   m?.render?.toString().includes(TextTagsString),
-);
+) as Types.TextTags;
 export const ModalClasses = webpack.getByProps("fullscreenOnMobile", "large", "root");

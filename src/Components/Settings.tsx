@@ -1,212 +1,155 @@
 import { components } from "replugged";
 import { PluginLogger, SettingValues } from "../index";
-const { ButtonItem, Category } = components;
+const { SelectItem, ButtonItem, Category } = components;
 import { defaultSettings, fpsOptions, resoOptions } from "../lib/consts";
-import { StatedSelectItem } from "./StatedSelect";
 import * as Types from "../types";
+import * as Utils from "../lib/utils";
 export const registerSettings = (): void => {
   for (const key in defaultSettings) {
     if (SettingValues.has(key as keyof Types.Settings)) return;
-    PluginLogger.log(`Adding new setting ${key} with value`, defaultSettings[key]);
+    PluginLogger.log(`Adding new setting ${key} with value ${defaultSettings[key]}.`);
     SettingValues.set(key as keyof Types.Settings, defaultSettings[key]);
   }
 };
 export const resetSettings = (): void => {
-  for (const key in defaultSettings) {
-    PluginLogger.log(`Resetted ${key} with value`, defaultSettings[key]);
-    SettingValues.set(key as keyof Types.Settings, defaultSettings[key]);
-  }
+  PluginLogger.log("Resetting PremiumScreenShare's Settings.");
+  for (const key of Object.keys(SettingValues.all()))
+    SettingValues.delete(key as keyof Types.Settings);
+  registerSettings();
 };
 export const Settings = () => {
   return (
     <div>
       <Category {...{ title: "FPS", note: "Depends on your screen FPS", open: false }}>
-        <StatedSelectItem
+        <SelectItem
           {...{
-            title: "FPS 15",
             note: "Replace 15 FPS with custom FPS",
             clearable: true,
             disabled: false,
             options: fpsOptions,
-            onChange: (value) => {
-              const fpsValues = SettingValues.get("fps", defaultSettings.fps);
-              fpsValues[1] = value;
-              SettingValues.set("fps", fpsValues);
-            },
-            value: SettingValues.get("fps", defaultSettings.fps)[1],
-          }}
-        />
-        <StatedSelectItem
+            ...Utils.useSetting(SettingValues, "fps.1", defaultSettings.fps[1]),
+          }}>
+          FPS 15
+        </SelectItem>
+        <SelectItem
           {...{
-            title: "FPS 30",
             note: "Replace 30 FPS with custom FPS",
             clearable: true,
             disabled: false,
             options: fpsOptions,
-            onChange: (value) => {
-              const fpsValues = SettingValues.get("fps", defaultSettings.fps);
-              fpsValues[2] = value;
-              SettingValues.set("fps", fpsValues);
-            },
-            value: SettingValues.get("fps", defaultSettings.fps)[2],
-          }}
-        />
-        <StatedSelectItem
+            ...Utils.useSetting(SettingValues, "fps.2", defaultSettings.fps[2]),
+          }}>
+          FPS 30
+        </SelectItem>
+        <SelectItem
           {...{
-            title: "FPS 60",
             note: "Replace 60 FPS with custom FPS",
             clearable: true,
             disabled: false,
             options: fpsOptions,
-            onChange: (value) => {
-              const fpsValues = SettingValues.get("fps", defaultSettings.fps);
-              fpsValues[3] = value;
-              SettingValues.set("fps", fpsValues);
-            },
-            value: SettingValues.get("fps", defaultSettings.fps)[3],
-          }}
-        />
+            ...Utils.useSetting(SettingValues, "fps.3", defaultSettings.fps[3]),
+          }}>
+          FPS 60
+        </SelectItem>
       </Category>
       <Category
         {...{ title: "Resolution", note: "Depends on your screen resolution", open: false }}>
-        <StatedSelectItem
+        <SelectItem
           {...{
-            title: "480p",
             note: "Replace 480p with custom resolution",
             clearable: true,
             disabled: false,
             options: resoOptions,
-            onChange: (value) => {
-              const resolutionValues = SettingValues.get("resolution", defaultSettings.resolution);
-              resolutionValues[1] = value;
-              SettingValues.set("resolution", resolutionValues);
-            },
-            value: SettingValues.get("resolution", defaultSettings.resolution)[1],
-          }}
-        />
-        <StatedSelectItem
+            ...Utils.useSetting(SettingValues, "resolution.1", defaultSettings.resolution[1]),
+          }}>
+          480p
+        </SelectItem>
+        <SelectItem
           {...{
-            title: "720p",
             note: "Replace 720p with custom resolution",
             clearable: true,
             disabled: false,
             options: resoOptions,
-            onChange: (value) => {
-              const resolutionValues = SettingValues.get("resolution", defaultSettings.resolution);
-              resolutionValues[2] = value;
-              SettingValues.set("resolution", resolutionValues);
-            },
-            value: SettingValues.get("resolution", defaultSettings.resolution)[2],
-          }}
-        />
-        <StatedSelectItem
+            ...Utils.useSetting(SettingValues, "resolution.2", defaultSettings.resolution[2]),
+          }}>
+          720p
+        </SelectItem>
+        <SelectItem
           {...{
-            title: "1080p",
             note: "Replace 1080p with custom resolution",
             clearable: true,
             disabled: false,
             options: resoOptions,
-            onChange: (value) => {
-              const resolutionValues = SettingValues.get("resolution", defaultSettings.resolution);
-              resolutionValues[3] = value;
-              SettingValues.set("resolution", resolutionValues);
-            },
-            value: SettingValues.get("resolution", defaultSettings.resolution)[3],
-          }}
-        />
-        <StatedSelectItem
+            ...Utils.useSetting(SettingValues, "resolution.3", defaultSettings.resolution[3]),
+          }}>
+          1080p
+        </SelectItem>
+        <SelectItem
           {...{
-            title: "1440p",
             note: "Replace 1440p with custom resolution",
             clearable: true,
             disabled: false,
             options: resoOptions,
-            onChange: (value) => {
-              const resolutionValues = SettingValues.get("resolution", defaultSettings.resolution);
-              resolutionValues[3] = value;
-              SettingValues.set("resolution", resolutionValues);
-            },
-            value: SettingValues.get("resolution", defaultSettings.resolution)[4],
-          }}
-        />
+            ...Utils.useSetting(SettingValues, "resolution.4", defaultSettings.resolution[4]),
+          }}>
+          1440p
+        </SelectItem>
       </Category>
       <Category {...{ title: "Preset Smoother Video", shown: false }}>
-        <StatedSelectItem
+        <SelectItem
           {...{
-            title: "Resolution",
             note: "Change Smoother Video preset resolution",
             clearable: true,
             disabled: false,
             options: resoOptions,
-            onChange: (value) => {
-              const smoothVideoValues = SettingValues.get(
-                "smoothVideo",
-                defaultSettings.smoothVideo,
-              );
-              smoothVideoValues.resolution = value;
-              SettingValues.set("smoothVideo", smoothVideoValues);
-            },
-            value: SettingValues.get("smoothVideo", defaultSettings.smoothVideo).resolution,
-          }}
-        />
-        <StatedSelectItem
+            ...Utils.useSetting(
+              SettingValues,
+              "smoothVideo.resolution",
+              defaultSettings.smoothVideo.resolution,
+            ),
+          }}>
+          Resolution
+        </SelectItem>
+        <SelectItem
           {...{
-            title: "FPS",
             note: "Change smoother video preset FPS",
             clearable: true,
             disabled: false,
             options: fpsOptions,
-            onChange: (value) => {
-              const smoothVideoValues = SettingValues.get(
-                "smoothVideo",
-                defaultSettings.smoothVideo,
-              );
-              smoothVideoValues.fps = value;
-              SettingValues.set("smoothVideo", smoothVideoValues);
-            },
-            value: SettingValues.get("smoothVideo", defaultSettings.smoothVideo).fps,
-          }}
-        />
+            ...Utils.useSetting(SettingValues, "smoothVideo.fps", defaultSettings.smoothVideo.fps),
+          }}>
+          FPS
+        </SelectItem>
       </Category>
       <Category {...{ title: "Preset Better Readability", shown: false }}>
-        <StatedSelectItem
+        <SelectItem
           {...{
-            title: "Resolution",
             note: "Change Better Readability preset resolution",
             clearable: true,
             disabled: false,
             options: resoOptions,
-            onChange: (value) => {
-              const betterReadabilityValues = SettingValues.get(
-                "betterReadability",
-                defaultSettings.betterReadability,
-              );
-              betterReadabilityValues.resolution = value;
-              SettingValues.set("betterReadability", betterReadabilityValues);
-            },
-            value: SettingValues.get("betterReadability", defaultSettings.betterReadability)
-              .resolution,
-          }}
-        />
-
-        <StatedSelectItem
+            ...Utils.useSetting(
+              SettingValues,
+              "betterReadability.resolution",
+              defaultSettings.betterReadability.resolution,
+            ),
+          }}>
+          Resolution
+        </SelectItem>
+        <SelectItem
           {...{
-            title: "FPS",
             note: "Change Better Readability preset FPS",
             clearable: true,
             disabled: false,
             options: fpsOptions,
-            onChange: (value) => {
-              const betterReadabilityValues = SettingValues.get(
-                "betterReadability",
-                defaultSettings.betterReadability,
-              );
-              betterReadabilityValues.fps = value;
-              SettingValues.set("betterReadability", betterReadabilityValues);
-            },
-            value: SettingValues.get("betterReadability", defaultSettings.betterReadability).fps,
-          }}
-        />
+            ...Utils.useSetting(
+              SettingValues,
+              "betterReadability.fps",
+              defaultSettings.betterReadability.fps,
+            ),
+          }}>
+          FPS
+        </SelectItem>
       </Category>
       <ButtonItem
         {...{
