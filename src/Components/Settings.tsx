@@ -27,7 +27,9 @@ export const Settings = () => {
             clearable: true,
             disabled: false,
             options: fpsOptions,
-            ...Utils.useSetting(SettingValues, "fps.1", defaultSettings.fps[1]),
+            ...Utils.useSetting(SettingValues, "fps.1", defaultSettings.fps[1], {
+              clearable: true,
+            }),
           }}>
           FPS 15
         </SelectItem>
@@ -37,7 +39,9 @@ export const Settings = () => {
             clearable: true,
             disabled: false,
             options: fpsOptions,
-            ...Utils.useSetting(SettingValues, "fps.2", defaultSettings.fps[2]),
+            ...Utils.useSetting(SettingValues, "fps.2", defaultSettings.fps[2], {
+              clearable: true,
+            }),
           }}>
           FPS 30
         </SelectItem>
@@ -47,7 +51,9 @@ export const Settings = () => {
             clearable: true,
             disabled: false,
             options: fpsOptions,
-            ...Utils.useSetting(SettingValues, "fps.3", defaultSettings.fps[3]),
+            ...Utils.useSetting(SettingValues, "fps.3", defaultSettings.fps[3], {
+              clearable: true,
+            }),
           }}>
           FPS 60
         </SelectItem>
@@ -60,7 +66,9 @@ export const Settings = () => {
             clearable: true,
             disabled: false,
             options: resoOptions,
-            ...Utils.useSetting(SettingValues, "resolution.1", defaultSettings.resolution[1]),
+            ...Utils.useSetting(SettingValues, "resolution.1", defaultSettings.resolution[1], {
+              clearable: true,
+            }),
           }}>
           480p
         </SelectItem>
@@ -70,7 +78,9 @@ export const Settings = () => {
             clearable: true,
             disabled: false,
             options: resoOptions,
-            ...Utils.useSetting(SettingValues, "resolution.2", defaultSettings.resolution[2]),
+            ...Utils.useSetting(SettingValues, "resolution.2", defaultSettings.resolution[2], {
+              clearable: true,
+            }),
           }}>
           720p
         </SelectItem>
@@ -80,7 +90,9 @@ export const Settings = () => {
             clearable: true,
             disabled: false,
             options: resoOptions,
-            ...Utils.useSetting(SettingValues, "resolution.3", defaultSettings.resolution[3]),
+            ...Utils.useSetting(SettingValues, "resolution.3", defaultSettings.resolution[3], {
+              clearable: true,
+            }),
           }}>
           1080p
         </SelectItem>
@@ -90,7 +102,9 @@ export const Settings = () => {
             clearable: true,
             disabled: false,
             options: resoOptions,
-            ...Utils.useSetting(SettingValues, "resolution.4", defaultSettings.resolution[4]),
+            ...Utils.useSetting(SettingValues, "resolution.4", defaultSettings.resolution[4], {
+              clearable: true,
+            }),
           }}>
           1440p
         </SelectItem>
@@ -99,7 +113,6 @@ export const Settings = () => {
         <SelectItem
           {...{
             note: "Change Smoother Video preset resolution",
-            clearable: true,
             disabled: false,
             options: resoOptions,
             ...Utils.useSetting(
@@ -113,7 +126,6 @@ export const Settings = () => {
         <SelectItem
           {...{
             note: "Change smoother video preset FPS",
-            clearable: true,
             disabled: false,
             options: fpsOptions,
             ...Utils.useSetting(SettingValues, "smoothVideo.fps", defaultSettings.smoothVideo.fps),
@@ -125,13 +137,13 @@ export const Settings = () => {
         <SelectItem
           {...{
             note: "Change Better Readability preset resolution",
-            clearable: true,
             disabled: false,
             options: resoOptions,
             ...Utils.useSetting(
               SettingValues,
               "betterReadability.resolution",
               defaultSettings.betterReadability.resolution,
+              { clearable: true },
             ),
           }}>
           Resolution
@@ -139,7 +151,6 @@ export const Settings = () => {
         <SelectItem
           {...{
             note: "Change Better Readability preset FPS",
-            clearable: true,
             disabled: false,
             options: fpsOptions,
             ...Utils.useSetting(

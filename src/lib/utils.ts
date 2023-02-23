@@ -9,33 +9,41 @@ export const removeDuplicate = (item: unknown, pos: number, self: unknown[]): bo
 export const ascending = (a: number, b: number): number => {
   return a - b;
 };
-export const filterOutObjectKey = (object: object, keys: Array<string | number | symbol>): object =>
-  Object.keys(object)
-    .filter((key) => !keys.includes(key))
-    .reduce((obj, key) => {
-      obj[key] = object[key];
-      return obj;
-    }, {});
+
 export const useSetting = (
   settingsManager: typeof SettingValues,
   path: string,
   defaultValue?: string,
+  options?: { clearable?: boolean },
 ): {
   value: string;
   onChange: (newValue: string) => void;
+  onClear: () => void;
 } => {
+  const { clearable = false } = options ?? {};
   const [key, ...realPath] = path.split(".");
   const realPathJoined = realPath.join(".");
-  const settingObject = settingsManager.get(key as keyof Types.Settings);
-  const initial = lodash.get(settingObject, realPathJoined, defaultValue);
+  const setting = settingsManager.get(key as keyof Types.Settings);
+  const initial = realPath.length
+    ? lodash.get(setting, realPathJoined, defaultValue)
+    : (setting as unknown as string);
   const [value, setValue] = React.useState(initial);
 
   return {
     value,
+    onClear: clearable
+      ? () => {
+          setValue("");
+          const changed = realPath.length ? lodash.set(setting, realPathJoined, "") : ("" as never);
+          settingsManager.set(key as keyof Types.Settings, changed);
+        }
+      : () => null,
     onChange: (newValue) => {
       setValue(newValue);
-      lodash.set(settingObject, realPathJoined, newValue);
-      settingsManager.set(key as keyof Types.Settings, settingObject);
+      const changed = realPath.length
+        ? lodash.set(setting, realPathJoined, newValue)
+        : (newValue as never);
+      settingsManager.set(key as keyof Types.Settings, changed);
     },
   };
 };
