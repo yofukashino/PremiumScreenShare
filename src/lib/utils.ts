@@ -1,10 +1,10 @@
 import { common } from "replugged";
-import * as lodash from "lodash";
+import lodash from "lodash";
 import * as Types from "../types";
 import { SettingValues } from "../index";
 const { React } = common;
 export const removeDuplicate = (item: unknown, pos: number, self: unknown[]): boolean => {
-  return self.indexOf(item) == pos;
+  return self.indexOf(item) === pos;
 };
 export const ascending = (a: number, b: number): number => {
   return a - b;
