@@ -1,21 +1,33 @@
-import { components } from "replugged";
+import { components, util } from "replugged";
 import { PluginLogger, SettingValues } from "../index";
 const { SelectItem, ButtonItem, Category } = components;
-import { defaultSettings, fpsOptions, resoOptions } from "../lib/consts";
-import * as Types from "../types";
+import { defaultSettings, fpsOptions, resoOptions, resoWithSource } from "../lib/consts";
+import { ModalLayerClasses } from "../lib/requiredModules";
 import * as Utils from "../lib/utils";
+import * as Types from "../types";
 export const registerSettings = (): void => {
   for (const key in defaultSettings) {
     if (SettingValues.has(key as keyof Types.Settings)) return;
-    PluginLogger.log(`Adding new setting ${key} with value ${defaultSettings[key]}.`);
+    PluginLogger.log(`Adding new setting ${key} with value`, defaultSettings[key], ".");
     SettingValues.set(key as keyof Types.Settings, defaultSettings[key]);
   }
+};
+export const closeSettings = (): void => {
+  const ModalLayer = document.querySelector(`.${ModalLayerClasses.layer}`);
+  const ModalReactInstance = util.getReactInstance(ModalLayer);
+  const ModalProps = Utils.findInTree(
+    ModalReactInstance,
+    (m) => m?.onClose && m?.transitionState && m?.size,
+    { maxRecrusions: 100 },
+  ) as Types.ModalProps;
+  ModalProps.onClose();
 };
 export const resetSettings = (): void => {
   PluginLogger.log("Resetting PremiumScreenShare's Settings.");
   for (const key of Object.keys(SettingValues.all()))
     SettingValues.delete(key as keyof Types.Settings);
   registerSettings();
+  closeSettings();
 };
 export const Settings = () => {
   return (
@@ -114,7 +126,7 @@ export const Settings = () => {
           {...{
             note: "Change Smoother Video preset resolution",
             disabled: false,
-            options: resoOptions,
+            options: resoWithSource,
             ...Utils.useSetting(
               SettingValues,
               "smoothVideo.resolution",
@@ -138,7 +150,7 @@ export const Settings = () => {
           {...{
             note: "Change Better Readability preset resolution",
             disabled: false,
-            options: resoOptions,
+            options: resoWithSource,
             ...Utils.useSetting(
               SettingValues,
               "betterReadability.resolution",
@@ -166,7 +178,6 @@ export const Settings = () => {
         {...{
           button: "Reset Settings",
           onClick: () => {
-            //the setting doesnt get updated on pressing this button yet
             resetSettings();
           },
         }}>

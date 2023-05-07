@@ -2,12 +2,6 @@ export { types as DefaultTypes, components as ComponentTypes } from "replugged";
 import { types as DefaultTypes } from "replugged";
 import { ReactElement } from "react";
 export { ReactElement, ComponentClass } from "react";
-export interface streamingConstants {
-  fps: number[];
-  fpsWithPresets: number[];
-  resolution: number[];
-  resolutionWithPresets: number[];
-}
 export interface Settings {
   fps: number[];
   resolution: number[];
@@ -20,11 +14,27 @@ export interface Settings {
     fps: number;
   };
 }
+export interface ModalProps {
+  children: ReactElement[];
+  onClose: DefaultTypes.AnyFunction;
+  size: string;
+  transitionState: number;
+}
+export interface streamingConstants {
+  fps: number[];
+  fpsWithPresets: number[];
+  resolution: number[];
+  resolutionWithPresets: number[];
+}
 export interface TextTags {
   $$typeof: symbol;
   render: DefaultTypes.AnyFunction;
 }
-
+export interface ModalLayerClasses {
+  backdrop: string;
+  hidden: string;
+  layer: string;
+}
 export interface TextArgs
   extends Array<{
     title: string;

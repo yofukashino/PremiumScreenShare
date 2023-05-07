@@ -1,6 +1,10 @@
-import * as Types from "../types";
+import { SettingValues } from "../index";
 
 import { ApplicationStreamingOptionStore } from "./requiredModules";
+
+import * as Utils from "../lib/utils";
+
+import * as Types from "../types";
 
 export const defaultSettings = {
   fps: {
@@ -199,4 +203,36 @@ export const defaultParameters = Object.freeze({
       (n) => Object.freeze(n),
     ),
   ),
+});
+
+export const streamingConstants = (): Types.streamingConstants => ({
+  get fps() {
+    return Object.values(SettingValues.get("fps", defaultSettings.fps))
+      .map((fps) => Number(fps))
+      .sort(Utils.ascending)
+      .filter(Utils.removeDuplicate);
+  },
+  get fpsWithPresets() {
+    return [
+      Number(SettingValues.get("betterReadability", defaultSettings.betterReadability).fps),
+      Number(SettingValues.get("smoothVideo", defaultSettings.smoothVideo).fps),
+      ...this.fps,
+    ];
+  },
+  get resolution() {
+    return [
+      ...Object.values(SettingValues.get("resolution", defaultSettings.resolution))
+        .map((resolution) => Number(resolution))
+        .sort(Utils.ascending)
+        .filter(Utils.removeDuplicate),
+      0,
+    ];
+  },
+  get resolutionWithPresets() {
+    return [
+      Number(SettingValues.get("betterReadability", defaultSettings.betterReadability).resolution),
+      Number(SettingValues.get("smoothVideo", defaultSettings.smoothVideo).resolution),
+      ...this.resolution,
+    ];
+  },
 });
