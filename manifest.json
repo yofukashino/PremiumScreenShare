@@ -1,5 +1,5 @@
 {
-  "id": "Tharki.PremiumScreenShare",
+  "id": "dev.tharki.PremiumScreenShare",
   "name": "PremiumScreenShare",
   "description": "Replugged plugin to make the screen sharing experience truly PREMIUM.",
   "author": {
@@ -7,7 +7,7 @@
     "discordID": "1025214794766221384",
     "github": "Tharki-God"
   },
-  "version": "1.0.3",
+  "version": "1.0.4",
   "updater": {
     "type": "github",
     "id": "Tharki-God/PremiumScreenShare"
