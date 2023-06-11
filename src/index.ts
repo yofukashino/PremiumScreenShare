@@ -1,7 +1,6 @@
 import { Injector, Logger, settings } from "replugged";
 import { defaultParameters, defaultSettings, streamingConstants } from "./lib/consts";
 import * as Utils from "./lib/utils";
-import "./style.css";
 import { registerSettings } from "./Components/Settings";
 export const PluginInjector = new Injector();
 export const PluginLogger = Logger.plugin("PremiumScreenShare");

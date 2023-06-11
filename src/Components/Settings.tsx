@@ -1,8 +1,8 @@
-import { components, util } from "replugged";
+import { common, components } from "replugged";
 import { PluginLogger, SettingValues } from "../index";
 const { SelectItem, ButtonItem, Category } = components;
+const { React } = common;
 import { defaultSettings, fpsOptions, resoOptions, resoWithSource } from "../lib/consts";
-import { ModalLayerClasses } from "../lib/requiredModules";
 import * as Utils from "../lib/utils";
 import * as Types from "../types";
 export const registerSettings = (): void => {
@@ -12,24 +12,15 @@ export const registerSettings = (): void => {
     SettingValues.set(key as keyof Types.Settings, defaultSettings[key]);
   }
 };
-export const closeSettings = (): void => {
-  const ModalLayer = document.querySelector(`.${ModalLayerClasses.layer}`);
-  const ModalReactInstance = util.getReactInstance(ModalLayer);
-  const ModalProps = Utils.findInTree(
-    ModalReactInstance,
-    (m) => m?.onClose && m?.transitionState && m?.size,
-    { maxRecrusions: 100 },
-  ) as Types.ModalProps;
-  ModalProps.onClose();
-};
-export const resetSettings = (): void => {
+export const resetSettings = (forceUpdateSettings?: Types.DefaultTypes.AnyFunction): void => {
   PluginLogger.log("Resetting PremiumScreenShare's Settings.");
   for (const key of Object.keys(SettingValues.all()))
     SettingValues.delete(key as keyof Types.Settings);
   registerSettings();
-  closeSettings();
+  forceUpdateSettings?.();
 };
 export const Settings = () => {
+  const forceUpdate = React.useReducer(() => ({}), {})[1] as Types.DefaultTypes.AnyFunction;
   return (
     <div>
       <Category {...{ title: "FPS", note: "Depends on your screen FPS", open: false }}>
@@ -178,7 +169,7 @@ export const Settings = () => {
         {...{
           button: "Reset Settings",
           onClick: () => {
-            resetSettings();
+            resetSettings(forceUpdate);
           },
         }}>
         Press In-Case setting Crash or You want to reset settings to default.

@@ -30,11 +30,6 @@ export interface TextTags {
   $$typeof: symbol;
   render: DefaultTypes.AnyFunction;
 }
-export interface ModalLayerClasses {
-  backdrop: string;
-  hidden: string;
-  layer: string;
-}
 export interface TextArgs
   extends Array<{
     title: string;
