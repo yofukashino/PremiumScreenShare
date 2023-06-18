@@ -4,7 +4,7 @@ Stream in **_SUPREME_** quality and **_ULTRA HIGH_** FPS.
 
 The maximum capability is 2160p with 360 FPS.
 
-This plugin is compatible with plugins like HideDisabledEmojis or Freemoji.
+This plugin is compatible with plugins like HideDisabledEmojis or NitroSpoof.
 
 Direct Download Link: [dev.tharki.PremiumScreenShare.asar](https://github.com/Tharki-God/PremiumScreenShare/releases/latest/download/dev.tharki.PremiumScreenShare.asar)
 
