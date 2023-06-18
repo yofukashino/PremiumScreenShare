@@ -1,7 +1,6 @@
-import { common, components } from "replugged";
+import { components, util } from "replugged";
 import { PluginLogger, SettingValues } from "../index";
 const { SelectItem, ButtonItem, Category } = components;
-const { React } = common;
 import { defaultSettings, fpsOptions, resoOptions, resoWithSource } from "../lib/consts";
 import * as Utils from "../lib/utils";
 import * as Types from "../types";
@@ -12,15 +11,23 @@ export const registerSettings = (): void => {
     SettingValues.set(key as keyof Types.Settings, defaultSettings[key]);
   }
 };
-export const resetSettings = (forceUpdateSettings?: Types.DefaultTypes.AnyFunction): void => {
+export const closePluginSettings = (): void => {
+  const BreadcrumNatigationElement = document.querySelector('[class*="breadcrumbInactive-"]');
+  const {
+    props: BreadcrumNatigationOwnerInstanceProps,
+  }: { props: Record<string, Types.DefaultTypes.AnyFunction> } = util.getOwnerInstance(
+    BreadcrumNatigationElement,
+  );
+  BreadcrumNatigationOwnerInstanceProps.onClick();
+};
+export const resetSettings = (): void => {
   PluginLogger.log("Resetting PremiumScreenShare's Settings.");
   for (const key of Object.keys(SettingValues.all()))
     SettingValues.delete(key as keyof Types.Settings);
   registerSettings();
-  forceUpdateSettings?.();
+  closePluginSettings();
 };
 export const Settings = () => {
-  const forceUpdate = React.useReducer(() => ({}), {})[1] as Types.DefaultTypes.AnyFunction;
   return (
     <div>
       <Category {...{ title: "FPS", note: "Depends on your screen FPS", open: false }}>
@@ -169,7 +176,7 @@ export const Settings = () => {
         {...{
           button: "Reset Settings",
           onClick: () => {
-            resetSettings(forceUpdate);
+            resetSettings();
           },
         }}>
         Press In-Case setting Crash or You want to reset settings to default.
