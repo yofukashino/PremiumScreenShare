@@ -2,9 +2,9 @@ import { SettingValues } from "../index";
 
 import { ApplicationStreamingOptionStore } from "./requiredModules";
 
-import * as Utils from "../lib/utils";
+import Utils from "../lib/utils";
 
-import * as Types from "../types";
+import Types from "../types";
 
 export const defaultSettings = {
   fps: {
@@ -26,6 +26,7 @@ export const defaultSettings = {
     resolution: "0",
     fps: "60",
   },
+  audioSource: "none",
 };
 
 export const fpsOptions = [
@@ -114,96 +115,40 @@ export const resoWithSource = [
   ...resoOptions,
 ];
 
-const StreamStoreKeysArray = Object.keys(ApplicationStreamingOptionStore);
-
-export const StreamStoreKeys = {
-  ApplicationStreamFPS: StreamStoreKeysArray.find((m) =>
-    Object.hasOwnProperty.call(ApplicationStreamingOptionStore[m], "FPS_5"),
-  ),
-  ApplicationStreamFPSButtons: StreamStoreKeysArray.find(
-    (m) =>
-      Array.isArray(ApplicationStreamingOptionStore[m]) &&
-      ApplicationStreamingOptionStore[m].some((button: Types.StreamButtons) => button.label == 15),
-  ),
-  ApplicationStreamFPSButtonsWithSuffixLabel: StreamStoreKeysArray.find(
-    (m) =>
-      Array.isArray(ApplicationStreamingOptionStore[m]) &&
-      ApplicationStreamingOptionStore[m].some(
-        (button: Types.StreamButtons) => button.label == "15 FPS",
-      ),
-  ),
-  ApplicationStreamPresetValues: StreamStoreKeysArray.find(
-    (m) =>
-      Array.isArray(ApplicationStreamingOptionStore[m]?.[2]) &&
-      ApplicationStreamingOptionStore[m][2].some((preset: Types.StreamPresets) => preset.fps == 15),
-  ),
-  ApplicationStreamResolutionButtons: StreamStoreKeysArray.find(
-    (m) =>
-      Array.isArray(ApplicationStreamingOptionStore[m]) &&
-      ApplicationStreamingOptionStore[m].some((button: Types.StreamButtons) => button.label == 720),
-  ),
-  ApplicationStreamResolutionButtonsWithSuffixLabel: StreamStoreKeysArray.find(
-    (m) =>
-      Array.isArray(ApplicationStreamingOptionStore[m]) &&
-      ApplicationStreamingOptionStore[m].some(
-        (button: Types.StreamButtons) => button.label == "480p",
-      ),
-  ),
-  ApplicationStreamResolutions: StreamStoreKeysArray.find((m) =>
-    Object.hasOwnProperty.call(ApplicationStreamingOptionStore[m], "RESOLUTION_SOURCE"),
-  ),
-  ApplicationStreamSettingRequirements: StreamStoreKeysArray.find(
-    (m) =>
-      Array.isArray(ApplicationStreamingOptionStore[m]) &&
-      ApplicationStreamingOptionStore[m].some(
-        (requirement: Types.ApplicationStreamSettingRequirements) =>
-          Object.hasOwnProperty.call(requirement, "guildPremiumTier"),
-      ),
-  ),
-};
-
 export const defaultParameters = Object.freeze({
   ApplicationStreamFPS: Object.freeze(
-    Object.assign({}, ApplicationStreamingOptionStore[StreamStoreKeys.ApplicationStreamFPS]),
+    Object.assign({}, ApplicationStreamingOptionStore.ApplicationStreamFPS),
   ),
   ApplicationStreamFPSButtons: Object.freeze(
-    ApplicationStreamingOptionStore[StreamStoreKeys.ApplicationStreamFPSButtons]?.map((n) =>
+    ApplicationStreamingOptionStore.ApplicationStreamFPSButtons?.map((n) => Object.freeze(n)),
+  ),
+  ApplicationStreamFPSButtonsWithSuffixLabel: Object.freeze(
+    ApplicationStreamingOptionStore.ApplicationStreamFPSButtonsWithSuffixLabel?.map((n) =>
       Object.freeze(n),
     ),
   ),
-  ApplicationStreamFPSButtonsWithSuffixLabel: Object.freeze(
-    ApplicationStreamingOptionStore[
-      StreamStoreKeys.ApplicationStreamFPSButtonsWithSuffixLabel
-    ]?.map((n) => Object.freeze(n)),
-  ),
   ApplicationStreamPresetValues: Object.freeze(
-    Object.assign(
-      {},
-      ApplicationStreamingOptionStore[StreamStoreKeys.ApplicationStreamPresetValues],
-    ),
+    Object.assign({}, ApplicationStreamingOptionStore.ApplicationStreamPresetValues),
   ),
   ApplicationStreamResolutionButtons: Object.freeze(
-    ApplicationStreamingOptionStore[StreamStoreKeys.ApplicationStreamResolutionButtons]?.map((n) =>
+    ApplicationStreamingOptionStore.ApplicationStreamResolutionButtons?.map((n) =>
       Object.freeze(n),
     ),
   ),
   ApplicationStreamResolutionButtonsWithSuffixLabel: Object.freeze(
-    ApplicationStreamingOptionStore[
-      StreamStoreKeys.ApplicationStreamResolutionButtonsWithSuffixLabel
-    ]?.map((n) => Object.freeze(n)),
+    ApplicationStreamingOptionStore.ApplicationStreamResolutionButtonsWithSuffixLabel?.map((n) =>
+      Object.freeze(n),
+    ),
   ),
   ApplicationStreamResolutions: Object.freeze(
-    Object.assign(
-      {},
-      ApplicationStreamingOptionStore[StreamStoreKeys.ApplicationStreamResolutions],
-    ),
+    Object.assign({}, ApplicationStreamingOptionStore.ApplicationStreamResolutions),
   ),
   ApplicationStreamSettingRequirements: Object.freeze(
-    ApplicationStreamingOptionStore[StreamStoreKeys.ApplicationStreamSettingRequirements]?.map(
-      (n) => Object.freeze(n),
+    ApplicationStreamingOptionStore.ApplicationStreamSettingRequirements?.map((n) =>
+      Object.freeze(n),
     ),
   ),
-});
+}) as Types.ApplicationStreamingOption;
 
 export const streamingConstants = (): Types.streamingConstants => ({
   get fps() {

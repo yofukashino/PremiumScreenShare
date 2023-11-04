@@ -1,18 +1,38 @@
 import { webpack } from "replugged";
-import * as Utils from "../lib/utils";
-import * as Types from "../types";
-export const ApplicationStreamingOptionStore = webpack.getBySource("Unknown resolution: ");
-export const WebRTCUtilsModule = webpack.getModule<Types.DefaultTypes.ObjectExports>((m) =>
-  Utils.prototypeFilter(m?.exports, ["updateVideoQuality", "setUseElectronVideo"]),
+import Types from "../types";
+export const ApplicationStreamingOptionStore =
+  webpack.getByProps<Types.ApplicationStreamingOption>("ApplicationStreamFPS");
+export const WebRTCUtils = webpack.getByProps<{
+  default: Types.DefaultTypes.AnyFunction;
+  BaseConnectionEvent: Record<string, string>;
+}>("BaseConnectionEvent", "default");
+export const StreamQualitySelectorPromise = webpack
+  .waitForModule<Types.AverageDefaultModule>(
+    webpack.filters.bySource("StreamSettings: user cannot be undefined"),
+    {
+      raw: true,
+    },
+  )
+  .then((r) => r?.exports);
+export const StreamUpsellPromise = webpack
+  .waitForModule<Types.AverageDefaultModule>(
+    webpack.filters.bySource(".AnalyticsObjects.PREMIUM_UPSELL_BANNER"),
+    {
+      raw: true,
+    },
+  )
+  .then((r) => r?.exports);
+export const MediaEngineStore = webpack.getByStoreName<Types.MediaEngineStore>("MediaEngineStore");
+export const VoiceConnection =
+  webpack.getBySource<Types.DefaultTypes.AnyFunction>("getCodecCapabilities");
+
+export const PartialProcessUtils =
+  webpack.getByProps<Types.PartialProcessUtils>("getPidFromDesktopSource");
+
+export const StreamRTCConnectionStore = webpack.getByStoreName<Types.StreamRTCConnectionStore>(
+  "StreamRTCConnectionStore",
 );
-export const WebRTCUtils = Utils.prototypeFilter(
-  WebRTCUtilsModule,
-  ["updateVideoQuality", "setUseElectronVideo"],
-  true,
-) as Types.DefaultTypes.AnyFunction;
-const TextTagsString =
-  '"children","disabled","className","titleClassName","tag","required","style","title","error"';
-export const TextTagsModule = webpack.getBySource<Types.DefaultTypes.ObjectExports>(TextTagsString);
-export const TextTags = Object.values(TextTagsModule).find((m: Types.TextTags) =>
-  m?.render?.toString().includes(TextTagsString),
-) as Types.TextTags;
+export const ApplicationStreamingSettingsStore =
+  webpack.getByStoreName<Types.ApplicationStreamingSettingsStore>(
+    "ApplicationStreamingSettingsStore",
+  );

@@ -1,75 +1,38 @@
-import { common } from "replugged";
-import { SettingValues } from "../index";
-import { StreamStoreKeys, defaultSettings } from "./consts";
+import { settings, util } from "replugged";
+import { React, fluxDispatcher, lodash, users } from "replugged/common";
+import { PluginInjector, SettingValues } from "../index";
+import { defaultSettings } from "./consts";
 import { ApplicationStreamingOptionStore } from "./requiredModules";
-import * as Types from "../types";
-const { React, lodash } = common;
+import Types from "../types";
 export const removeDuplicate = (item: unknown, pos: number, self: unknown[]): boolean => {
   return self.indexOf(item) === pos;
 };
 export const ascending = (a: number, b: number): number => {
   return a - b;
 };
-export const findInTree = (
-  tree: object,
-  searchFilter: Types.DefaultTypes.AnyFunction | string,
-  searchOptions?: { ignore?: string[]; walkable?: null | string[]; maxRecrusions?: number },
-): unknown => {
-  const { walkable = null, ignore = [], maxRecrusions = Infinity } = searchOptions ?? {};
-  if (maxRecrusions == 0) return;
-  if (typeof searchFilter === "string") {
-    if (Object.hasOwnProperty.call(tree, searchFilter)) return tree[searchFilter];
-  } else if (searchFilter(tree)) {
-    return tree;
-  }
-  if (typeof tree !== "object" || tree == null) return;
-
-  let tempReturn: unknown;
-  if (Array.isArray(tree)) {
-    for (const value of tree) {
-      tempReturn = findInTree(value, searchFilter, {
-        walkable,
-        ignore,
-        maxRecrusions: maxRecrusions - 1,
-      });
-      if (typeof tempReturn !== "undefined") return tempReturn;
-    }
-  } else {
-    const toWalk = walkable == null ? Object.keys(tree) : walkable;
-    for (const key of toWalk) {
-      if (!Object.hasOwnProperty.call(tree, key) || ignore.includes(key)) continue;
-      tempReturn = findInTree(tree[key], searchFilter, {
-        walkable,
-        ignore,
-        maxRecrusions: maxRecrusions - 1,
-      });
-      if (typeof tempReturn !== "undefined") return tempReturn;
-    }
-  }
-  return tempReturn;
+export const forceRerenderElement = async (selector: string): Promise<void> => {
+  const element = await util.waitFor(selector);
+  if (!element) return;
+  const ownerInstance = util.getOwnerInstance(element);
+  const unpatchRender = PluginInjector.instead(ownerInstance, "render", () => {
+    unpatchRender();
+    return null;
+  });
+  ownerInstance.forceUpdate(() => ownerInstance.forceUpdate(() => {}));
 };
-export const isObject = (testMaterial: unknown): boolean =>
-  typeof testMaterial === "object" &&
-  !Array.isArray(testMaterial) &&
-  testMaterial != null &&
-  testMaterial !== DOMTokenList.prototype;
-export const prototypeFilter = (
-  ModuleExports: Types.DefaultTypes.ModuleExports,
-  Protos: string[],
-  returnFuntion?: boolean,
-): boolean | Types.DefaultTypes.AnyFunction => {
-  if (!isObject(ModuleExports)) return;
-  return returnFuntion
-    ? Object.values(ModuleExports).find((m: Types.DefaultTypes.AnyFunction) =>
-        Protos.every((p: string) => m?.prototype?.[p]),
-      )
-    : Protos.every((p: string) =>
-        Object.values(ModuleExports).some((m: Types.DefaultTypes.AnyFunction) => m?.prototype?.[p]),
-      );
-};
+export const waitForCurrentUser = new Promise<void>((resolve) => {
+  const currentUser = users.getCurrentUser();
+  if (currentUser) resolve();
+  const resolveOnConnection = (): void => {
+    fluxDispatcher.unsubscribe("CONNECTION_OPEN", resolveOnConnection);
+    const currentUser = users.getCurrentUser();
+    if (currentUser) resolve();
+  };
+  fluxDispatcher.subscribe("CONNECTION_OPEN", resolveOnConnection);
+});
 export const setStreamParameters = (Parameters: Types.ApplicationStreamingOption): void => {
   for (const key in Parameters) {
-    Object.defineProperty(ApplicationStreamingOptionStore, StreamStoreKeys[key], {
+    Object.defineProperty(ApplicationStreamingOptionStore, key, {
       value: Parameters[key],
       writable: true,
     });
@@ -136,40 +99,61 @@ export const setCustomParameters = (streamingConstants: Types.streamingConstants
   };
   setStreamParameters(customParameters);
 };
-export const useSetting = (
-  settingsManager: typeof SettingValues,
-  path: string,
-  defaultValue?: string,
-  options?: { clearable?: boolean },
+export const useSetting = <
+  T extends Record<string, Types.Jsonifiable>,
+  D extends keyof T,
+  K extends Extract<keyof T, string>,
+  F extends Types.NestedType<T, P> | T[K] | undefined,
+  P extends `${K}.${string}` | K,
+>(
+  settings: settings.SettingsManager<T, D>,
+  key: P,
+  fallback?: F,
 ): {
-  value: string;
-  onChange: (newValue: string) => void;
-  onClear: () => void;
+  value: Types.NestedType<T, P> | F;
+  onChange: (newValue: Types.ValType<Types.NestedType<T, P> | F>) => void;
 } => {
-  const { clearable = false } = options ?? {};
-  const [key, ...realPath] = path.split(".");
-  const realPathJoined = realPath.join(".");
-  const setting = settingsManager.get(key as keyof Types.Settings);
-  const initial = realPath.length
-    ? lodash.get(setting, realPathJoined, defaultValue)
-    : (setting as unknown as string);
-  const [value, setValue] = React.useState(initial);
+  const [initialKey, ...pathArray] = Object.keys(settings.all()).includes(key)
+    ? ([key] as [K])
+    : (key.split(".") as [K, ...string[]]);
+  const path = pathArray.join(".");
+  const initial = settings.get(initialKey, path.length ? ({} as T[K]) : (fallback as T[K]));
+  const [value, setValue] = React.useState<Types.NestedType<T, P>>(
+    path.length
+      ? (lodash.get(initial, path, fallback) as Types.NestedType<T, P>)
+      : (initial as Types.NestedType<T, P>),
+  );
 
   return {
     value,
-    onClear: clearable
-      ? () => {
-          setValue("");
-          const changed = realPath.length ? lodash.set(setting, realPathJoined, "") : ("" as never);
-          settingsManager.set(key as keyof Types.Settings, changed);
-        }
-      : () => null,
-    onChange: (newValue) => {
-      setValue(newValue);
-      const changed = realPath.length
-        ? lodash.set(setting, realPathJoined, newValue)
-        : (newValue as never);
-      settingsManager.set(key as keyof Types.Settings, changed);
+    onChange: (newValue: Types.ValType<Types.NestedType<T, P> | F>) => {
+      const isObj = newValue && typeof newValue === "object";
+      const value = isObj && "value" in newValue ? newValue.value : newValue;
+      const checked = isObj && "checked" in newValue ? newValue.checked : void 0;
+      const target =
+        isObj && "target" in newValue && newValue.target && typeof newValue.target === "object"
+          ? newValue.target
+          : void 0;
+      const targetValue = target && "value" in target ? target.value : void 0;
+      const targetChecked = target && "checked" in target ? target.checked : void 0;
+      const finalValue = checked ?? targetChecked ?? targetValue ?? value ?? newValue;
+
+      setValue(finalValue as Types.NestedType<T, P>);
+      settings.set(
+        initialKey,
+        path.length ? (lodash.set(initial, path, finalValue) as T[K]) : (finalValue as T[K]),
+      );
     },
   };
+};
+
+export default {
+  ...util,
+  removeDuplicate,
+  ascending,
+  forceRerenderElement,
+  waitForCurrentUser,
+  setStreamParameters,
+  setCustomParameters,
+  useSetting,
 };

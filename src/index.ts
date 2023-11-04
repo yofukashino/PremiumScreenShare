@@ -3,9 +3,10 @@ import { defaultParameters, defaultSettings, streamingConstants } from "./lib/co
 import * as Utils from "./lib/utils";
 import { registerSettings } from "./Components/Settings";
 export const PluginInjector = new Injector();
+export const { utils: PluginInjectorUtils } = PluginInjector;
 export const PluginLogger = Logger.plugin("PremiumScreenShare");
 export const SettingValues = await settings.init("dev.tharki.PremiumScreenShare", defaultSettings);
-import { applyInjections } from "./patches/index";
+import { applyInjections, removeInjections } from "./patches/index";
 
 export const start = (): void => {
   registerSettings();
@@ -14,7 +15,7 @@ export const start = (): void => {
 };
 
 export const stop = (): void => {
-  PluginInjector.uninjectAll();
+  removeInjections();
   Utils.setStreamParameters(defaultParameters);
 };
 export { Settings } from "./Components/Settings";

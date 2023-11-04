@@ -1,9 +1,8 @@
-import { components, util } from "replugged";
+import { ButtonItem, Category, Divider, Notice, SelectItem } from "replugged/components";
 import { PluginLogger, SettingValues } from "../index";
-const { SelectItem, ButtonItem, Category } = components;
 import { defaultSettings, fpsOptions, resoOptions, resoWithSource } from "../lib/consts";
-import * as Utils from "../lib/utils";
-import * as Types from "../types";
+import Utils from "../lib/utils";
+import Types from "../types";
 export const registerSettings = (): void => {
   for (const key in defaultSettings) {
     if (SettingValues.has(key as keyof Types.Settings)) return;
@@ -12,10 +11,10 @@ export const registerSettings = (): void => {
   }
 };
 export const closePluginSettings = (): void => {
-  const BreadcrumNatigationElement = document.querySelector('[class*="breadcrumbInactive-"]');
+  const BreadcrumNatigationElement = document.querySelector('[class*="breadcrumbInactive"]');
   const {
     props: BreadcrumNatigationOwnerInstanceProps,
-  }: { props: Record<string, Types.DefaultTypes.AnyFunction> } = util.getOwnerInstance(
+  }: { props: Record<string, Types.DefaultTypes.AnyFunction> } = Utils.getOwnerInstance(
     BreadcrumNatigationElement,
   );
   BreadcrumNatigationOwnerInstanceProps.onClick();
@@ -27,7 +26,8 @@ export const resetSettings = (): void => {
   registerSettings();
   closePluginSettings();
 };
-export const Settings = () => {
+export const Settings = (e, t) => {
+  console.log(e, t);
   return (
     <div>
       <Category {...{ title: "FPS", note: "Depends on your screen FPS", open: false }}>
@@ -37,9 +37,7 @@ export const Settings = () => {
             clearable: true,
             disabled: false,
             options: fpsOptions,
-            ...Utils.useSetting(SettingValues, "fps.1", defaultSettings.fps[1], {
-              clearable: true,
-            }),
+            ...Utils.useSetting(SettingValues, "fps.1", defaultSettings.fps[1]),
           }}>
           FPS 15
         </SelectItem>
@@ -49,9 +47,7 @@ export const Settings = () => {
             clearable: true,
             disabled: false,
             options: fpsOptions,
-            ...Utils.useSetting(SettingValues, "fps.2", defaultSettings.fps[2], {
-              clearable: true,
-            }),
+            ...Utils.useSetting(SettingValues, "fps.2", defaultSettings.fps[2]),
           }}>
           FPS 30
         </SelectItem>
@@ -61,9 +57,7 @@ export const Settings = () => {
             clearable: true,
             disabled: false,
             options: fpsOptions,
-            ...Utils.useSetting(SettingValues, "fps.3", defaultSettings.fps[3], {
-              clearable: true,
-            }),
+            ...Utils.useSetting(SettingValues, "fps.3", defaultSettings.fps[3]),
           }}>
           FPS 60
         </SelectItem>
@@ -76,9 +70,7 @@ export const Settings = () => {
             clearable: true,
             disabled: false,
             options: resoOptions,
-            ...Utils.useSetting(SettingValues, "resolution.1", defaultSettings.resolution[1], {
-              clearable: true,
-            }),
+            ...Utils.useSetting(SettingValues, "resolution.1", defaultSettings.resolution[1]),
           }}>
           480p
         </SelectItem>
@@ -88,9 +80,7 @@ export const Settings = () => {
             clearable: true,
             disabled: false,
             options: resoOptions,
-            ...Utils.useSetting(SettingValues, "resolution.2", defaultSettings.resolution[2], {
-              clearable: true,
-            }),
+            ...Utils.useSetting(SettingValues, "resolution.2", defaultSettings.resolution[2]),
           }}>
           720p
         </SelectItem>
@@ -100,9 +90,7 @@ export const Settings = () => {
             clearable: true,
             disabled: false,
             options: resoOptions,
-            ...Utils.useSetting(SettingValues, "resolution.3", defaultSettings.resolution[3], {
-              clearable: true,
-            }),
+            ...Utils.useSetting(SettingValues, "resolution.3", defaultSettings.resolution[3]),
           }}>
           1080p
         </SelectItem>
@@ -112,9 +100,7 @@ export const Settings = () => {
             clearable: true,
             disabled: false,
             options: resoOptions,
-            ...Utils.useSetting(SettingValues, "resolution.4", defaultSettings.resolution[4], {
-              clearable: true,
-            }),
+            ...Utils.useSetting(SettingValues, "resolution.4", defaultSettings.resolution[4]),
           }}>
           1440p
         </SelectItem>
@@ -153,7 +139,6 @@ export const Settings = () => {
               SettingValues,
               "betterReadability.resolution",
               defaultSettings.betterReadability.resolution,
-              { clearable: true },
             ),
           }}>
           Resolution
@@ -172,6 +157,16 @@ export const Settings = () => {
           FPS
         </SelectItem>
       </Category>
+      <Notice {...{ messageType: Notice.Types.WARNING }}>
+        Resolution Above 1440p can cause flickering in streams.
+      </Notice>
+      <Divider
+        {...{
+          style: {
+            margin: "10px 0px 10px 0px",
+          },
+        }}
+      />
       <ButtonItem
         {...{
           button: "Reset Settings",

@@ -1,7 +1,7 @@
-export { types as DefaultTypes, components as ComponentTypes } from "replugged";
 import { types as DefaultTypes } from "replugged";
-import { ReactElement } from "react";
-export { ReactElement, ComponentClass } from "react";
+export { types as DefaultTypes } from "replugged";
+import type { Store } from "replugged/dist/renderer/modules/common/flux";
+export type { Tree } from "replugged/dist/renderer/util";
 export interface Settings {
   fps: number[];
   resolution: number[];
@@ -13,28 +13,203 @@ export interface Settings {
     resolution: number;
     fps: number;
   };
+  audioSource: string;
 }
-export interface ModalProps {
-  children: ReactElement[];
-  onClose: DefaultTypes.AnyFunction;
-  size: string;
-  transitionState: number;
-}
+export interface GenericModule extends Record<string, DefaultTypes.AnyFunction> {}
 export interface streamingConstants {
   fps: number[];
   fpsWithPresets: number[];
   resolution: number[];
   resolutionWithPresets: number[];
 }
-export interface TextTags {
-  $$typeof: symbol;
-  render: DefaultTypes.AnyFunction;
+export interface AverageDefaultModule {
+  exports: {
+    default: DefaultTypes.AnyFunction;
+  };
 }
-export interface TextArgs
-  extends Array<{
-    title: string;
-    children: ReactElement;
-  }> {}
+export interface PartialProcessUtils {
+  flushCookies: DefaultTypes.AnyFunction;
+  flushDNSCache: DefaultTypes.AnyFunction;
+  focus: DefaultTypes.AnyFunction;
+  generateSessionFromPid: DefaultTypes.AnyFunction;
+  getAudioPid: DefaultTypes.AnyFunction;
+  getPidFromDesktopSource: DefaultTypes.AnyFunction;
+  setApplicationBackgroundColor: DefaultTypes.AnyFunction;
+  setZoomFactor: DefaultTypes.AnyFunction;
+  submitLiveCrashReport: DefaultTypes.AnyFunction;
+}
+export interface StreamRTCConnectionStore extends Store {
+  getActiveStreamKey: DefaultTypes.AnyFunction;
+  getAllActiveStreamKeys: DefaultTypes.AnyFunction;
+  getHostname: DefaultTypes.AnyFunction;
+  getMaxViewers: DefaultTypes.AnyFunction;
+  getMediaSessionId: DefaultTypes.AnyFunction;
+  getQuality: DefaultTypes.AnyFunction;
+  getRTCConnection: DefaultTypes.AnyFunction;
+  getRegion: DefaultTypes.AnyFunction;
+  getRtcConnectionId: DefaultTypes.AnyFunction;
+  getStatsHistory: DefaultTypes.AnyFunction;
+  getStreamSourceId: DefaultTypes.AnyFunction;
+  getVideoStats: DefaultTypes.AnyFunction;
+}
+export interface ApplicationStreamingSettingsStore extends Store {
+  getState: () => {
+    preset: number;
+    fps: number;
+    resolution: number;
+  };
+}
+export interface VoiceEngine {
+  connections: Set<WebRTCUtils>;
+  applyMediaFilterSettings: DefaultTypes.AnyFunction;
+  connect: DefaultTypes.AnyFunction;
+  connectionsEmpty: DefaultTypes.AnyFunction;
+  createReplayConnection: DefaultTypes.AnyFunction;
+  destroy: DefaultTypes.AnyFunction;
+  eachConnection: DefaultTypes.AnyFunction;
+  enable: DefaultTypes.AnyFunction;
+  enableSoundshare: DefaultTypes.AnyFunction;
+  exportClip: DefaultTypes.AnyFunction;
+  getAudioInputDevices: DefaultTypes.AnyFunction;
+  getAudioLayer: DefaultTypes.AnyFunction;
+  getAudioOutputDevices: DefaultTypes.AnyFunction;
+  getAudioSubsystem: DefaultTypes.AnyFunction;
+  getCodecCapabilities: DefaultTypes.AnyFunction;
+  getCodecSurvey: DefaultTypes.AnyFunction;
+  getDebugLogging: DefaultTypes.AnyFunction;
+  getDesktopSource: DefaultTypes.AnyFunction;
+  getDesktopSources: DefaultTypes.AnyFunction;
+  getLoopback: DefaultTypes.AnyFunction;
+  getScreenPreviews: DefaultTypes.AnyFunction;
+  getSoundshareStatus: DefaultTypes.AnyFunction;
+  getSupportedVideoCodecs: DefaultTypes.AnyFunction;
+  getVideoInputDevices: DefaultTypes.AnyFunction;
+  getWindowPreviews: (
+    e: number,
+    t: number,
+  ) => Array<{
+    name: string;
+    id: string;
+  }>;
+  interact: DefaultTypes.AnyFunction;
+  rankRtcRegions: DefaultTypes.AnyFunction;
+  saveClip: DefaultTypes.AnyFunction;
+  setAecDump: DefaultTypes.AnyFunction;
+  setAudioInputDevice: DefaultTypes.AnyFunction;
+  setAudioOutputDevice: DefaultTypes.AnyFunction;
+  setAudioSubsystem: DefaultTypes.AnyFunction;
+  setAv1Enabled: DefaultTypes.AnyFunction;
+  setClipBufferLength: DefaultTypes.AnyFunction;
+  setDebugLogging: DefaultTypes.AnyFunction;
+  setExperimentalAdm: DefaultTypes.AnyFunction;
+  setGoLiveSource: DefaultTypes.AnyFunction;
+  setH264Enabled: DefaultTypes.AnyFunction;
+  setH265Enabled: DefaultTypes.AnyFunction;
+  setHardwareClipEncode: DefaultTypes.AnyFunction;
+  setInputVolume: DefaultTypes.AnyFunction;
+  setLoopback: DefaultTypes.AnyFunction;
+  setMaxSyncDelayOverride: DefaultTypes.AnyFunction;
+  setOutputVolume: DefaultTypes.AnyFunction;
+  setSoundshareSource: DefaultTypes.AnyFunction;
+  setUseDirectVideo: DefaultTypes.AnyFunction;
+  setVideoInputDevice: DefaultTypes.AnyFunction;
+  shouldConnectionBroadcastVideo: DefaultTypes.AnyFunction;
+  speedTester: DefaultTypes.AnyFunction;
+  startAecDump: DefaultTypes.AnyFunction;
+  startLocalAudioRecording: DefaultTypes.AnyFunction;
+  stopAecDump: DefaultTypes.AnyFunction;
+  stopLocalAudioRecording: DefaultTypes.AnyFunction;
+  supported: DefaultTypes.AnyFunction;
+  supports: DefaultTypes.AnyFunction;
+  updateClipMetadata: DefaultTypes.AnyFunction;
+  watchdogTick: DefaultTypes.AnyFunction;
+  writeAudioDebugState: DefaultTypes.AnyFunction;
+}
+export interface MediaEngineStore extends Store {
+  getAecDump: DefaultTypes.AnyFunction;
+  getAttenuateWhileSpeakingOthers: DefaultTypes.AnyFunction;
+  getAttenuateWhileSpeakingSelf: DefaultTypes.AnyFunction;
+  getAttenuation: DefaultTypes.AnyFunction;
+  getAudioSubsystem: DefaultTypes.AnyFunction;
+  getAutomaticGainControl: DefaultTypes.AnyFunction;
+  getAv1Enabled: DefaultTypes.AnyFunction;
+  getCameraComponent: DefaultTypes.AnyFunction;
+  getDebugLogging: DefaultTypes.AnyFunction;
+  getEchoCancellation: DefaultTypes.AnyFunction;
+  getEnableSilenceWarning: DefaultTypes.AnyFunction;
+  getEverSpeakingWhileMuted: DefaultTypes.AnyFunction;
+  getExperimentalEncoders: DefaultTypes.AnyFunction;
+  getExperimentalSoundshare: DefaultTypes.AnyFunction;
+  getGoLiveContext: DefaultTypes.AnyFunction;
+  getGoLiveSource: DefaultTypes.AnyFunction;
+  getH265Enabled: DefaultTypes.AnyFunction;
+  getHardwareClipEncode: DefaultTypes.AnyFunction;
+  getHardwareH264: DefaultTypes.AnyFunction;
+  getInputDetected: DefaultTypes.AnyFunction;
+  getInputDeviceId: DefaultTypes.AnyFunction;
+  getInputDevices: DefaultTypes.AnyFunction;
+  getInputVolume: DefaultTypes.AnyFunction;
+  getLocalPan: DefaultTypes.AnyFunction;
+  getLocalVolume: DefaultTypes.AnyFunction;
+  getLoopback: DefaultTypes.AnyFunction;
+  getMediaEngine: () => VoiceEngine;
+  getMode: DefaultTypes.AnyFunction;
+  getModeOptions: DefaultTypes.AnyFunction;
+  getNoInputDetectedNotice: DefaultTypes.AnyFunction;
+  getNoiseCancellation: DefaultTypes.AnyFunction;
+  getNoiseSuppression: DefaultTypes.AnyFunction;
+  getOpenH264: DefaultTypes.AnyFunction;
+  getOutputDeviceId: DefaultTypes.AnyFunction;
+  getOutputDevices: DefaultTypes.AnyFunction;
+  getOutputVolume: DefaultTypes.AnyFunction;
+  getPacketDelay: DefaultTypes.AnyFunction;
+  getQoS: DefaultTypes.AnyFunction;
+  getSettings: DefaultTypes.AnyFunction;
+  getShortcuts: DefaultTypes.AnyFunction;
+  getSoundshareEnabled: DefaultTypes.AnyFunction;
+  getState: DefaultTypes.AnyFunction;
+  getVideoComponent: DefaultTypes.AnyFunction;
+  getVideoDeviceId: DefaultTypes.AnyFunction;
+  getVideoDevices: DefaultTypes.AnyFunction;
+  getVideoHook: DefaultTypes.AnyFunction;
+  getVideoStreamParameters: DefaultTypes.AnyFunction;
+  getVideoToggleState: DefaultTypes.AnyFunction;
+  hasContext: DefaultTypes.AnyFunction;
+  initialize: DefaultTypes.AnyFunction;
+  isAdvancedVoiceActivitySupported: DefaultTypes.AnyFunction;
+  isAecDumpSupported: DefaultTypes.AnyFunction;
+  isAnyLocalVideoAutoDisabled: DefaultTypes.AnyFunction;
+  isAutomaticGainControlSupported: DefaultTypes.AnyFunction;
+  isDeaf: DefaultTypes.AnyFunction;
+  isEnabled: DefaultTypes.AnyFunction;
+  isExperimentalEncodersSupported: DefaultTypes.AnyFunction;
+  isHardwareMute: DefaultTypes.AnyFunction;
+  isInteractionRequired: DefaultTypes.AnyFunction;
+  isLocalMute: DefaultTypes.AnyFunction;
+  isLocalVideoAutoDisabled: DefaultTypes.AnyFunction;
+  isLocalVideoDisabled: DefaultTypes.AnyFunction;
+  isMediaFilterSettingLoading: DefaultTypes.AnyFunction;
+  isMute: DefaultTypes.AnyFunction;
+  isNativeAudioPermissionReady: DefaultTypes.AnyFunction;
+  isNoiseCancellationError: DefaultTypes.AnyFunction;
+  isNoiseCancellationSupported: DefaultTypes.AnyFunction;
+  isNoiseSuppressionSupported: DefaultTypes.AnyFunction;
+  isScreenSharing: DefaultTypes.AnyFunction;
+  isSelfDeaf: DefaultTypes.AnyFunction;
+  isSelfMute: DefaultTypes.AnyFunction;
+  isSelfMutedTemporarily: DefaultTypes.AnyFunction;
+  isSimulcastSupported: DefaultTypes.AnyFunction;
+  isSoundSharing: DefaultTypes.AnyFunction;
+  isSupported: DefaultTypes.AnyFunction;
+  isVideoAvailable: DefaultTypes.AnyFunction;
+  isVideoEnabled: DefaultTypes.AnyFunction;
+  setCanHavePriority: DefaultTypes.AnyFunction;
+  supports: DefaultTypes.AnyFunction;
+  supportsDisableLocalVideo: DefaultTypes.AnyFunction;
+  supportsEnableSoundshare: DefaultTypes.AnyFunction;
+  supportsExperimentalSoundshare: DefaultTypes.AnyFunction;
+  supportsInApp: DefaultTypes.AnyFunction;
+}
 export interface StreamButtons {
   value: number;
   label: string | number;
@@ -50,9 +225,7 @@ export interface ApplicationStreamSettingRequirements {
   quality?: string;
 }
 export interface ApplicationStreamingOption {
-  ApplicationStreamFPS: {
-    [key: string | number]: string | number;
-  };
+  ApplicationStreamFPS: Record<string | number, string | number>;
   ApplicationStreamFPSButtons: Array<{
     label: number;
     value: number;
@@ -80,9 +253,7 @@ export interface ApplicationStreamingOption {
     label: string;
     value: number;
   }>;
-  ApplicationStreamResolutions: {
-    [key: string | number]: string | number;
-  };
+  ApplicationStreamResolutions: Record<string | number, string | number>;
   ApplicationStreamSettingRequirements: Array<
     FlatArray<
       Array<{ resolution: number; fps: number; guildPremiumTier?: number; quality?: string }>,
@@ -273,6 +444,7 @@ export interface WebRTCUtils {
   selfMute: boolean;
   selfVideo: boolean;
   soundshareActive: boolean;
+  goLiveSourceIdentifier: boolean | string | null;
   soundshareId: boolean | number;
   soundshareSentSpeakingEvent: boolean;
   sourceDesktopDegradationPreference: number;
@@ -393,3 +565,36 @@ export interface videoQualityManagerOrSinkWants {
   setQuality: DefaultTypes.AnyFunction;
   constructor: DefaultTypes.AnyFunction;
 }
+
+export type Jsonifiable =
+  | null
+  | undefined
+  | boolean
+  | number
+  | string
+  | Jsonifiable[]
+  | { [key: string]: Jsonifiable };
+export type ValType<T> =
+  | T
+  | React.ChangeEvent<HTMLInputElement>
+  | (Record<string, unknown> & { value?: T; checked?: T });
+
+export type NestedType<T, P> = P extends `${infer Left}.${infer Right}`
+  ? Left extends keyof T
+    ? NestedType<T[Left], Right>
+    : Left extends `${infer FieldKey}[${infer IndexKey}]`
+    ? FieldKey extends keyof T
+      ? NestedType<Exclude<T[FieldKey], undefined> extends infer U ? U : never, IndexKey>
+      : undefined
+    : undefined
+  : P extends keyof T
+  ? T[P]
+  : P extends `${infer FieldKey}[${infer _IndexKey}]`
+  ? FieldKey extends keyof T
+    ? Exclude<T[FieldKey], undefined> extends infer U
+      ? U
+      : never
+    : undefined
+  : undefined;
+
+export * as default from "./types";
