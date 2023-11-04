@@ -6,7 +6,7 @@ import { PartialProcessUtils, VoiceConnection } from "../lib/requiredModules";
 
 import * as Types from "../types";
 
-export const patchVoiceConnection = (): void => {
+export default (): void => {
   PluginInjector.after(
     VoiceConnection.prototype,
     "setGoLiveSource",

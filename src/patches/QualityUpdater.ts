@@ -51,7 +51,7 @@ export const patchQualityOptions = (
   );
 };
 
-export const patchQualityUpdater = (): void => {
+export default (): void => {
   PluginInjector.before(
     WebRTCUtils.default.prototype,
     "initializeStreamParameters",

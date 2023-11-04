@@ -1,18 +1,14 @@
-import { PluginInjector } from "../index";
+import patchManaggeStreamContextMenu from "./ManageStreamContextMenu";
+import patchQualityUpdater from "./QualityUpdater";
+import patchSettingValues from "./SettingValues";
 import patchStreamQualitySelector from "./StreamQualitySelector";
 import patchStreamUpsell from "./StreamUpsell";
-import { patchManaggeStreamContextMenu } from "./ManageStreamContextMenu";
-import { patchQualityUpdater } from "./QualityUpdater";
-import { patchSettingSetter } from "./SettingValues";
-import { patchVoiceConnection } from "./VoiceConnection";
-export const applyInjections = (): void => {
-  void patchStreamQualitySelector();
-  void patchStreamUpsell();
+import patchVoiceConnection from "./VoiceConnection";
+export default (): void => {
   patchManaggeStreamContextMenu();
   patchQualityUpdater();
-  patchSettingSetter();
+  patchSettingValues();
+  void patchStreamQualitySelector();
+  void patchStreamUpsell();
   patchVoiceConnection();
-};
-export const removeInjections = (): void => {
-  PluginInjector.uninjectAll();
 };
