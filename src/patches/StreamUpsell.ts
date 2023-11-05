@@ -20,7 +20,7 @@ export default async (): Promise<void> => {
       c?.props?.className?.includes?.("textLink"),
     ) as React.ReactElement & Types.Tree;
     if (GetNitro) GetNitro.props.children = "Buy Ko-Fi";
-    console.log(NitroIcon);
+
     return res;
   });
 };
