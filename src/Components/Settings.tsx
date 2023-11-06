@@ -11,12 +11,12 @@ export const registerSettings = (): void => {
     SettingValues.set(key as keyof Types.Settings, defaultSettings[key]);
   }
 };
-export const resetSettings = (setKey: (e: number) => void): void => {
+export const resetSettings = (setKey?: (e: number) => void): void => {
   PluginLogger.log("Resetting PremiumScreenShare's Settings.");
   for (const key of Object.keys(SettingValues.all()))
     SettingValues.delete(key as keyof Types.Settings);
   registerSettings();
-  setKey(Date.now());
+  setKey?.(Date.now());
 };
 export const SettingItems = (props: { setKey: (e: number) => void }) => {
   return (
