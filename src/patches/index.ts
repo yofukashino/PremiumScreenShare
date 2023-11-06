@@ -5,7 +5,7 @@ import patchStreamQualitySelector from "./StreamQualitySelector";
 import patchStreamUpsell from "./StreamUpsell";
 import patchVoiceConnection from "./VoiceConnection";
 export default (): void => {
-  patchManaggeStreamContextMenu();
+  // patchManaggeStreamContextMenu();
   patchQualityUpdater();
   patchSettingValues();
   void patchStreamQualitySelector();
