@@ -1,3 +1,4 @@
+import { React } from "replugged/common";
 import { ButtonItem, Category, Divider, Notice, SelectItem } from "replugged/components";
 import { PluginLogger, SettingValues } from "../index";
 import { defaultSettings, fpsOptions, resoOptions, resoWithSource } from "../lib/consts";
@@ -10,26 +11,16 @@ export const registerSettings = (): void => {
     SettingValues.set(key as keyof Types.Settings, defaultSettings[key]);
   }
 };
-export const closePluginSettings = (): void => {
-  const BreadcrumNatigationElement = document.querySelector('[class*="breadcrumbInactive"]');
-  const {
-    props: BreadcrumNatigationOwnerInstanceProps,
-  }: { props: Record<string, Types.DefaultTypes.AnyFunction> } = Utils.getOwnerInstance(
-    BreadcrumNatigationElement,
-  );
-  BreadcrumNatigationOwnerInstanceProps.onClick();
-};
-export const resetSettings = (): void => {
+export const resetSettings = (setKey: (e: number) => void): void => {
   PluginLogger.log("Resetting PremiumScreenShare's Settings.");
   for (const key of Object.keys(SettingValues.all()))
     SettingValues.delete(key as keyof Types.Settings);
   registerSettings();
-  closePluginSettings();
+  setKey(Date.now());
 };
-export const Settings = (e, t) => {
-  console.log(e, t);
+export const SettingItems = (props: { setKey: (e: number) => void }) => {
   return (
-    <div>
+    <>
       <Category {...{ title: "FPS", note: "Depends on your screen FPS", open: false }}>
         <SelectItem
           {...{
@@ -37,6 +28,9 @@ export const Settings = (e, t) => {
             clearable: true,
             disabled: false,
             options: fpsOptions,
+            get onClear() {
+              return () => this.onChange("");
+            },
             ...Utils.useSetting(SettingValues, "fps.1", defaultSettings.fps[1]),
           }}>
           FPS 15
@@ -47,6 +41,9 @@ export const Settings = (e, t) => {
             clearable: true,
             disabled: false,
             options: fpsOptions,
+            get onClear() {
+              return () => this.onChange("");
+            },
             ...Utils.useSetting(SettingValues, "fps.2", defaultSettings.fps[2]),
           }}>
           FPS 30
@@ -57,6 +54,9 @@ export const Settings = (e, t) => {
             clearable: true,
             disabled: false,
             options: fpsOptions,
+            get onClear() {
+              return () => this.onChange("");
+            },
             ...Utils.useSetting(SettingValues, "fps.3", defaultSettings.fps[3]),
           }}>
           FPS 60
@@ -70,6 +70,9 @@ export const Settings = (e, t) => {
             clearable: true,
             disabled: false,
             options: resoOptions,
+            get onClear() {
+              return () => this.onChange("");
+            },
             ...Utils.useSetting(SettingValues, "resolution.1", defaultSettings.resolution[1]),
           }}>
           480p
@@ -80,6 +83,9 @@ export const Settings = (e, t) => {
             clearable: true,
             disabled: false,
             options: resoOptions,
+            get onClear() {
+              return () => this.onChange("");
+            },
             ...Utils.useSetting(SettingValues, "resolution.2", defaultSettings.resolution[2]),
           }}>
           720p
@@ -90,6 +96,9 @@ export const Settings = (e, t) => {
             clearable: true,
             disabled: false,
             options: resoOptions,
+            get onClear() {
+              return () => this.onChange("");
+            },
             ...Utils.useSetting(SettingValues, "resolution.3", defaultSettings.resolution[3]),
           }}>
           1080p
@@ -100,6 +109,9 @@ export const Settings = (e, t) => {
             clearable: true,
             disabled: false,
             options: resoOptions,
+            get onClear() {
+              return () => this.onChange("");
+            },
             ...Utils.useSetting(SettingValues, "resolution.4", defaultSettings.resolution[4]),
           }}>
           1440p
@@ -171,11 +183,20 @@ export const Settings = (e, t) => {
         {...{
           button: "Reset Settings",
           onClick: () => {
-            resetSettings();
+            resetSettings(props.setKey);
           },
         }}>
         Press In-Case setting Crash or You want to reset settings to default.
       </ButtonItem>
+    </>
+  );
+};
+export const Settings = () => {
+  const [key, setKey] = React.useState<Number>();
+
+  return (
+    <div key={`${key}`}>
+      <SettingItems setKey={setKey} />
     </div>
   );
 };
