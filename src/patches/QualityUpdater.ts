@@ -1,6 +1,6 @@
 import { PluginInjector } from "../index";
 
-import { ApplicationStreamingSettingsStore, WebRTCUtils } from "../lib/requiredModules";
+import { WebRTCUtils } from "../lib/requiredModules";
 
 import * as Types from "../types";
 
@@ -19,21 +19,26 @@ export const patchQualityOptions = (
         capture: { framerate: number; height: number; width: number };
         encode?: { framerate: number; height: number; width: number };
       },
-      instance: { isStreamContext?: boolean },
+      instance: {
+        isStreamContext?: boolean;
+        qualityOverwrite: {
+          capture: { framerate: number; height: number; width: number };
+        };
+      },
     ) => {
       if (!instance?.isStreamContext) {
         return res;
       }
-      const ApplicationStreamingSettings = ApplicationStreamingSettingsStore.getState();
-      const maxResolution = ApplicationStreamingSettings?.resolution;
-      const maxFPS = ApplicationStreamingSettings?.fps;
+      const {
+        qualityOverwrite: { capture: ApplicationStreamingSettings },
+      } = instance;
       const maxVideoQuality = {
-        width: maxResolution * (16 / 9),
-        height: maxResolution,
-        pixelCount: maxResolution * (maxResolution * (16 / 9)),
-        framerate: maxFPS,
+        width: ApplicationStreamingSettings?.width,
+        height: ApplicationStreamingSettings?.height,
+        pixelCount: ApplicationStreamingSettings?.height * ApplicationStreamingSettings?.width,
+        framerate: ApplicationStreamingSettings?.framerate,
       };
-      if (ApplicationStreamingSettings?.resolution > 1080) {
+      if (ApplicationStreamingSettings?.height > 1080) {
         res.bitrateMax = 10000000;
         res.bitrateMin = 500000;
         res.bitrateTarget = 900000;

@@ -1,5 +1,5 @@
 import { settings, util } from "replugged";
-import { React, fluxDispatcher, lodash, users } from "replugged/common";
+import { React, lodash } from "replugged/common";
 import { PluginInjector, SettingValues } from "../index";
 import { defaultSettings } from "./consts";
 import { ApplicationStreamingOptionStore } from "./requiredModules";
@@ -20,16 +20,7 @@ export const forceRerenderElement = async (selector: string): Promise<void> => {
   });
   ownerInstance.forceUpdate(() => ownerInstance.forceUpdate(() => {}));
 };
-export const waitForCurrentUser = new Promise<void>((resolve) => {
-  const currentUser = users.getCurrentUser();
-  if (currentUser) resolve();
-  const resolveOnConnection = (): void => {
-    fluxDispatcher.unsubscribe("CONNECTION_OPEN", resolveOnConnection);
-    const currentUser = users.getCurrentUser();
-    if (currentUser) resolve();
-  };
-  fluxDispatcher.subscribe("CONNECTION_OPEN", resolveOnConnection);
-});
+
 export const setStreamParameters = (Parameters: Types.ApplicationStreamingOption): void => {
   for (const key in Parameters) {
     Object.defineProperty(ApplicationStreamingOptionStore, key, {
@@ -152,7 +143,6 @@ export default {
   removeDuplicate,
   ascending,
   forceRerenderElement,
-  waitForCurrentUser,
   setStreamParameters,
   setCustomParameters,
   useSetting,
