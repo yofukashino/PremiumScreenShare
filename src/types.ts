@@ -218,12 +218,7 @@ export interface StreamPresets {
   resoliton: number;
   fps: number;
 }
-export interface ApplicationStreamSettingRequirements {
-  resolution: number;
-  fps: number;
-  guildPremiumTier?: number;
-  quality?: string;
-}
+
 export interface ApplicationStreamingOption {
   ApplicationStreamFPS: Record<string | number, string | number>;
   ApplicationStreamFPSButtons: Array<{
@@ -281,6 +276,10 @@ export interface ApplicationStreamingOption {
       | 20
     >
   >;
+  GoLiveDeviceResolutionButtons: Array<{
+    label: number;
+    value: number;
+  }>;
 }
 export interface WebRTCUtils {
   activeOutputSinks: object;

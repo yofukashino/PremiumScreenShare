@@ -87,6 +87,15 @@ export const setCustomParameters = (streamingConstants: Types.streamingConstants
     ApplicationStreamSettingRequirements: streamingConstants.resolutionWithPresets
       .map((resolution) => streamingConstants.fpsWithPresets.map((fps) => ({ resolution, fps })))
       .flat(Infinity),
+    GoLiveDeviceResolutionButtons: streamingConstants.resolution
+      .filter(
+        (resolution) =>
+          !(
+            resolution == Number(SettingValues.get("resolution", defaultSettings.resolution)[1]) ||
+            resolution == 0
+          ),
+      )
+      .map((resolution) => ({ value: resolution, label: resolution })),
   };
   setStreamParameters(customParameters);
 };

@@ -148,6 +148,9 @@ export const defaultParameters = Object.freeze({
       Object.freeze(n),
     ),
   ),
+  GoLiveDeviceResolutionButtons: Object.freeze(
+    ApplicationStreamingOptionStore.GoLiveDeviceResolutionButtons?.map((n) => Object.freeze(n)),
+  ),
 }) as Types.ApplicationStreamingOption;
 
 export const streamingConstants = (): Types.streamingConstants => ({
