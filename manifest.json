@@ -9,7 +9,7 @@
     "discordID": "1121961711080050780",
     "github": "TharkiDev"
   },
-  "version": "1.1.0",
+  "version": "1.1.1",
   "updater": {
     "type": "github",
     "id": "TharkiDev/PremiumScreenShare"
