@@ -4,7 +4,7 @@ import { defaultSettings } from "../lib/consts";
 
 import { PartialProcessUtils, VoiceConnection } from "../lib/requiredModules";
 
-import * as Types from "../types";
+import Types from "../types";
 
 export default (): void => {
   PluginInjector.after(

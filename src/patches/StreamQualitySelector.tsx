@@ -10,12 +10,15 @@ export default async (): Promise<void> => {
   PluginInjector.after(
     StreamQualitySelector,
     "default",
-    (_args, res: React.ReactElement & Types.Tree) => {
+    ([{ isScreen } = { isScreen: false }], res: React.ReactElement & Types.Tree) => {
       if (res?.props?.children) {
         res.props.children = Array.isArray(res.props.children)
           ? res.props.children
           : [res.props.children];
-        if (!res.props.children.some((c) => c?.type?.toString()?.includes("audioSource")))
+        if (
+          !res.props.children.some((c) => c?.type?.toString()?.includes("audioSource")) &&
+          isScreen
+        )
           res.props.children.unshift(<AudioSourcePicker />);
       }
       const BetterTextReadability = Utils.findInReactTree(

@@ -1,6 +1,6 @@
 import { Injector, Logger, settings } from "replugged";
 import { defaultParameters, defaultSettings, streamingConstants } from "./lib/consts";
-import * as Utils from "./lib/utils";
+import Utils from "./lib/utils";
 import { registerSettings } from "./Components/Settings";
 export const PluginInjector = new Injector();
 export const { utils: PluginInjectorUtils } = PluginInjector;

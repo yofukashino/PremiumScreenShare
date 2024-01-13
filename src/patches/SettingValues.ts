@@ -1,6 +1,6 @@
 import { PluginInjector, SettingValues } from "../index";
 import { streamingConstants } from "../lib/consts";
-import * as Utils from "../lib/utils";
+import Utils from "../lib/utils";
 
 export default (): void => {
   PluginInjector.after(SettingValues, "set", (args) => {

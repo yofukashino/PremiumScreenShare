@@ -5,8 +5,8 @@ import { SettingValues } from "../index";
 import { defaultSettings } from "../lib/consts";
 import { MediaEngineStore } from "../lib/requiredModules";
 export default (): React.ReactElement => {
-  const VoiceEngine = MediaEngineStore.getMediaEngine();
-  if (!VoiceEngine) return null;
+  const MediaEngine = MediaEngineStore.getMediaEngine();
+  if (!MediaEngine) return null;
   const [options, setOptions] = React.useState<Array<{ label: string; value: string }>>([]);
   const [audioSource, setAudioSource] = util.useSettingArray(
     SettingValues,
@@ -14,8 +14,12 @@ export default (): React.ReactElement => {
     defaultSettings.audioSource,
   );
   const getPreviewAndSetOptions = async () => {
-    const previews = await VoiceEngine.getWindowPreviews(1, 1);
-    const previewOptions = previews.map((p) => ({ label: p.name, value: p.id }));
+    const windowPreviews = await MediaEngine.getWindowPreviews(1, 1);
+    const screenPreviews = (await MediaEngine.getScreenPreviews(1, 1)) as [];
+    const previewOptions = [...windowPreviews, ...screenPreviews].map((p) => ({
+      label: p.name,
+      value: p.id,
+    }));
     setOptions(() => [
       {
         label: "None",
@@ -31,7 +35,7 @@ export default (): React.ReactElement => {
   }, []);
   React.useEffect(() => {
     if (!audioSource || (options.length && !options.some((o) => o.value === audioSource))) {
-      setAudioSource("default");
+      setAudioSource("none");
     }
   }, [JSON.stringify(options)]);
   return (

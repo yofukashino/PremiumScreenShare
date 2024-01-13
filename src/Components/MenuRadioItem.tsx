@@ -5,7 +5,7 @@ import { SettingValues } from "../index";
 import { MediaEngineStore, PartialProcessUtils } from "../lib/requiredModules";
 import { defaultSettings } from "../lib/consts";
 export default (): React.ReactElement => {
-  const VoiceEngine = MediaEngineStore.getMediaEngine();
+  const MediaEngine = MediaEngineStore.getMediaEngine();
   const [isStreamScreen, setStreamTypeStatus] = React.useState<boolean>(false);
   const [options, setOptions] = React.useState<Array<{ label: string; id: string }>>([]);
   const [audioSource, setAudioSource] = util.useSettingArray(
@@ -14,15 +14,19 @@ export default (): React.ReactElement => {
     defaultSettings.audioSource,
   );
   const findAndSetStreamSource = () => {
-    const connectionArray = Array.from(VoiceEngine?.connections ?? []);
+    const connectionArray = Array.from(MediaEngine?.connections ?? []);
     const streamConnection = connectionArray?.find((c) => c?.goLiveSourceIdentifier);
     setStreamTypeStatus(
       (streamConnection?.goLiveSourceIdentifier as string).includes("screen-handle:"),
     );
   };
   const getPreviewAndSetOptions = async () => {
-    const previews = await VoiceEngine?.getWindowPreviews(1, 1);
-    const previewOptions = previews?.map((p) => ({ label: p.name, id: p.id }));
+    const windowPreviews = await MediaEngine.getWindowPreviews(1, 1);
+    const screenPreviews = (await MediaEngine.getScreenPreviews(1, 1)) as [];
+    const previewOptions = [...windowPreviews, ...screenPreviews].map((p) => ({
+      label: p.name,
+      id: p.id,
+    }));
     setOptions(() => [
       {
         label: "None",
@@ -39,43 +43,34 @@ export default (): React.ReactElement => {
   }, []);
   React.useEffect(() => {
     if (!audioSource || (options.length && !options.some((o) => o.id === audioSource))) {
-      setAudioSource("default");
+      setAudioSource("none");
     }
   }, [JSON.stringify(options)]);
   React.useEffect(() => {
     if (audioSource) {
       const pid = PartialProcessUtils.getPidFromDesktopSource(audioSource);
-      VoiceEngine?.setSoundshareSource(pid, true);
+      MediaEngine?.setSoundshareSource(pid, true);
     }
   }, [audioSource]);
   return (
-    VoiceEngine && (
+    MediaEngine &&
+    isStreamScreen && (
       <ContextMenu.MenuItem
         {...{
           label: "Audio Source",
           id: "audio-source",
         }}>
-        {isStreamScreen ? (
-          options.map((o) => (
-            <ContextMenu.MenuRadioItem
-              {...{
-                ...o,
-                checked: o.id === audioSource,
-                action: () => {
-                  setAudioSource(o.id);
-                },
-              }}
-            />
-          ))
-        ) : (
-          <ContextMenu.MenuItem
+        {options.map((o) => (
+          <ContextMenu.MenuRadioItem
             {...{
-              label: "Not Supported",
-              subtext: "Stream Screen to select audio source",
-              id: "audio-source-unsupported",
+              ...o,
+              checked: o.id === audioSource,
+              action: () => {
+                setAudioSource(o.id);
+              },
             }}
           />
-        )}
+        ))}
       </ContextMenu.MenuItem>
     )
   );

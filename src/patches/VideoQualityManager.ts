@@ -1,14 +1,12 @@
 import { PluginInjector } from "../index";
 
-import { WebRTCUtils } from "../lib/requiredModules";
+import { VideoQualityManager } from "../lib/requiredModules";
 
-import * as Types from "../types";
+import Utils from "../lib/utils";
 
-export const patchQualityOptions = (
-  VideoQualityManager: Types.videoQualityManagerOrSinkWants,
-): void => {
+export default (): void => {
   PluginInjector.after(
-    VideoQualityManager,
+    VideoQualityManager.prototype,
     "getQuality",
     (
       _args: [],
@@ -38,11 +36,8 @@ export const patchQualityOptions = (
         pixelCount: ApplicationStreamingSettings?.height * ApplicationStreamingSettings?.width,
         framerate: ApplicationStreamingSettings?.framerate,
       };
-      if (ApplicationStreamingSettings?.height > 1080) {
-        res.bitrateMax = 10000000;
-        res.bitrateMin = 500000;
-        res.bitrateTarget = 900000;
-      }
+      Object.assign(res, Utils.getBitrate(ApplicationStreamingSettings?.height || screen.height));
+
       if (!res?.capture) {
         return res;
       }
@@ -52,17 +47,6 @@ export const patchQualityOptions = (
       }
       Object.assign(res.encode, maxVideoQuality);
       return res;
-    },
-  );
-};
-
-export default (): void => {
-  PluginInjector.before(
-    WebRTCUtils.default.prototype,
-    "initializeStreamParameters",
-    (args, instance: Types.DefaultTypes.ObjectExports & Types.WebRTCUtils) => {
-      if (instance?.videoQualityManager) patchQualityOptions(instance.videoQualityManager);
-      return args;
     },
   );
 };
