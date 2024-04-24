@@ -25,6 +25,7 @@ export const defaultSettings = {
     fps: "60",
   },
   audioSource: "none",
+  upsell: false,
 };
 
 export const fpsOptions = [

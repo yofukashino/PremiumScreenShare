@@ -1,6 +1,6 @@
 import { Button } from "replugged/components";
-import { PluginInjector } from "../index";
-
+import { PluginInjector, SettingValues } from "../index";
+import { defaultSettings } from "../lib/consts";
 import Modules from "../lib/requiredModules";
 import Icons from "../Components/Icons";
 import Utils from "../lib/utils";
@@ -9,6 +9,7 @@ import Types from "../types";
 export default async (): Promise<void> => {
   const StreamUpsell = await Modules.StreamUpsellPromise;
   PluginInjector.after(StreamUpsell, "default", (_args, res: React.ReactElement & Types.Tree) => {
+    if (SettingValues.get("upsell", defaultSettings.upsell)) return res;
     const Label = Utils.findInReactTree(res, (c: React.ReactElement & Types.Tree) =>
       c?.props?.children?.some?.((c) => c?.props?.className?.includes?.("upsellText")),
     ) as React.ReactElement & Types.Tree;

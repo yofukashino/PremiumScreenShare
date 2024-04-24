@@ -1,5 +1,12 @@
 import { React } from "replugged/common";
-import { ButtonItem, Category, Divider, Notice, SelectItem } from "replugged/components";
+import {
+  ButtonItem,
+  Category,
+  Divider,
+  Notice,
+  SelectItem,
+  SwitchItem,
+} from "replugged/components";
 import { PluginLogger, SettingValues } from "../index";
 import { defaultSettings, fpsOptions, resoOptions, resoWithSource } from "../lib/consts";
 import Utils from "../lib/utils";
@@ -150,6 +157,11 @@ export const Settings = () => {
           margin: "10px 0px 10px 0px",
         }}
       />
+      <SwitchItem
+        note="Disable Upsell Completely in Streaming Modal"
+        {...Utils.useSetting(SettingValues, "upsell", defaultSettings.upsell)}>
+        Disable Upsell
+      </SwitchItem>
       <ButtonItem
         button="Reset Settings"
         onClick={() => {

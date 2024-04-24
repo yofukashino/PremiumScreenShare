@@ -617,6 +617,7 @@ export namespace Types {
       fps: number;
     };
     audioSource: string;
+    upsell: boolean;
   }
 }
 
