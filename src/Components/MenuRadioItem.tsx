@@ -2,10 +2,11 @@ import { util } from "replugged";
 import { React } from "replugged/common";
 import { ContextMenu } from "replugged/components";
 import { SettingValues } from "../index";
-import { MediaEngineStore, PartialProcessUtils } from "../lib/requiredModules";
+import Modules from "../lib/requiredModules";
 import { defaultSettings } from "../lib/consts";
 export default (): React.ReactElement => {
-  const MediaEngine = MediaEngineStore.getMediaEngine();
+  const { MediaEngineStore, PartialProcessUtils } = Modules;
+  const MediaEngine = MediaEngineStore?.getMediaEngine();
   const [isStreamScreen, setStreamTypeStatus] = React.useState<boolean>(false);
   const [options, setOptions] = React.useState<Array<{ label: string; id: string }>>([]);
   const [audioSource, setAudioSource] = util.useSettingArray(
@@ -16,9 +17,7 @@ export default (): React.ReactElement => {
   const findAndSetStreamSource = () => {
     const connectionArray = Array.from(MediaEngine?.connections ?? []);
     const streamConnection = connectionArray?.find((c) => c?.goLiveSourceIdentifier);
-    setStreamTypeStatus(
-      (streamConnection?.goLiveSourceIdentifier as string).includes("screen-handle:"),
-    );
+    setStreamTypeStatus(streamConnection?.goLiveSourceIdentifier?.includes("screen-handle:"));
   };
   const getPreviewAndSetOptions = async () => {
     const windowPreviews = await MediaEngine.getWindowPreviews(1, 1);
@@ -48,26 +47,21 @@ export default (): React.ReactElement => {
   }, [JSON.stringify(options)]);
   React.useEffect(() => {
     if (audioSource) {
-      const pid = PartialProcessUtils.getPidFromDesktopSource(audioSource);
+      const pid = PartialProcessUtils?.getPidFromDesktopSource(audioSource);
       MediaEngine?.setSoundshareSource(pid, true);
     }
   }, [audioSource]);
   return (
     MediaEngine &&
     isStreamScreen && (
-      <ContextMenu.MenuItem
-        {...{
-          label: "Audio Source",
-          id: "audio-source",
-        }}>
-        {options.map((o) => (
+      <ContextMenu.MenuItem label="Audio Source" id="audio-source">
+        {options.map(({ id, label }) => (
           <ContextMenu.MenuRadioItem
-            {...{
-              ...o,
-              checked: o.id === audioSource,
-              action: () => {
-                setAudioSource(o.id);
-              },
+            id={id}
+            label={label}
+            checked={id === audioSource}
+            action={() => {
+              setAudioSource(id);
             }}
           />
         ))}

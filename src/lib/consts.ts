@@ -1,7 +1,5 @@
 import { SettingValues } from "../index";
 
-import { ApplicationStreamingOptionStore } from "./requiredModules";
-
 import Utils from "../lib/utils";
 
 import Types from "../types";
@@ -115,45 +113,9 @@ export const resoWithSource = [
   ...resoOptions,
 ];
 
-export const defaultParameters = Object.freeze({
-  ApplicationStreamFPS: Object.freeze(
-    Object.assign({}, ApplicationStreamingOptionStore.ApplicationStreamFPS),
-  ),
-  ApplicationStreamFPSButtons: Object.freeze(
-    ApplicationStreamingOptionStore.ApplicationStreamFPSButtons?.map((n) => Object.freeze(n)),
-  ),
-  ApplicationStreamFPSButtonsWithSuffixLabel: Object.freeze(
-    ApplicationStreamingOptionStore.ApplicationStreamFPSButtonsWithSuffixLabel?.map((n) =>
-      Object.freeze(n),
-    ),
-  ),
-  ApplicationStreamPresetValues: Object.freeze(
-    Object.assign({}, ApplicationStreamingOptionStore.ApplicationStreamPresetValues),
-  ),
-  ApplicationStreamResolutionButtons: Object.freeze(
-    ApplicationStreamingOptionStore.ApplicationStreamResolutionButtons?.map((n) =>
-      Object.freeze(n),
-    ),
-  ),
-  ApplicationStreamResolutionButtonsWithSuffixLabel: Object.freeze(
-    ApplicationStreamingOptionStore.ApplicationStreamResolutionButtonsWithSuffixLabel?.map((n) =>
-      Object.freeze(n),
-    ),
-  ),
-  ApplicationStreamResolutions: Object.freeze(
-    Object.assign({}, ApplicationStreamingOptionStore.ApplicationStreamResolutions),
-  ),
-  ApplicationStreamSettingRequirements: Object.freeze(
-    ApplicationStreamingOptionStore.ApplicationStreamSettingRequirements?.map((n) =>
-      Object.freeze(n),
-    ),
-  ),
-  GoLiveDeviceResolutionButtons: Object.freeze(
-    ApplicationStreamingOptionStore.GoLiveDeviceResolutionButtons?.map((n) => Object.freeze(n)),
-  ),
-}) as Types.ApplicationStreamingOption;
+export const defaultParameters = {} as Types.ApplicationStreamingOption;
 
-export const streamingConstants = (): Types.streamingConstants => ({
+export const streamingConstants = {
   get fps() {
     return Object.values(SettingValues.get("fps", defaultSettings.fps))
       .map((fps) => Number(fps))
@@ -183,4 +145,4 @@ export const streamingConstants = (): Types.streamingConstants => ({
       ...this.resolution,
     ];
   },
-});
+} as Types.StreamingConstants;

@@ -1,49 +1,61 @@
 import { webpack } from "replugged";
 import Types from "../types";
-export const ApplicationStreamingOptionStore =
-  webpack.getByProps<Types.ApplicationStreamingOption>("ApplicationStreamFPS");
-export const WebRTCUtils = webpack.getByProps<{
-  default: Types.DefaultTypes.AnyFunction;
-  BaseConnectionEvent: Record<string, string>;
-}>("BaseConnectionEvent", "default");
-export const { VideoQualityManager } = webpack.getByProps<{
-  VideoQualityManager: Types.DefaultTypes.AnyFunction;
-}>("VideoQualityManager");
-export const StreamQualitySelectorPromise = webpack
-  .waitForModule<Types.AverageDefaultModule>(
-    webpack.filters.bySource("StreamSettings: user cannot be undefined"),
-    {
-      raw: true,
-    },
-  )
-  .then((r) => r?.exports);
-export const StreamSettingsPromise = webpack
-  .waitForModule<Types.AverageDefaultModule>(
-    webpack.filters.bySource("Messages.GO_LIVE_MODAL_APPLICATION_FORM_TITLE"),
-    {
-      raw: true,
-    },
-  )
-  .then((r) => r?.exports);
-export const StreamUpsellPromise = webpack
-  .waitForModule<Types.AverageDefaultModule>(
-    webpack.filters.bySource(".AnalyticsObjects.PREMIUM_UPSELL_BANNER"),
-    {
-      raw: true,
-    },
-  )
-  .then((r) => r?.exports);
-export const MediaEngineStore = webpack.getByStoreName<Types.MediaEngineStore>("MediaEngineStore");
-export const VoiceConnection =
-  webpack.getBySource<Types.DefaultTypes.AnyFunction>("getCodecCapabilities");
 
-export const PartialProcessUtils =
-  webpack.getByProps<Types.PartialProcessUtils>("getPidFromDesktopSource");
+export const Modules: Types.Modules = {};
 
-export const StreamRTCConnectionStore = webpack.getByStoreName<Types.StreamRTCConnectionStore>(
-  "StreamRTCConnectionStore",
-);
-export const ApplicationStreamingSettingsStore =
-  webpack.getByStoreName<Types.ApplicationStreamingSettingsStore>(
-    "ApplicationStreamingSettingsStore",
+Modules.loadModules = async (): Promise<void> => {
+  Modules.StreamQualitySelectorPromise = webpack
+    .waitForModule<Types.GenericExport>(
+      webpack.filters.bySource("StreamSettings: user cannot be undefined"),
+      {
+        raw: true,
+      },
+    )
+    .then(({ exports }) => exports);
+  Modules.StreamSettingsPromise = webpack
+    .waitForModule<Types.GenericExport>(
+      webpack.filters.bySource("Messages.GO_LIVE_MODAL_APPLICATION_FORM_TITLE"),
+      {
+        raw: true,
+      },
+    )
+    .then(({ exports }) => exports);
+  Modules.StreamUpsellPromise = webpack
+    .waitForModule<Types.GenericExport>(
+      webpack.filters.bySource(".AnalyticsObjects.PREMIUM_UPSELL_BANNER"),
+      {
+        raw: true,
+      },
+    )
+    .then((r) => r?.exports);
+  Modules.VoiceConnection ??= await webpack.waitForModule<Types.DefaultTypes.AnyFunction>(
+    webpack.filters.bySource("getCodecCapabilities"),
   );
+  Modules.PartialProcessUtils ??= await webpack.waitForProps<Types.PartialProcessUtils>(
+    "getPidFromDesktopSource",
+  );
+
+  Modules.WebRTCConnection ??= await webpack.waitForProps<Types.WebRTCConnection>(
+    "BaseConnectionEvent",
+    "default",
+  );
+  Modules.VideoQualityManager ??= await webpack
+    .waitForProps<{
+      VideoQualityManager: Types.DefaultTypes.AnyFunction;
+    }>("VideoQualityManager")
+    .then(({ VideoQualityManager }) => VideoQualityManager);
+
+  Modules.MediaEngineStore ??= webpack.getByStoreName<Types.MediaEngineStore>("MediaEngineStore");
+  Modules.ApplicationStreamingOptionStore ??=
+    webpack.getByProps<Types.ApplicationStreamingOption>("ApplicationStreamFPS");
+
+  Modules.StreamRTCConnectionStore ??= webpack.getByStoreName<Types.StreamRTCConnectionStore>(
+    "StreamRTCConnectionStore",
+  );
+  Modules.ApplicationStreamingSettingsStore ??=
+    webpack.getByStoreName<Types.ApplicationStreamingSettingsStore>(
+      "ApplicationStreamingSettingsStore",
+    );
+};
+
+export default Modules;

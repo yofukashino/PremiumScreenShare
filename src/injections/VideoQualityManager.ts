@@ -1,12 +1,10 @@
 import { PluginInjector } from "../index";
-
-import { VideoQualityManager } from "../lib/requiredModules";
-
+import Modules from "../lib/requiredModules";
 import Utils from "../lib/utils";
 
 export default (): void => {
   PluginInjector.after(
-    VideoQualityManager.prototype,
+    Modules.VideoQualityManager.prototype,
     "getQuality",
     (
       _args: [],

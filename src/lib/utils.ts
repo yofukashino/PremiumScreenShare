@@ -1,41 +1,76 @@
 import { settings, util } from "replugged";
 import { React, lodash } from "replugged/common";
-import { PluginInjector, SettingValues } from "../index";
-import { defaultSettings } from "./consts";
-import { ApplicationStreamingOptionStore } from "./requiredModules";
+import { SettingValues } from "../index";
+import { defaultParameters, defaultSettings } from "./consts";
+import Modules from "./requiredModules";
 import Types from "../types";
+
 export const removeDuplicate = (item: unknown, pos: number, self: unknown[]): boolean => {
   return self.indexOf(item) === pos;
 };
+
 export const ascending = (a: number, b: number): number => {
   return a - b;
 };
-export const forceRerenderElement = async (selector: string): Promise<void> => {
-  const element = await util.waitFor(selector);
-  if (!element) return;
-  const ownerInstance = util.getOwnerInstance(element);
-  const unpatchRender = PluginInjector.instead(ownerInstance, "render", () => {
-    unpatchRender();
-    return null;
-  });
-  ownerInstance.forceUpdate(() => ownerInstance.forceUpdate(() => {}));
+
+export const saveDefaultParameters = (): Promise<void> => {
+  defaultParameters.ApplicationStreamFPS = Object.freeze(
+    Object.assign({}, Modules.ApplicationStreamingOptionStore.ApplicationStreamFPS),
+  ) as Types.ApplicationStreamingOption["ApplicationStreamFPS"];
+  defaultParameters.ApplicationStreamFPSButtons = Object.freeze(
+    Modules.ApplicationStreamingOptionStore.ApplicationStreamFPSButtons?.map((n) =>
+      Object.freeze(n),
+    ),
+  ) as Types.ApplicationStreamingOption["ApplicationStreamFPSButtons"];
+  defaultParameters.ApplicationStreamFPSButtonsWithSuffixLabel = Object.freeze(
+    Modules.ApplicationStreamingOptionStore.ApplicationStreamFPSButtonsWithSuffixLabel?.map((n) =>
+      Object.freeze(n),
+    ),
+  ) as Types.ApplicationStreamingOption["ApplicationStreamFPSButtonsWithSuffixLabel"];
+  defaultParameters.ApplicationStreamPresetValues = Object.freeze(
+    Object.assign({}, Modules.ApplicationStreamingOptionStore.ApplicationStreamPresetValues),
+  );
+  defaultParameters.ApplicationStreamResolutionButtons = Object.freeze(
+    Modules.ApplicationStreamingOptionStore.ApplicationStreamResolutionButtons?.map((n) =>
+      Object.freeze(n),
+    ),
+  ) as Types.ApplicationStreamingOption["ApplicationStreamResolutionButtons"];
+  defaultParameters.ApplicationStreamResolutionButtonsWithSuffixLabel = Object.freeze(
+    Modules.ApplicationStreamingOptionStore.ApplicationStreamResolutionButtonsWithSuffixLabel?.map(
+      (n) => Object.freeze(n),
+    ),
+  ) as Types.ApplicationStreamingOption["ApplicationStreamResolutionButtonsWithSuffixLabel"];
+  defaultParameters.ApplicationStreamResolutions = Object.freeze(
+    Object.assign({}, Modules.ApplicationStreamingOptionStore.ApplicationStreamResolutions),
+  ) as Types.ApplicationStreamingOption["ApplicationStreamResolutions"];
+  defaultParameters.ApplicationStreamSettingRequirements = Object.freeze(
+    Modules.ApplicationStreamingOptionStore.ApplicationStreamSettingRequirements?.map((n) =>
+      Object.freeze(n),
+    ),
+  ) as Types.ApplicationStreamingOption["ApplicationStreamSettingRequirements"];
+  defaultParameters.GoLiveDeviceResolutionButtons = Object.freeze(
+    Modules.ApplicationStreamingOptionStore.GoLiveDeviceResolutionButtons?.map((n) =>
+      Object.freeze(n),
+    ),
+  ) as Types.ApplicationStreamingOption["GoLiveDeviceResolutionButtons"];
+  return Promise.resolve();
 };
 
 export const setStreamParameters = (Parameters: Types.ApplicationStreamingOption): void => {
   for (const key in Parameters) {
-    Object.defineProperty(ApplicationStreamingOptionStore, key, {
+    Object.defineProperty(Modules.ApplicationStreamingOptionStore, key, {
       value: Parameters[key],
       writable: true,
     });
   }
 };
-export const setCustomParameters = (streamingConstants: Types.streamingConstants): void => {
+export const setCustomParameters = (streamingConstants: Types.StreamingConstants): void => {
   const customParameters = {
     ApplicationStreamFPS: Object.assign(
       {},
-      ...streamingConstants.fps.map((res) => {
-        const label = `FPS_${res}`;
-        return { [res]: label, [label]: res };
+      ...streamingConstants.fps.map((fps) => {
+        const label = `FPS_${fps}`;
+        return { [fps]: label, [label]: fps };
       }),
     ),
     ApplicationStreamFPSButtons: streamingConstants.fps.map((fps) => ({
@@ -73,10 +108,12 @@ export const setCustomParameters = (streamingConstants: Types.streamingConstants
           resolution !== Number(SettingValues.get("resolution", defaultSettings.resolution)[1]),
       )
       .map((resolution) => ({ value: resolution, label: resolution == 0 ? "Source" : resolution })),
-    ApplicationStreamResolutionButtonsWithSuffixLabel: streamingConstants.resolution.map((res) => ({
-      value: res,
-      label: res == 0 ? "Source" : `${res}p`,
-    })),
+    ApplicationStreamResolutionButtonsWithSuffixLabel: streamingConstants.resolution.map(
+      (resolution) => ({
+        value: resolution,
+        label: resolution == 0 ? "Source" : `${resolution}p`,
+      }),
+    ),
     ApplicationStreamResolutions: Object.assign(
       {},
       ...streamingConstants.resolution.map((resolution) => {
@@ -175,29 +212,28 @@ export const useSetting = <
   D extends keyof T,
   K extends Extract<keyof T, string>,
   F extends Types.NestedType<T, P> | T[K] | undefined,
-  P extends `${K}.${string}` | K,
+  P extends `${K}.${string}` | `${K}/${string}` | `${K}-${string}` | K,
+  V extends P extends `${K}.${string}` | `${K}/${string}` | `${K}-${string}`
+    ? NonNullable<Types.NestedType<T, P>>
+    : P extends D
+    ? NonNullable<T[P]>
+    : F extends null | undefined
+    ? T[P] | undefined
+    : NonNullable<T[P]> | F,
 >(
   settings: settings.SettingsManager<T, D>,
   key: P,
   fallback?: F,
 ): {
-  value: Types.NestedType<T, P> | F;
-  onChange: (newValue: Types.ValType<Types.NestedType<T, P> | F>) => void;
+  value: V;
+  onChange: (newValue: Types.ValType<Types.NestedType<T, P>> | Types.ValType<T[K]>) => void;
 } => {
-  const [initialKey, ...pathArray] = Object.keys(settings.all()).includes(key)
-    ? ([key] as [K])
-    : (key.split(".") as [K, ...string[]]);
-  const path = pathArray.join(".");
-  const initial = settings.get(initialKey, path.length ? ({} as T[K]) : (fallback as T[K]));
-  const [value, setValue] = React.useState<Types.NestedType<T, P>>(
-    path.length
-      ? (lodash.get(initial, path, fallback) as Types.NestedType<T, P>)
-      : (initial as Types.NestedType<T, P>),
-  );
+  const initial = settings.get(key as K) ?? lodash.get(settings.all(), key) ?? fallback;
+  const [value, setValue] = React.useState(initial as V);
 
   return {
     value,
-    onChange: (newValue: Types.ValType<Types.NestedType<T, P> | F>) => {
+    onChange: (newValue: Types.ValType<Types.NestedType<T, P>> | Types.ValType<T[K]>) => {
       const isObj = newValue && typeof newValue === "object";
       const value = isObj && "value" in newValue ? newValue.value : newValue;
       const checked = isObj && "checked" in newValue ? newValue.checked : void 0;
@@ -207,24 +243,52 @@ export const useSetting = <
           : void 0;
       const targetValue = target && "value" in target ? target.value : void 0;
       const targetChecked = target && "checked" in target ? target.checked : void 0;
-      const finalValue = checked ?? targetChecked ?? targetValue ?? value ?? newValue;
+      const finalValue = (checked ?? targetChecked ?? targetValue ?? value ?? newValue) as T[K];
 
-      setValue(finalValue as Types.NestedType<T, P>);
-      settings.set(
-        initialKey,
-        path.length ? (lodash.set(initial, path, finalValue) as T[K]) : (finalValue as T[K]),
-      );
+      setValue(finalValue as V);
+
+      if (settings.get(key as K)) {
+        settings.set(key as K, finalValue);
+      } else {
+        const [rootKey] = key.split(/[-/.]/);
+        const setting = lodash.set(settings.all(), key, finalValue)[rootKey as K];
+        settings.set(rootKey as K, setting);
+      }
     },
   };
+};
+
+export const useSettingArray = <
+  T extends Record<string, Types.Jsonifiable>,
+  D extends keyof T,
+  K extends Extract<keyof T, string>,
+  F extends Types.NestedType<T, P> | T[K] | undefined,
+  P extends `${K}.${string}` | `${K}/${string}` | `${K}-${string}` | K,
+  V extends P extends `${K}.${string}` | `${K}/${string}` | `${K}-${string}`
+    ? NonNullable<Types.NestedType<T, P>>
+    : P extends D
+    ? NonNullable<T[P]>
+    : F extends null | undefined
+    ? T[P] | undefined
+    : NonNullable<T[P]> | F,
+>(
+  settings: settings.SettingsManager<T, D>,
+  key: P,
+  fallback?: F,
+): [V, (newValue: Types.ValType<Types.NestedType<T, P>> | Types.ValType<T[K]>) => void] => {
+  const { value, onChange } = useSetting(settings, key, fallback);
+
+  return [value as V, onChange];
 };
 
 export default {
   ...util,
   removeDuplicate,
   ascending,
-  forceRerenderElement,
+  saveDefaultParameters,
   setStreamParameters,
   setCustomParameters,
   getBitrate,
   useSetting,
+  useSettingArray,
 };

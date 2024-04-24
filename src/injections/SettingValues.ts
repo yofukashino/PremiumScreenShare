@@ -4,6 +4,6 @@ import Utils from "../lib/utils";
 
 export default (): void => {
   PluginInjector.after(SettingValues, "set", (args) => {
-    if (args[0] !== "audioSource") Utils.setCustomParameters(streamingConstants());
+    if (args[0] !== "audioSource") Utils.setCustomParameters(streamingConstants);
   });
 };

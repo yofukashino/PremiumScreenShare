@@ -1,12 +1,10 @@
 import { PluginInjector, SettingValues } from "../index";
-
 import { defaultSettings } from "../lib/consts";
-
-import { PartialProcessUtils, VoiceConnection } from "../lib/requiredModules";
-
+import Modules from "../lib/requiredModules";
 import Types from "../types";
 
 export default (): void => {
+  const { VoiceConnection, PartialProcessUtils } = Modules;
   PluginInjector.after(
     VoiceConnection.prototype,
     "setGoLiveSource",
@@ -16,8 +14,8 @@ export default (): void => {
       const connectionArray = Array.from(instance?.connections ?? []);
       const streamConnection = connectionArray?.find((c) => c?.goLiveSourceIdentifier);
       if (
-        !pid ||
-        !(streamConnection?.goLiveSourceIdentifier as string)?.includes("screen-handle:")
+        !streamConnection?.goLiveSourceIdentifier?.includes("screen-handle:") ||
+        streamConnection?.soundshareId == pid
       ) {
         return res;
       }

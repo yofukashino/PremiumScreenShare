@@ -1,10 +1,10 @@
 import { PluginInjector } from "../index";
-import { StreamSettingsPromise } from "../lib/requiredModules";
+import Modules from "../lib/requiredModules";
 import Utils from "../lib/utils";
 import Types from "../types";
 
 export default async (): Promise<void> => {
-  const StreamSettings = await StreamSettingsPromise;
+  const StreamSettings = await Modules.StreamSettingsPromise;
   PluginInjector.after(
     StreamSettings,
     "default",

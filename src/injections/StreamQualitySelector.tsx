@@ -1,12 +1,12 @@
 import { PluginInjector, SettingValues } from "../index";
 import { defaultSettings } from "../lib/consts";
-import { StreamQualitySelectorPromise } from "../lib/requiredModules";
+import Modules from "../lib/requiredModules";
 import AudioSourcePicker from "../Components/AudioSourcePicker";
 import Utils from "../lib/utils";
 import Types from "../types";
 
 export default async (): Promise<void> => {
-  const StreamQualitySelector = await StreamQualitySelectorPromise;
+  const StreamQualitySelector = await Modules.StreamQualitySelectorPromise;
   PluginInjector.after(
     StreamQualitySelector,
     "default",

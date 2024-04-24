@@ -5,30 +5,23 @@ export namespace Types {
   export import DefaultTypes = types;
   export type Store = StoreType;
   export type Tree = Util.Tree;
-  export interface Settings {
-    fps: number[];
-    resolution: number[];
-    smoothVideo: {
-      resolution: number;
-      fps: number;
-    };
-    betterReadability: {
-      resolution: number;
-      fps: number;
-    };
-    audioSource: string;
+  export type GenericModule = Record<string, DefaultTypes.AnyFunction> & {
+    default: DefaultTypes.AnyFunction;
+  };
+  export interface GenericExport {
+    exports?: GenericModule;
+    id: string;
+    loaded: boolean;
   }
-  export interface GenericModule extends Record<string, DefaultTypes.AnyFunction> {}
-  export interface streamingConstants {
+  export interface WebRTCConnection {
+    default: DefaultTypes.AnyFunction;
+    BaseConnectionEvent: Record<string, string>;
+  }
+  export interface StreamingConstants {
     fps: number[];
     fpsWithPresets: number[];
     resolution: number[];
     resolutionWithPresets: number[];
-  }
-  export interface AverageDefaultModule {
-    exports: {
-      default: DefaultTypes.AnyFunction;
-    };
   }
   export interface PartialProcessUtils {
     flushCookies: DefaultTypes.AnyFunction;
@@ -61,72 +54,6 @@ export namespace Types {
       fps: number;
       resolution: number;
     };
-  }
-  export interface VoiceEngine {
-    connections: Set<WebRTCUtils>;
-    applyMediaFilterSettings: DefaultTypes.AnyFunction;
-    connect: DefaultTypes.AnyFunction;
-    connectionsEmpty: DefaultTypes.AnyFunction;
-    createReplayConnection: DefaultTypes.AnyFunction;
-    destroy: DefaultTypes.AnyFunction;
-    eachConnection: DefaultTypes.AnyFunction;
-    enable: DefaultTypes.AnyFunction;
-    enableSoundshare: DefaultTypes.AnyFunction;
-    exportClip: DefaultTypes.AnyFunction;
-    getAudioInputDevices: DefaultTypes.AnyFunction;
-    getAudioLayer: DefaultTypes.AnyFunction;
-    getAudioOutputDevices: DefaultTypes.AnyFunction;
-    getAudioSubsystem: DefaultTypes.AnyFunction;
-    getCodecCapabilities: DefaultTypes.AnyFunction;
-    getCodecSurvey: DefaultTypes.AnyFunction;
-    getDebugLogging: DefaultTypes.AnyFunction;
-    getDesktopSource: DefaultTypes.AnyFunction;
-    getDesktopSources: DefaultTypes.AnyFunction;
-    getLoopback: DefaultTypes.AnyFunction;
-    getScreenPreviews: DefaultTypes.AnyFunction;
-    getSoundshareStatus: DefaultTypes.AnyFunction;
-    getSupportedVideoCodecs: DefaultTypes.AnyFunction;
-    getVideoInputDevices: DefaultTypes.AnyFunction;
-    getWindowPreviews: (
-      e: number,
-      t: number,
-    ) => Array<{
-      name: string;
-      id: string;
-    }>;
-    interact: DefaultTypes.AnyFunction;
-    rankRtcRegions: DefaultTypes.AnyFunction;
-    saveClip: DefaultTypes.AnyFunction;
-    setAecDump: DefaultTypes.AnyFunction;
-    setAudioInputDevice: DefaultTypes.AnyFunction;
-    setAudioOutputDevice: DefaultTypes.AnyFunction;
-    setAudioSubsystem: DefaultTypes.AnyFunction;
-    setAv1Enabled: DefaultTypes.AnyFunction;
-    setClipBufferLength: DefaultTypes.AnyFunction;
-    setDebugLogging: DefaultTypes.AnyFunction;
-    setExperimentalAdm: DefaultTypes.AnyFunction;
-    setGoLiveSource: DefaultTypes.AnyFunction;
-    setH264Enabled: DefaultTypes.AnyFunction;
-    setH265Enabled: DefaultTypes.AnyFunction;
-    setHardwareClipEncode: DefaultTypes.AnyFunction;
-    setInputVolume: DefaultTypes.AnyFunction;
-    setLoopback: DefaultTypes.AnyFunction;
-    setMaxSyncDelayOverride: DefaultTypes.AnyFunction;
-    setOutputVolume: DefaultTypes.AnyFunction;
-    setSoundshareSource: DefaultTypes.AnyFunction;
-    setUseDirectVideo: DefaultTypes.AnyFunction;
-    setVideoInputDevice: DefaultTypes.AnyFunction;
-    shouldConnectionBroadcastVideo: DefaultTypes.AnyFunction;
-    speedTester: DefaultTypes.AnyFunction;
-    startAecDump: DefaultTypes.AnyFunction;
-    startLocalAudioRecording: DefaultTypes.AnyFunction;
-    stopAecDump: DefaultTypes.AnyFunction;
-    stopLocalAudioRecording: DefaultTypes.AnyFunction;
-    supported: DefaultTypes.AnyFunction;
-    supports: DefaultTypes.AnyFunction;
-    updateClipMetadata: DefaultTypes.AnyFunction;
-    watchdogTick: DefaultTypes.AnyFunction;
-    writeAudioDebugState: DefaultTypes.AnyFunction;
   }
   export interface MediaEngineStore extends Store {
     getAecDump: DefaultTypes.AnyFunction;
@@ -213,6 +140,78 @@ export namespace Types {
     supportsExperimentalSoundshare: DefaultTypes.AnyFunction;
     supportsInApp: DefaultTypes.AnyFunction;
   }
+  export interface VoiceEngine {
+    connections: Set<WebRTCConnection>;
+    applyMediaFilterSettings: DefaultTypes.AnyFunction;
+    connect: DefaultTypes.AnyFunction;
+    connectionsEmpty: DefaultTypes.AnyFunction;
+    createReplayConnection: DefaultTypes.AnyFunction;
+    destroy: DefaultTypes.AnyFunction;
+    eachConnection: DefaultTypes.AnyFunction;
+    enable: DefaultTypes.AnyFunction;
+    enableSoundshare: DefaultTypes.AnyFunction;
+    exportClip: DefaultTypes.AnyFunction;
+    getAudioInputDevices: DefaultTypes.AnyFunction;
+    getAudioLayer: DefaultTypes.AnyFunction;
+    getAudioOutputDevices: DefaultTypes.AnyFunction;
+    getAudioSubsystem: DefaultTypes.AnyFunction;
+    getCodecCapabilities: DefaultTypes.AnyFunction;
+    getCodecSurvey: DefaultTypes.AnyFunction;
+    getDebugLogging: DefaultTypes.AnyFunction;
+    getDesktopSource: DefaultTypes.AnyFunction;
+    getDesktopSources: DefaultTypes.AnyFunction;
+    getLoopback: DefaultTypes.AnyFunction;
+    getScreenPreviews: (
+      width: number,
+      height: number,
+    ) => Array<{
+      name: string;
+      id: string;
+    }>;
+    getSoundshareStatus: DefaultTypes.AnyFunction;
+    getSupportedVideoCodecs: DefaultTypes.AnyFunction;
+    getVideoInputDevices: DefaultTypes.AnyFunction;
+    getWindowPreviews: (
+      width: number,
+      height: number,
+    ) => Array<{
+      name: string;
+      id: string;
+    }>;
+    interact: DefaultTypes.AnyFunction;
+    rankRtcRegions: DefaultTypes.AnyFunction;
+    saveClip: DefaultTypes.AnyFunction;
+    setAecDump: DefaultTypes.AnyFunction;
+    setAudioInputDevice: DefaultTypes.AnyFunction;
+    setAudioOutputDevice: DefaultTypes.AnyFunction;
+    setAudioSubsystem: DefaultTypes.AnyFunction;
+    setAv1Enabled: DefaultTypes.AnyFunction;
+    setClipBufferLength: DefaultTypes.AnyFunction;
+    setDebugLogging: DefaultTypes.AnyFunction;
+    setExperimentalAdm: DefaultTypes.AnyFunction;
+    setGoLiveSource: DefaultTypes.AnyFunction;
+    setH264Enabled: DefaultTypes.AnyFunction;
+    setH265Enabled: DefaultTypes.AnyFunction;
+    setHardwareClipEncode: DefaultTypes.AnyFunction;
+    setInputVolume: DefaultTypes.AnyFunction;
+    setLoopback: DefaultTypes.AnyFunction;
+    setMaxSyncDelayOverride: DefaultTypes.AnyFunction;
+    setOutputVolume: DefaultTypes.AnyFunction;
+    setSoundshareSource: DefaultTypes.AnyFunction;
+    setUseDirectVideo: DefaultTypes.AnyFunction;
+    setVideoInputDevice: DefaultTypes.AnyFunction;
+    shouldConnectionBroadcastVideo: DefaultTypes.AnyFunction;
+    speedTester: DefaultTypes.AnyFunction;
+    startAecDump: DefaultTypes.AnyFunction;
+    startLocalAudioRecording: DefaultTypes.AnyFunction;
+    stopAecDump: DefaultTypes.AnyFunction;
+    stopLocalAudioRecording: DefaultTypes.AnyFunction;
+    supported: DefaultTypes.AnyFunction;
+    supports: DefaultTypes.AnyFunction;
+    updateClipMetadata: DefaultTypes.AnyFunction;
+    watchdogTick: DefaultTypes.AnyFunction;
+    writeAudioDebugState: DefaultTypes.AnyFunction;
+  }
   export interface StreamButtons {
     value: number;
     label: string | number;
@@ -223,16 +222,16 @@ export namespace Types {
   }
 
   export interface ApplicationStreamingOption {
-    ApplicationStreamFPS: Record<string | number, string | number>;
-    ApplicationStreamFPSButtons: Array<{
+    ApplicationStreamFPS?: Record<string | number, string | number>;
+    ApplicationStreamFPSButtons?: Array<{
       label: number;
       value: number;
     }>;
-    ApplicationStreamFPSButtonsWithSuffixLabel: Array<{
+    ApplicationStreamFPSButtonsWithSuffixLabel?: Array<{
       label: string;
       value: number;
     }>;
-    ApplicationStreamPresetValues: {
+    ApplicationStreamPresetValues?: {
       1: Array<{
         fps: number;
         resolution: number;
@@ -243,16 +242,16 @@ export namespace Types {
       }>;
       3: unknown[];
     };
-    ApplicationStreamResolutionButtons: Array<{
+    ApplicationStreamResolutionButtons?: Array<{
       label: number | string;
       value: number;
     }>;
-    ApplicationStreamResolutionButtonsWithSuffixLabel: Array<{
+    ApplicationStreamResolutionButtonsWithSuffixLabel?: Array<{
       label: string;
       value: number;
     }>;
-    ApplicationStreamResolutions: Record<string | number, string | number>;
-    ApplicationStreamSettingRequirements: Array<
+    ApplicationStreamResolutions?: Record<string | number, string | number>;
+    ApplicationStreamSettingRequirements?: Array<
       FlatArray<
         Array<{ resolution: number; fps: number; guildPremiumTier?: number; quality?: string }>,
         | 0
@@ -279,12 +278,12 @@ export namespace Types {
         | 20
       >
     >;
-    GoLiveDeviceResolutionButtons: Array<{
+    GoLiveDeviceResolutionButtons?: Array<{
       label: number;
       value: number;
     }>;
   }
-  export interface WebRTCUtils {
+  export interface WebRTCConnection {
     activeOutputSinks: object;
     attenuateWhileSpeakingOthers: boolean;
     attenuateWhileSpeakingSelf: boolean;
@@ -387,11 +386,11 @@ export namespace Types {
     forceAudioNormal: boolean;
     forceAudioPriority: boolean;
     framerateReducer: {
-      connection: WebRTCUtils;
+      connection: WebRTCConnection;
       framerateReductionTimeout: number;
       handleSelfMute: DefaultTypes.AnyFunction;
       handleSpeaking: DefaultTypes.AnyFunction;
-      sinkWants: videoQualityManagerOrSinkWants;
+      sinkWants: VideoQualityManagerOrSinkWants;
     };
     handleDesktopSourceEnded: DefaultTypes.AnyFunction;
     handleNewListenerNative: DefaultTypes.AnyFunction;
@@ -415,21 +414,13 @@ export namespace Types {
     inputMode: string;
     isActiveOutputSinksEnabled: boolean;
     keyframeInterval: number;
-    localMutes: {
-      [key: number]: boolean;
-    };
-    localPans: {
-      [key: number]: number;
-    };
-    localSpeakingFlags: {
-      [key: number]: number;
-    };
+    localMutes: Record<number, boolean>;
+    localPans: Record<number, number>;
+    localSpeakingFlags: Record<number, number>;
     localVideoSinkWants: {
       any: number;
     };
-    localVolumes: {
-      [key: number]: number;
-    };
+    localVolumes: Record<number, number>;
     mediaEngineConnectionId: string;
     minimumJitterBufferLevel: number;
     noiseCancellation: boolean;
@@ -446,7 +437,7 @@ export namespace Types {
     selfMute: boolean;
     selfVideo: boolean;
     soundshareActive: boolean;
-    goLiveSourceIdentifier: boolean | string | null;
+    goLiveSourceIdentifier: string | null;
     soundshareId: boolean | number;
     soundshareSentSpeakingEvent: boolean;
     sourceDesktopDegradationPreference: number;
@@ -495,7 +486,7 @@ export namespace Types {
     vadTrailing: number;
     vadUseKrisp: boolean;
     videoDegradationPreference: number;
-    videoQualityManager: videoQualityManagerOrSinkWants;
+    videoQualityManager: VideoQualityManagerOrSinkWants;
     videoReady: boolean;
     videoStreamParameters: Array<{
       active: boolean;
@@ -514,36 +505,36 @@ export namespace Types {
     voiceBitrate: number;
     wantsPriority: Set<number>;
   }
-  export interface ladder {
+  export interface Ladder {
     budgetPortion: number;
     framerate: number;
     height: number;
     mutedFramerate: number;
     width: number;
   }
-  export interface videoQualityManagerOrSinkWants {
-    connection: WebRTCUtils;
+  export interface VideoQualityManagerOrSinkWants {
+    connection: WebRTCConnection;
     contextType: string;
     isMuted: boolean;
     isStreamContext: boolean;
     ladder: {
       ladder: {
-        0: ladder;
-        10: ladder;
-        20: ladder;
-        30: ladder;
-        40: ladder;
-        50: ladder;
-        60: ladder;
-        70: ladder;
-        80: ladder;
-        90: ladder;
-        100: ladder;
-        "-10": ladder;
-        "-20": ladder;
-        "-30": ladder;
+        0: Ladder;
+        10: Ladder;
+        20: Ladder;
+        30: Ladder;
+        40: Ladder;
+        50: Ladder;
+        60: Ladder;
+        70: Ladder;
+        80: Ladder;
+        90: Ladder;
+        100: Ladder;
+        "-10": Ladder;
+        "-20": Ladder;
+        "-30": Ladder;
       };
-      orderedLadder: ladder[];
+      orderedLadder: Ladder[];
     };
     options: {
       desktopBitrate: { min: number; max: number; target: number };
@@ -567,7 +558,20 @@ export namespace Types {
     setQuality: DefaultTypes.AnyFunction;
     constructor: DefaultTypes.AnyFunction;
   }
-
+  export interface Modules {
+    loadModules?: () => Promise<void>;
+    StreamQualitySelectorPromise?: Promise<GenericModule>;
+    StreamSettingsPromise?: Promise<GenericModule>;
+    StreamUpsellPromise?: Promise<GenericModule>;
+    VoiceConnection?: DefaultTypes.AnyFunction;
+    PartialProcessUtils?: PartialProcessUtils;
+    WebRTCConnection?: WebRTCConnection;
+    VideoQualityManager?: DefaultTypes.AnyFunction;
+    MediaEngineStore?: MediaEngineStore;
+    ApplicationStreamingOptionStore?: ApplicationStreamingOption;
+    StreamRTCConnectionStore?: StreamRTCConnectionStore;
+    ApplicationStreamingSettingsStore?: ApplicationStreamingSettingsStore;
+  }
   export type Jsonifiable =
     | null
     | undefined
@@ -581,7 +585,10 @@ export namespace Types {
     | React.ChangeEvent<HTMLInputElement>
     | (Record<string, unknown> & { value?: T; checked?: T });
 
-  export type NestedType<T, P> = P extends `${infer Left}.${infer Right}`
+  export type NestedType<T, P> = P extends
+    | `${infer Left}.${infer Right}`
+    | `${infer Left}/${infer Right}`
+    | `${infer Left}-${infer Right}`
     ? Left extends keyof T
       ? NestedType<T[Left], Right>
       : Left extends `${infer FieldKey}[${infer IndexKey}]`
@@ -598,6 +605,19 @@ export namespace Types {
         : never
       : undefined
     : undefined;
+  export interface Settings {
+    fps: number[];
+    resolution: number[];
+    smoothVideo: {
+      resolution: number;
+      fps: number;
+    };
+    betterReadability: {
+      resolution: number;
+      fps: number;
+    };
+    audioSource: string;
+  }
 }
 
 export default Types;
