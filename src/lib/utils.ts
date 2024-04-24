@@ -251,7 +251,7 @@ export const useSetting = <
         settings.set(key as K, finalValue);
       } else {
         const [rootKey] = key.split(/[-/.]/);
-        const setting = lodash.set(settings.all(), key, finalValue)[rootKey as K];
+        const setting = lodash.set({ ...settings.all() }, key, finalValue)[rootKey as K];
         settings.set(rootKey as K, setting);
       }
     },
@@ -281,6 +281,34 @@ export const useSettingArray = <
   return [value as V, onChange];
 };
 
+const useClearableSettings = <
+  T extends Record<string, Types.Jsonifiable>,
+  D extends keyof T,
+  K extends Extract<keyof T, string>,
+  F extends Types.NestedType<T, P> | T[K] | undefined,
+  P extends `${K}.${string}` | `${K}/${string}` | `${K}-${string}` | K,
+  V extends P extends `${K}.${string}` | `${K}/${string}` | `${K}-${string}`
+    ? NonNullable<Types.NestedType<T, P>>
+    : P extends D
+    ? NonNullable<T[P]>
+    : F extends null | undefined
+    ? T[P] | undefined
+    : NonNullable<T[P]> | F,
+>(
+  settings: settings.SettingsManager<T, D>,
+  key: P,
+  fallback?: F,
+): {
+  onClear: () => void;
+  value: V;
+  onChange: (newValue: Types.ValType<Types.NestedType<T, P>> | Types.ValType<T[K]>) => void;
+} => {
+  const { value, onChange } = useSetting(settings, key, fallback);
+  const onClear = (): void =>
+    onChange("" as Types.ValType<Types.NestedType<T, P>> | Types.ValType<T[K]>);
+  return { onChange, value: value as V, onClear };
+};
+
 export default {
   ...util,
   removeDuplicate,
@@ -291,4 +319,5 @@ export default {
   getBitrate,
   useSetting,
   useSettingArray,
+  useClearableSettings,
 };

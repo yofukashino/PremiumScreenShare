@@ -17,4 +17,5 @@ export const stop = (): void => {
   PluginInjector.uninjectAll();
   Injections.removeInjections();
 };
+export { defaultSettings } from "./lib/consts";
 export { Settings } from "./Components/Settings";
