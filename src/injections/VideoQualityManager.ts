@@ -17,7 +17,7 @@ export default (): void => {
       },
       instance: {
         isStreamContext?: boolean;
-        qualityOverwrite: {
+        goliveMaxQuality: {
           capture: { framerate: number; height: number; width: number };
         };
       },
@@ -26,7 +26,7 @@ export default (): void => {
         return res;
       }
       const {
-        qualityOverwrite: { capture: ApplicationStreamingSettings },
+        goliveMaxQuality: { capture: ApplicationStreamingSettings },
       } = instance;
       const maxVideoQuality = {
         width: ApplicationStreamingSettings?.width,
@@ -44,6 +44,7 @@ export default (): void => {
         return res;
       }
       Object.assign(res.encode, maxVideoQuality);
+
       return res;
     },
   );
