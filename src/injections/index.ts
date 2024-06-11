@@ -2,6 +2,7 @@ import { PluginInjector } from "../index";
 import { defaultParameters, streamingConstants } from "../lib/consts";
 import Modules from "../lib/requiredModules";
 import Utils from "../lib/utils";
+import injectApplicationStreamingOption from "./ApplicationStreamingOption";
 import injectManaggeStreamContextMenu from "./ManageStreamContextMenu";
 import injectSettingValues from "./SettingValues";
 import injectStreamQualitySelector from "./StreamQualitySelector";
@@ -14,6 +15,7 @@ import injectWebRTCUtils from "./WebRTCUtils";
 export const applyInjections = async (): Promise<void> => {
   await Modules.loadModules();
   await Utils.saveDefaultParameters();
+  injectApplicationStreamingOption();
   injectManaggeStreamContextMenu();
   injectSettingValues();
   void injectStreamQualitySelector();

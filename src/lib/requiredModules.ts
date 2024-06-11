@@ -46,7 +46,7 @@ Modules.loadModules = async (): Promise<void> => {
     .then(({ VideoQualityManager }) => VideoQualityManager);
 
   Modules.MediaEngineStore ??= webpack.getByStoreName<Types.MediaEngineStore>("MediaEngineStore");
-  Modules.ApplicationStreamingOptionStore ??=
+  Modules.ApplicationStreamingOption ??=
     webpack.getByProps<Types.ApplicationStreamingOption>("ApplicationStreamFPS");
 
   Modules.StreamRTCConnectionStore ??= webpack.getByStoreName<Types.StreamRTCConnectionStore>(

@@ -15,50 +15,46 @@ export const ascending = (a: number, b: number): number => {
 
 export const saveDefaultParameters = (): Promise<void> => {
   defaultParameters.ApplicationStreamFPS = Object.freeze(
-    Object.assign({}, Modules.ApplicationStreamingOptionStore.ApplicationStreamFPS),
+    Object.assign({}, Modules.ApplicationStreamingOption.ApplicationStreamFPS),
   ) as Types.ApplicationStreamingOption["ApplicationStreamFPS"];
   defaultParameters.ApplicationStreamFPSButtons = Object.freeze(
-    Modules.ApplicationStreamingOptionStore.ApplicationStreamFPSButtons?.map((n) =>
-      Object.freeze(n),
-    ),
+    Modules.ApplicationStreamingOption.ApplicationStreamFPSButtons?.map((n) => Object.freeze(n)),
   ) as Types.ApplicationStreamingOption["ApplicationStreamFPSButtons"];
   defaultParameters.ApplicationStreamFPSButtonsWithSuffixLabel = Object.freeze(
-    Modules.ApplicationStreamingOptionStore.ApplicationStreamFPSButtonsWithSuffixLabel?.map((n) =>
+    Modules.ApplicationStreamingOption.ApplicationStreamFPSButtonsWithSuffixLabel?.map((n) =>
       Object.freeze(n),
     ),
   ) as Types.ApplicationStreamingOption["ApplicationStreamFPSButtonsWithSuffixLabel"];
   defaultParameters.ApplicationStreamPresetValues = Object.freeze(
-    Object.assign({}, Modules.ApplicationStreamingOptionStore.ApplicationStreamPresetValues),
+    Object.assign({}, Modules.ApplicationStreamingOption.ApplicationStreamPresetValues),
   );
   defaultParameters.ApplicationStreamResolutionButtons = Object.freeze(
-    Modules.ApplicationStreamingOptionStore.ApplicationStreamResolutionButtons?.map((n) =>
+    Modules.ApplicationStreamingOption.ApplicationStreamResolutionButtons?.map((n) =>
       Object.freeze(n),
     ),
   ) as Types.ApplicationStreamingOption["ApplicationStreamResolutionButtons"];
   defaultParameters.ApplicationStreamResolutionButtonsWithSuffixLabel = Object.freeze(
-    Modules.ApplicationStreamingOptionStore.ApplicationStreamResolutionButtonsWithSuffixLabel?.map(
-      (n) => Object.freeze(n),
+    Modules.ApplicationStreamingOption.ApplicationStreamResolutionButtonsWithSuffixLabel?.map((n) =>
+      Object.freeze(n),
     ),
   ) as Types.ApplicationStreamingOption["ApplicationStreamResolutionButtonsWithSuffixLabel"];
   defaultParameters.ApplicationStreamResolutions = Object.freeze(
-    Object.assign({}, Modules.ApplicationStreamingOptionStore.ApplicationStreamResolutions),
+    Object.assign({}, Modules.ApplicationStreamingOption.ApplicationStreamResolutions),
   ) as Types.ApplicationStreamingOption["ApplicationStreamResolutions"];
   defaultParameters.ApplicationStreamSettingRequirements = Object.freeze(
-    Modules.ApplicationStreamingOptionStore.ApplicationStreamSettingRequirements?.map((n) =>
+    Modules.ApplicationStreamingOption.ApplicationStreamSettingRequirements?.map((n) =>
       Object.freeze(n),
     ),
   ) as Types.ApplicationStreamingOption["ApplicationStreamSettingRequirements"];
   defaultParameters.GoLiveDeviceResolutionButtons = Object.freeze(
-    Modules.ApplicationStreamingOptionStore.GoLiveDeviceResolutionButtons?.map((n) =>
-      Object.freeze(n),
-    ),
+    Modules.ApplicationStreamingOption.GoLiveDeviceResolutionButtons?.map((n) => Object.freeze(n)),
   ) as Types.ApplicationStreamingOption["GoLiveDeviceResolutionButtons"];
   return Promise.resolve();
 };
 
-export const setStreamParameters = (Parameters: Types.ApplicationStreamingOption): void => {
+export const setStreamParameters = (Parameters: Types.PartialApplicationStreamingOption): void => {
   for (const key in Parameters) {
-    Object.defineProperty(Modules.ApplicationStreamingOptionStore, key, {
+    Object.defineProperty(Modules.ApplicationStreamingOption, key, {
       value: Parameters[key],
       writable: true,
     });

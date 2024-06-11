@@ -220,8 +220,7 @@ export namespace Types {
     resoliton: number;
     fps: number;
   }
-
-  export interface ApplicationStreamingOption {
+  export interface PartialApplicationStreamingOption {
     ApplicationStreamFPS?: Record<string | number, string | number>;
     ApplicationStreamFPSButtons?: Array<{
       label: number;
@@ -282,6 +281,11 @@ export namespace Types {
       label: number;
       value: number;
     }>;
+  }
+  export interface ApplicationStreamingOption extends PartialApplicationStreamingOption {
+    getApplicationFramerate: (fps: number) => number;
+    getApplicationResolution: (resolution: number) => number;
+    makeResolutionLabel: (resolution: number) => string;
   }
   export interface WebRTCConnection {
     activeOutputSinks: object;
@@ -568,7 +572,7 @@ export namespace Types {
     WebRTCConnection?: WebRTCConnection;
     VideoQualityManager?: DefaultTypes.AnyFunction;
     MediaEngineStore?: MediaEngineStore;
-    ApplicationStreamingOptionStore?: ApplicationStreamingOption;
+    ApplicationStreamingOption?: ApplicationStreamingOption;
     StreamRTCConnectionStore?: StreamRTCConnectionStore;
     ApplicationStreamingSettingsStore?: ApplicationStreamingSettingsStore;
   }
