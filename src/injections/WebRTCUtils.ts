@@ -1,11 +1,12 @@
+import { webpack } from "replugged";
 import { PluginInjector } from "../index";
-
 import Modules from "../lib/requiredModules";
+import Types from "../types";
 
 export default (): void => {
-  PluginInjector.instead(
-    Modules.WebRTCConnection.default.prototype,
-    "applyVideoQualityMode",
-    () => null,
+  const WebRTC = webpack.getFunctionBySource<Types.DefaultTypes.AnyFunction>(
+    Modules.WebRTCConnection,
+    "updateVideoQuality: ",
   );
+  PluginInjector.instead(WebRTC.prototype, "applyVideoQualityMode", () => null);
 };

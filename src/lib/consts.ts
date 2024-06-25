@@ -24,6 +24,7 @@ export const defaultSettings = {
     resolution: "0",
     fps: "60",
   },
+  hdrCaptureMode: false,
   audioSource: "none",
   upsell: false,
 };
@@ -113,6 +114,21 @@ export const resoWithSource = [
   },
   ...resoOptions,
 ];
+
+export const streamStoreKeys: Record<string, string> = {
+  ApplicationStreamFPS: "",
+  ApplicationStreamFPSButtons: "",
+  ApplicationStreamFPSButtonsWithSuffixLabel: "",
+  ApplicationStreamPresetValues: "",
+  ApplicationStreamResolutionButtons: "",
+  ApplicationStreamResolutionButtonsWithSuffixLabel: "",
+  ApplicationStreamResolutions: "",
+  ApplicationStreamSettingRequirements: "",
+  GoLiveDeviceResolutionButtons: "",
+  getApplicationFramerate: "",
+  getApplicationResolution: "",
+  makeResolutionLabel: "",
+};
 
 export const defaultParameters = {} as Types.ApplicationStreamingOption;
 

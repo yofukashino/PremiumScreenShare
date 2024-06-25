@@ -1,3 +1,4 @@
+import { webpack } from "replugged";
 import { Button } from "replugged/components";
 import { PluginInjector, SettingValues } from "../index";
 import { defaultSettings } from "../lib/consts";
@@ -8,7 +9,8 @@ import Types from "../types";
 
 export default async (): Promise<void> => {
   const StreamUpsell = await Modules.StreamUpsellPromise;
-  PluginInjector.after(StreamUpsell, "default", (_args, res: React.ReactElement & Types.Tree) => {
+  const loader = webpack.getFunctionKeyBySource(StreamUpsell, ".PREMIUM_UPSELL_BANNER");
+  PluginInjector.after(StreamUpsell, loader, (_args, res: React.ReactElement & Types.Tree) => {
     if (SettingValues.get("upsell", defaultSettings.upsell)) return null;
     const Label = Utils.findInReactTree(res, (c: React.ReactElement & Types.Tree) =>
       c?.props?.children?.some?.((c) => c?.props?.className?.includes?.("upsellText")),

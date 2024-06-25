@@ -14,6 +14,7 @@ import injectWebRTCUtils from "./WebRTCUtils";
 
 export const applyInjections = async (): Promise<void> => {
   await Modules.loadModules();
+  await Utils.saveModuleKeys();
   await Utils.saveDefaultParameters();
   injectApplicationStreamingOption();
   injectManaggeStreamContextMenu();

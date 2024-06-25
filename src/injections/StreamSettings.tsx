@@ -1,3 +1,4 @@
+import { webpack } from "replugged";
 import { PluginInjector } from "../index";
 import Modules from "../lib/requiredModules";
 import Utils from "../lib/utils";
@@ -5,9 +6,10 @@ import Types from "../types";
 
 export default async (): Promise<void> => {
   const StreamSettings = await Modules.StreamSettingsPromise;
+  const loader = webpack.getFunctionKeyBySource(StreamSettings, ".getVoiceChannelId()");
   PluginInjector.after(
     StreamSettings,
-    "default",
+    loader,
     ([{ selectedSource }], res: React.ReactElement & Types.Tree) => {
       const SourceContainer = Utils.findInReactTree(res, (c: React.ReactElement & Types.Tree) =>
         c?.props?.children?.some((v) =>
