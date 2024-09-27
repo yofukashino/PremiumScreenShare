@@ -50,7 +50,7 @@ export const saveModuleKeys = (): Promise<void> => {
     Modules.ApplicationStreamingOption,
   ).find(
     ([_key, value]) =>
-      Array.isArray(value) && value.some((button: Types.StreamButtons) => button.label == "480p"),
+      Array.isArray(value) && value.some((button: Types.StreamButtons) => button.label == "720p"),
   )[0];
 
   streamStoreKeys.ApplicationStreamResolutions = Object.entries(
@@ -183,12 +183,10 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
       ],
       3: [],
     },
-    ApplicationStreamResolutionButtons: streamingConstants.resolution
-      .filter(
-        (resolution) =>
-          resolution !== Number(SettingValues.get("resolution", defaultSettings.resolution)[1]),
-      )
-      .map((resolution) => ({ value: resolution, label: resolution == 0 ? "Source" : resolution })),
+    ApplicationStreamResolutionButtons: streamingConstants.resolution.map((resolution) => ({
+      value: resolution,
+      label: resolution == 0 ? "Source" : resolution,
+    })),
     ApplicationStreamResolutionButtonsWithSuffixLabel: streamingConstants.resolution.map(
       (resolution) => ({
         value: resolution,
@@ -286,6 +284,21 @@ export const getBitrate = (
       };
     }
   }
+};
+
+export const getPidFromSourceId = (id: string): number | void => {
+  const DiscordUtils =
+    DiscordNative.nativeModules.requireModule<Types.DiscordUtils>("discord_utils");
+  if (!DiscordUtils.getPidFromWindowHandle || !id) return;
+  const [type, handle] = id.split(":");
+
+  if (type === "window") {
+    const pid = DiscordUtils.getPidFromWindowHandle(handle);
+    return !pid ? void 0 : pid;
+  }
+
+  if (type.startsWith("screen")) return 1;
+  return null;
 };
 
 export const useSetting = <
@@ -399,6 +412,7 @@ export default {
   setStreamParameters,
   setCustomParameters,
   getBitrate,
+  getPidFromSourceId,
   useSetting,
   useSettingArray,
   useClearableSettings,

@@ -6,6 +6,18 @@ import StreamSetting from "./StreamSetting";
 import Utils from "../lib/utils";
 import Types from "../types";
 export const registerSettings = (): void => {
+  const resolutions = SettingValues.get("resolution");
+  if (resolutions[4]) {
+    PluginLogger.log("Removing 480p as it's deprecated by discord.");
+    SettingValues.set(
+      "resolution",
+      Object.entries(resolutions).reduce((acc, [key, val]: [string, string]) => {
+        if (resolutions[1] === val) return acc;
+        acc[Number(key) - 1] = val;
+        return acc;
+      }, {} as Record<1 | 2 | 3, string>),
+    );
+  }
   for (const key in defaultSettings) {
     if (SettingValues.has(key as keyof Types.Settings)) return;
     PluginLogger.log(`Adding new setting ${key} with value`, defaultSettings[key], ".");

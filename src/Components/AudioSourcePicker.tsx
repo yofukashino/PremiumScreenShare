@@ -1,12 +1,12 @@
 import { React } from "replugged/common";
 import { FormItem, Select } from "replugged/components";
 import { SettingValues } from "../index";
-import { defaultSettings } from "../lib/consts";
+import { defaultSettings, isLinux } from "../lib/consts";
 import Modules from "../lib/requiredModules";
 import Utils from "../lib/utils";
 export default (): React.ReactElement => {
   const MediaEngine = Modules.MediaEngineStore?.getMediaEngine();
-  if (!MediaEngine) return null;
+  if (!MediaEngine || isLinux) return null;
   const [options, setOptions] = React.useState<Array<{ label: string; value: string }>>([]);
   const [audioSource, setAudioSource] = Utils.useSettingArray(
     SettingValues,
@@ -14,9 +14,15 @@ export default (): React.ReactElement => {
     defaultSettings.audioSource,
   );
   const getPreviewAndSetOptions = async () => {
-    const windowPreviews = await MediaEngine.getWindowPreviews(1, 1);
-    const screenPreviews = await MediaEngine.getScreenPreviews(1, 1);
-    const previewOptions = [...windowPreviews, ...screenPreviews].map((p) => ({
+    const ScreenSources = (await Modules.getNativeSources(MediaEngine, ["window", "screen"], {
+      width: 1,
+      height: 1,
+    })) as Array<{
+      name: string;
+      id: string;
+      url: string;
+    }>;
+    const previewOptions = ScreenSources.map((p) => ({
       label: p.name,
       value: p.id,
     }));

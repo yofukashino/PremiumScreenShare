@@ -562,16 +562,101 @@ export namespace Types {
     setQuality: DefaultTypes.AnyFunction;
     constructor: DefaultTypes.AnyFunction;
   }
+  export interface DiscordUtils {
+    beforeUnload: DefaultTypes.AnyFunction;
+    clearCandidateGamesCallback: DefaultTypes.AnyFunction;
+    crash: DefaultTypes.AnyFunction;
+    createDateFormatter: DefaultTypes.AnyFunction;
+    gameDisplayModeIsSupported: DefaultTypes.AnyFunction;
+    gameDisplayModeUpdate: DefaultTypes.AnyFunction;
+    generateSessionFromPid: DefaultTypes.AnyFunction;
+    getAudioPid: DefaultTypes.AnyFunction;
+    getDiscordMemoryUsage: DefaultTypes.AnyFunction;
+    getDiscordMemoryUsageElectronRenderer: DefaultTypes.AnyFunction;
+    getGPUDriverVersions: DefaultTypes.AnyFunction;
+    getPidFromWindowHandle: (handle: string) => number;
+    getWindowFullscreenTypeByPid: DefaultTypes.AnyFunction;
+    getWindowHandleFromPid: DefaultTypes.AnyFunction;
+    initializeExitHook: DefaultTypes.AnyFunction;
+    inputCaptureRegisterElement: DefaultTypes.AnyFunction;
+    inputEventRegister: DefaultTypes.AnyFunction;
+    inputEventUnregister: DefaultTypes.AnyFunction;
+    inputGetRegisteredEvents: DefaultTypes.AnyFunction;
+    inputSetFocused: DefaultTypes.AnyFunction;
+    isSystemDarkMode: DefaultTypes.AnyFunction;
+    nativePermissionOpenSettings: DefaultTypes.AnyFunction;
+    nativePermssionHasAuthorization: DefaultTypes.AnyFunction;
+    nativePermssionRequestAuthorization: DefaultTypes.AnyFunction;
+    notifyGameLaunched: DefaultTypes.AnyFunction;
+    setCandidateGamesCallback: DefaultTypes.AnyFunction;
+    setForegroundProcess: DefaultTypes.AnyFunction;
+    setGameCandidateOverrides: DefaultTypes.AnyFunction;
+    setObservedGamesCallback: DefaultTypes.AnyFunction;
+    setObserverDebugCallback: DefaultTypes.AnyFunction;
+    setProcessPriority: DefaultTypes.AnyFunction;
+    shouldDisplayNotifications: DefaultTypes.AnyFunction;
+    submitLiveCrashReport: DefaultTypes.AnyFunction;
+    _generateLiveMinidump: DefaultTypes.AnyFunction;
+  }
+
+  export interface Socket {
+    analytics: object;
+    compressionHandler: object;
+    connectionStartTime: number;
+    connectionState: string;
+    didForceClearGuildHashes: boolean;
+    dispatchExceptionBackoff: object;
+    dispatchSuccessTimer: number;
+    expeditedHeartbeatTimeout: null | number;
+    gatewayBackoff: object;
+    handleIdentify: DefaultTypes.AnyFunction;
+    hasConnectedOnce: boolean;
+    heartbeatAck: boolean;
+    heartbeatInterval: number;
+    heartbeater: number;
+    helloTimeout: null | number;
+    identifyCompressedByteSize: number;
+    identifyStartTime: number;
+    identifyUncompressedByteSize: number;
+    initialHeartbeatTimeout: null | number;
+    isDeferringDispatches: boolean;
+    isFastConnect: boolean;
+    lastHeartbeatAckTime: number;
+    nextReconnectIsImmediate: boolean;
+    queuedDispatches: [];
+    resumeAnalytics: object;
+    resumeUrl: string;
+    send: DefaultTypes.AnyFunction;
+    voiceStateUpdate: DefaultTypes.AnyFunction;
+    seq: number;
+    sessionId: string;
+    token: string;
+    webSocket: object;
+    _events: object;
+    _eventsCount: number;
+    _maxListeners: undefined | number;
+    streamCreate: DefaultTypes.AnyFunction;
+    streamSetPaused: DefaultTypes.AnyFunction;
+  }
+  export interface GatewayConnectionStore extends Store {
+    getSocket: () => Socket;
+    initialize: DefaultTypes.AnyFunction;
+    isConnected: DefaultTypes.AnyFunction;
+    isConnectedOrOverlay: DefaultTypes.AnyFunction;
+    isTryingToConnect: DefaultTypes.AnyFunction;
+    lastTimeConnectedChanged: DefaultTypes.AnyFunction;
+  }
   export interface Modules {
     loadModules?: () => Promise<void>;
     StreamQualitySelectorPromise?: Promise<GenericModule>;
     StreamSettingsPromise?: Promise<GenericModule>;
     StreamUpsellPromise?: Promise<GenericModule>;
     VoiceConnection?: DefaultTypes.AnyFunction;
-    PartialProcessUtils?: PartialProcessUtils;
     WebRTCConnection?: WebRTCConnection;
     VideoQualityManager?: DefaultTypes.AnyFunction;
+    getNativeSources?: DefaultTypes.AnyFunction;
     MediaEngineStore?: MediaEngineStore;
+    RTCConnectionSocket?: DefaultTypes.AnyFunction;
     ApplicationStreamingOption?: ApplicationStreamingOption;
     StreamRTCConnectionStore?: StreamRTCConnectionStore;
     ApplicationStreamingSettingsStore?: ApplicationStreamingSettingsStore;
@@ -610,8 +695,8 @@ export namespace Types {
       : undefined
     : undefined;
   export interface Settings {
-    fps: number[];
-    resolution: number[];
+    fps: Record<number, number>;
+    resolution: Record<number, number>;
     smoothVideo: {
       resolution: number;
       fps: number;
@@ -626,3 +711,168 @@ export namespace Types {
 }
 
 export default Types;
+
+declare global {
+  export const DiscordNative: {
+    accessibility: {
+      isAccessibilitySupportEnabled: Types.DefaultTypes.AnyFunction;
+    };
+    app: {
+      dock: {
+        setBadge: Types.DefaultTypes.AnyFunction;
+        bounce: Types.DefaultTypes.AnyFunction;
+        cancelBounce: Types.DefaultTypes.AnyFunction;
+      };
+      getBuildNumber: Types.DefaultTypes.AnyFunction;
+      getDefaultDoubleClickAction: Types.DefaultTypes.AnyFunction;
+      getModuleVersions: Types.DefaultTypes.AnyFunction;
+      getPath: Types.DefaultTypes.AnyFunction;
+      getReleaseChannel: Types.DefaultTypes.AnyFunction;
+      getVersion: Types.DefaultTypes.AnyFunction;
+      registerUserInteractionHandler: Types.DefaultTypes.AnyFunction;
+      relaunch: Types.DefaultTypes.AnyFunction;
+      setBadgeCount: Types.DefaultTypes.AnyFunction;
+    };
+    clipboard: {
+      copy: Types.DefaultTypes.AnyFunction;
+      copyImage: Types.DefaultTypes.AnyFunction;
+      cut: Types.DefaultTypes.AnyFunction;
+      paste: Types.DefaultTypes.AnyFunction;
+      read: Types.DefaultTypes.AnyFunction;
+    };
+    clips: {
+      deleteClip: Types.DefaultTypes.AnyFunction;
+      loadClip: Types.DefaultTypes.AnyFunction;
+      loadClipsDirectory: Types.DefaultTypes.AnyFunction;
+    };
+    fileManager: {
+      basename: Types.DefaultTypes.AnyFunction;
+      cleanupTempFiles: Types.DefaultTypes.AnyFunction;
+      dirname: Types.DefaultTypes.AnyFunction;
+      extname: Types.DefaultTypes.AnyFunction;
+      getModuleDataPathSync: Types.DefaultTypes.AnyFunction;
+      getModulePath: Types.DefaultTypes.AnyFunction;
+      join: Types.DefaultTypes.AnyFunction;
+      openFiles: Types.DefaultTypes.AnyFunction;
+      readLogFiles: Types.DefaultTypes.AnyFunction;
+      readTimeSeriesLogFiles: Types.DefaultTypes.AnyFunction;
+      saveWithDialog: Types.DefaultTypes.AnyFunction;
+      showItemInFolder: Types.DefaultTypes.AnyFunction;
+      showOpenDialog: Types.DefaultTypes.AnyFunction;
+    };
+    gpuSettings: {
+      getEnableHardwareAcceleration: Types.DefaultTypes.AnyFunction;
+      setEnableHardwareAcceleration: Types.DefaultTypes.AnyFunction;
+    };
+    http: {
+      getAPIEndpoint: Types.DefaultTypes.AnyFunction;
+      makeChunkedRequest: Types.DefaultTypes.AnyFunction;
+    };
+    ipc: {
+      invoke: Types.DefaultTypes.AnyFunction;
+      on: Types.DefaultTypes.AnyFunction;
+      send: Types.DefaultTypes.AnyFunction;
+    };
+    isRenderer: boolean;
+    nativeModules: {
+      canBootstrapNewUpdater: boolean;
+      ensureModule: (string) => boolean;
+      requireModule: <T = unknown>(string) => T;
+    };
+    os: {
+      arch: string;
+      release: string;
+    };
+    powerMonitor: {
+      getSystemIdleTimeMs: Types.DefaultTypes.AnyFunction;
+      on: Types.DefaultTypes.AnyFunction;
+      removeAllListeners: Types.DefaultTypes.AnyFunction;
+      removeListener: Types.DefaultTypes.AnyFunction;
+    };
+    powerSaveBlocker: {
+      blockDisplaySleep: Types.DefaultTypes.AnyFunction;
+      cleanupDisplaySleep: Types.DefaultTypes.AnyFunction;
+      unblockDisplaySleep: Types.DefaultTypes.AnyFunction;
+    };
+    process: {
+      arch: string;
+      env: object;
+      platform: string;
+    };
+    processUtils: {
+      flushCookies: Types.DefaultTypes.AnyFunction;
+      flushDNSCache: Types.DefaultTypes.AnyFunction;
+      flushStorageData: Types.DefaultTypes.AnyFunction;
+      getCPUCoreCount: Types.DefaultTypes.AnyFunction;
+      getCurrentCPUUsagePercent: Types.DefaultTypes.AnyFunction;
+      getCurrentMemoryUsageKB: Types.DefaultTypes.AnyFunction;
+      getLastCrash: Types.DefaultTypes.AnyFunction;
+      getMainArgvSync: Types.DefaultTypes.AnyFunction;
+      purgeMemory: Types.DefaultTypes.AnyFunction;
+    };
+    remoteApp: {
+      dock: {
+        setBadge: Types.DefaultTypes.AnyFunction;
+        bounce: Types.DefaultTypes.AnyFunction;
+        cancelBounce: Types.DefaultTypes.AnyFunction;
+      };
+      getBuildNumber: Types.DefaultTypes.AnyFunction;
+      getDefaultDoubleClickAction: Types.DefaultTypes.AnyFunction;
+      getModuleVersions: Types.DefaultTypes.AnyFunction;
+      getPath: Types.DefaultTypes.AnyFunction;
+      getReleaseChannel: Types.DefaultTypes.AnyFunction;
+      getVersion: Types.DefaultTypes.AnyFunction;
+      registerUserInteractionHandler: Types.DefaultTypes.AnyFunction;
+      relaunch: Types.DefaultTypes.AnyFunction;
+      setBadgeCount: Types.DefaultTypes.AnyFunction;
+    };
+    remotePowerMonitor: {
+      getSystemIdleTimeMs: Types.DefaultTypes.AnyFunction;
+      on: Types.DefaultTypes.AnyFunction;
+      removeAllListeners: Types.DefaultTypes.AnyFunction;
+      removeListener: Types.DefaultTypes.AnyFunction;
+    };
+    safeStorage: {
+      decryptString: Types.DefaultTypes.AnyFunction;
+      encryptString: Types.DefaultTypes.AnyFunction;
+      isEncryptionAvailable: Types.DefaultTypes.AnyFunction;
+    };
+    setUncaughtExceptionHandler: Types.DefaultTypes.AnyFunction;
+    settings: {
+      get: Types.DefaultTypes.AnyFunction;
+      getSync: Types.DefaultTypes.AnyFunction;
+      set: Types.DefaultTypes.AnyFunction;
+    };
+    spellCheck: {
+      getAvailableDictionaries: Types.DefaultTypes.AnyFunction;
+      on: Types.DefaultTypes.AnyFunction;
+      removeListener: Types.DefaultTypes.AnyFunction;
+      replaceMisspelling: Types.DefaultTypes.AnyFunction;
+      setLearnedWords: Types.DefaultTypes.AnyFunction;
+      setLocale: Types.DefaultTypes.AnyFunction;
+    };
+    thumbar: { setThumbarButtons: Types.DefaultTypes.AnyFunction };
+    userDataCache: {
+      cacheUserData: Types.DefaultTypes.AnyFunction;
+      deleteCache: Types.DefaultTypes.AnyFunction;
+      getCached: Types.DefaultTypes.AnyFunction;
+    };
+    window: {
+      USE_OSX_NATIVE_TRAFFIC_LIGHTS: boolean;
+      blur: Types.DefaultTypes.AnyFunction;
+      close: Types.DefaultTypes.AnyFunction;
+      flashFrame: Types.DefaultTypes.AnyFunction;
+      focus: Types.DefaultTypes.AnyFunction;
+      fullscreen: Types.DefaultTypes.AnyFunction;
+      isAlwaysOnTop: Types.DefaultTypes.AnyFunction;
+      maximize: Types.DefaultTypes.AnyFunction;
+      minimize: Types.DefaultTypes.AnyFunction;
+      restore: Types.DefaultTypes.AnyFunction;
+      setAlwaysOnTop: Types.DefaultTypes.AnyFunction;
+      setBackgroundThrottling: Types.DefaultTypes.AnyFunction;
+      setDevtoolsCallbacks: Types.DefaultTypes.AnyFunction;
+      setProgressBar: Types.DefaultTypes.AnyFunction;
+      setZoomFactor: Types.DefaultTypes.AnyFunction;
+    };
+  };
+}

@@ -1,39 +1,56 @@
 import { PluginInjector, SettingValues } from "../index";
 import { defaultSettings } from "../lib/consts";
 import Modules from "../lib/requiredModules";
+import Utils from "../lib/utils";
 import Types from "../types";
 
 export default (): void => {
-  const { VoiceConnection, PartialProcessUtils } = Modules;
+  const { VoiceConnection } = Modules;
   PluginInjector.before(
     VoiceConnection.prototype,
     "setGoLiveSource",
-    (args: [Record<string, Record<string, unknown>>, string]) => {
-      if (args[0]?.desktopDescription)
+    (
+      args: [Record<string, Record<string, unknown>>, string],
+      instance: Types.DefaultTypes.ObjectExports & Types.VoiceEngine,
+    ) => {
+      if (args[0].desktopDescription)
         args[0].desktopDescription.hdrCaptureMode = SettingValues.get(
           "hdrCaptureMode",
           defaultSettings.hdrCaptureMode,
         )
           ? "always"
           : "never";
+      if (
+        (args?.[0]?.desktopDescription?.id as string).startsWith("screen") &&
+        args?.[0]?.desktopDescription?.soundshareId
+      ) {
+        args[0].desktopDescription.soundshareId = instance.soundshareId;
+      }
       return args;
     },
   );
+
   PluginInjector.after(
     VoiceConnection.prototype,
     "setGoLiveSource",
-    (_args, res, instance: Types.DefaultTypes.ObjectExports & Types.VoiceEngine) => {
+    (
+      [{ desktopDescription }]: [Record<string, Record<string, unknown>>, string],
+      res,
+      instance: Types.DefaultTypes.ObjectExports & Types.VoiceEngine,
+    ) => {
       const windowId = SettingValues.get("audioSource", defaultSettings.audioSource);
-      const pid = PartialProcessUtils.getPidFromDesktopSource(windowId);
-      const connectionArray = Array.from(instance?.connections ?? []);
-      const streamConnection = connectionArray?.find((c) => c?.goLiveSourceIdentifier);
+      const pid = Utils.getPidFromSourceId(windowId);
       if (
-        !streamConnection?.goLiveSourceIdentifier?.includes("screen-handle:") ||
-        streamConnection?.soundshareId == pid
+        !(desktopDescription.id as string).startsWith("screen") ||
+        desktopDescription.soundshareId == pid
       ) {
         return res;
       }
-      instance?.setSoundshareSource?.(pid, true);
+
+      instance.setSoundshareSource(pid, true);
+      instance.handleSoundshareFailed = () => {
+        instance.setSoundshareSource(pid, true);
+      };
       return res;
     },
   );

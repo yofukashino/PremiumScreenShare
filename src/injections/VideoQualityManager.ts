@@ -22,25 +22,25 @@ export default (): void => {
         };
       },
     ) => {
-      if (!instance?.isStreamContext) {
+      if (!instance.isStreamContext) {
         return res;
       }
       const {
         goliveMaxQuality: { capture: ApplicationStreamingSettings },
       } = instance;
       const maxVideoQuality = {
-        width: ApplicationStreamingSettings?.width,
-        height: ApplicationStreamingSettings?.height,
+        width: ApplicationStreamingSettings.width,
+        height: ApplicationStreamingSettings.height,
         pixelCount: 1920 * 1080,
-        framerate: ApplicationStreamingSettings?.framerate,
+        framerate: ApplicationStreamingSettings.framerate,
       };
-      Object.assign(res, Utils.getBitrate(ApplicationStreamingSettings?.height || screen.height));
+      Object.assign(res, Utils.getBitrate(ApplicationStreamingSettings.height || screen.height));
 
-      if (!res?.capture) {
+      if (!res.capture) {
         return res;
       }
       Object.assign(res.capture, maxVideoQuality);
-      if (!res?.encode) {
+      if (!res.encode) {
         return res;
       }
       Object.assign(res.encode, maxVideoQuality);

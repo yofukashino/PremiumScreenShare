@@ -3,7 +3,7 @@ import { defaultSettings } from "./lib/consts";
 import "./styles.css";
 export const PluginInjector = new Injector();
 export const { utils: PluginInjectorUtils } = PluginInjector;
-export const PluginLogger = Logger.plugin("PremiumScreenShare");
+export const PluginLogger = Logger.plugin("PremiumScreenShare", "#b380ff");
 export const SettingValues = await settings.init("dev.tharki.PremiumScreenShare", defaultSettings);
 import Settings from "./Components/Settings";
 import Injections from "./injections/index";

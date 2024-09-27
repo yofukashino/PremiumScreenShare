@@ -24,7 +24,7 @@ Modules.loadModules = async (): Promise<void> => {
     .waitForModule<Types.GenericExport>(webpack.filters.bySource(".PREMIUM_UPSELL_BANNER,"), {
       raw: true,
     })
-    .then((r) => r?.exports);
+    .then((r) => r.exports);
 
   Modules.VoiceConnection ??= await webpack
     .waitForModule<Types.DefaultTypes.AnyFunction>(
@@ -35,14 +35,6 @@ Modules.loadModules = async (): Promise<void> => {
     )
     .catch(() => {
       throw new Error("Failed To Find VoiceConnection  Module");
-    });
-
-  Modules.PartialProcessUtils ??= await webpack
-    .waitForProps<Types.PartialProcessUtils>(["getPidFromDesktopSource"], {
-      timeout: 10000,
-    })
-    .catch(() => {
-      throw new Error("Failed To Find PartialProcessUtils  Module");
     });
 
   Modules.WebRTCConnection ??= await webpack
@@ -64,6 +56,17 @@ Modules.loadModules = async (): Promise<void> => {
       throw new Error("Failed To Find VideoQualityManager  Module");
     });
 
+  Modules.getNativeSources ??= await webpack
+    .waitForModule<Types.DefaultTypes.AnyFunction>(
+      webpack.filters.bySource("Can't get desktop sources outside of native app"),
+      {
+        timeout: 10000,
+      },
+    )
+    .catch(() => {
+      throw new Error("Failed To Find getNativeScreens Module");
+    });
+
   Modules.ApplicationStreamingOption ??= await webpack
     .waitForModule<Types.ApplicationStreamingOption>(
       webpack.filters.bySource("Unknown resolution: "),
@@ -74,9 +77,18 @@ Modules.loadModules = async (): Promise<void> => {
     .catch(() => {
       throw new Error("Failed To Find ApplicationStreamingOption  Module");
     });
+  Modules.RTCConnectionSocket ??= await webpack
+    .waitForModule<Types.DefaultTypes.AnyFunction>(
+      webpack.filters.bySource("_handleVoiceQualityPeriodicsStats"),
+      {
+        timeout: 10000,
+      },
+    )
+    .catch(() => {
+      throw new Error("Failed To Find RTCConnectionSocket  Module");
+    });
 
   Modules.MediaEngineStore ??= webpack.getByStoreName<Types.MediaEngineStore>("MediaEngineStore");
-
   Modules.StreamRTCConnectionStore ??= webpack.getByStoreName<Types.StreamRTCConnectionStore>(
     "StreamRTCConnectionStore",
   );

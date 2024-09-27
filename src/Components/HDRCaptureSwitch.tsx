@@ -1,4 +1,4 @@
-import { Flex, CheckboxItem } from "replugged/components";
+import { CheckboxItem, Flex } from "replugged/components";
 import { SettingValues } from "../index";
 import { defaultSettings } from "../lib/consts";
 import Utils from "../lib/utils";

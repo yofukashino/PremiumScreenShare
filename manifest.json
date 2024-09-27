@@ -3,16 +3,16 @@
   "name": "PremiumScreenShare",
   "description": "Replugged plugin to make the screen sharing experience truly PREMIUM.",
   "image": "https://i.imgur.com/6B9XTIL.png",
-  "source": "https://github.com/YofukashiNo/PremiumScreenShare",
+  "source": "https://github.com/yofukashino/PremiumScreenShare",
   "author": {
     "name": "Nanakusa",
     "discordID": "1121961711080050780",
-    "github": "YofukashiNo"
+    "github": "yofukashino"
   },
   "version": "1.2.3",
   "updater": {
     "type": "github",
-    "id": "YofukashiNo/PremiumScreenShare"
+    "id": "yofukashino/PremiumScreenShare"
   },
   "license": "MIT",
   "type": "replugged-plugin",

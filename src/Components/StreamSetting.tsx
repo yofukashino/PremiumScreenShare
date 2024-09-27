@@ -33,19 +33,11 @@ export const FPS = () => (
 export const Resolution = () => (
   <>
     <SelectItem
-      note="Replace 480p with custom resolution"
-      clearable={true}
-      disabled={false}
-      options={resoOptions}
-      {...Utils.useClearableSettings(SettingValues, "resolution.1", defaultSettings.resolution[1])}>
-      480p
-    </SelectItem>
-    <SelectItem
       note="Replace 720p with custom resolution"
       clearable={true}
       disabled={false}
       options={resoOptions}
-      {...Utils.useClearableSettings(SettingValues, "resolution.2", defaultSettings.resolution[2])}>
+      {...Utils.useClearableSettings(SettingValues, "resolution.1", defaultSettings.resolution[1])}>
       720p
     </SelectItem>
     <SelectItem
@@ -53,7 +45,7 @@ export const Resolution = () => (
       clearable={true}
       disabled={false}
       options={resoOptions}
-      {...Utils.useClearableSettings(SettingValues, "resolution.3", defaultSettings.resolution[3])}>
+      {...Utils.useClearableSettings(SettingValues, "resolution.1", defaultSettings.resolution[2])}>
       1080p
     </SelectItem>
     <SelectItem
@@ -61,7 +53,7 @@ export const Resolution = () => (
       clearable={true}
       disabled={false}
       options={resoOptions}
-      {...Utils.useClearableSettings(SettingValues, "resolution.4", defaultSettings.resolution[4])}>
+      {...Utils.useClearableSettings(SettingValues, "resolution.2", defaultSettings.resolution[3])}>
       1440p
     </SelectItem>
   </>

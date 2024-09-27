@@ -11,10 +11,9 @@ export const defaultSettings = {
     3: "60",
   },
   resolution: {
-    1: "480",
-    2: "720",
-    3: "1080",
-    4: "1440",
+    1: "720",
+    2: "1080",
+    3: "1440",
   },
   smoothVideo: {
     resolution: "720",
@@ -163,3 +162,5 @@ export const streamingConstants = {
     ];
   },
 } as Types.StreamingConstants;
+
+export const isLinux = DiscordNative.process.platform.includes("linux");

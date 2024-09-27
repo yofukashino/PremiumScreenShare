@@ -28,10 +28,11 @@ rules:
   node/no-missing-import: off
   node/no-unpublished-import: off
   node/no-unpublished-require: off
+  no-misleading-character-class: off
   node/shebang: off
   no-process-exit: off
   no-undef: off
-  no-unused-vars: off
+  no-unused-vars: warn
   "@typescript-eslint/no-unused-vars": error
 
 overrides:
@@ -49,6 +50,7 @@ overrides:
     extends: eslint-config-dmitmel/rules/typescript/with-type-checking
     rules:
       "@typescript-eslint/no-unnecessary-condition": off
+      "@typescript-eslint/naming-convention": off
 
   - files: "**/*.d.ts"
     rules:

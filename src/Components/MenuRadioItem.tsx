@@ -2,10 +2,12 @@ import { util } from "replugged";
 import { React } from "replugged/common";
 import { ContextMenu } from "replugged/components";
 import { SettingValues } from "../index";
+import { defaultSettings, isLinux } from "../lib/consts";
 import Modules from "../lib/requiredModules";
-import { defaultSettings } from "../lib/consts";
+import Utils from "../lib/utils";
+
 export default (): React.ReactElement => {
-  const { MediaEngineStore, PartialProcessUtils } = Modules;
+  const { MediaEngineStore } = Modules;
   const MediaEngine = MediaEngineStore?.getMediaEngine();
   const [isStreamScreen, setStreamTypeStatus] = React.useState<boolean>(false);
   const [options, setOptions] = React.useState<Array<{ label: string; id: string }>>([]);
@@ -17,12 +19,18 @@ export default (): React.ReactElement => {
   const findAndSetStreamSource = () => {
     const connectionArray = Array.from(MediaEngine?.connections ?? []);
     const streamConnection = connectionArray?.find((c) => c?.goLiveSourceIdentifier);
-    setStreamTypeStatus(streamConnection?.goLiveSourceIdentifier?.includes("screen-handle:"));
+    setStreamTypeStatus(streamConnection?.goLiveSourceIdentifier?.startsWith("screen"));
   };
   const getPreviewAndSetOptions = async () => {
-    const windowPreviews = await MediaEngine.getWindowPreviews(1, 1);
-    const screenPreviews = (await MediaEngine.getScreenPreviews(1, 1)) as [];
-    const previewOptions = [...windowPreviews, ...screenPreviews].map((p) => ({
+    const ScreenSources = (await Modules.getNativeSources(MediaEngine, ["window", "screen"], {
+      width: 1,
+      height: 1,
+    })) as Array<{
+      name: string;
+      id: string;
+      url: string;
+    }>;
+    const previewOptions = ScreenSources.map((p) => ({
       label: p.name,
       id: p.id,
     }));
@@ -47,11 +55,12 @@ export default (): React.ReactElement => {
   }, [JSON.stringify(options)]);
   React.useEffect(() => {
     if (audioSource) {
-      const pid = PartialProcessUtils?.getPidFromDesktopSource(audioSource);
+      const pid = Utils.getPidFromSourceId(audioSource);
       MediaEngine?.setSoundshareSource(pid, true);
     }
   }, [audioSource]);
   return (
+    !isLinux &&
     MediaEngine &&
     isStreamScreen && (
       <ContextMenu.MenuItem label="Audio Source" id="audio-source">

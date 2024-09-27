@@ -25,7 +25,7 @@ export default async (): Promise<void> => {
         );
       const qualitySelectorElement = res.props.children.find((c) => Boolean(c?.props?.onFPSChange));
       if (qualitySelectorElement?.props)
-        qualitySelectorElement.props.isScreen = selectedSource?.id?.includes("screen-handle:");
+        qualitySelectorElement.props.isScreen = selectedSource?.id?.startsWith("screen");
       return res;
     },
   );
