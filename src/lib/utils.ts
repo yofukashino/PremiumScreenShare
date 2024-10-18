@@ -1,5 +1,5 @@
 import { settings, util, webpack } from "replugged";
-import { React, lodash } from "replugged/common";
+import { React, i18n, lodash } from "replugged/common";
 import { SettingValues } from "../index";
 import { defaultParameters, defaultSettings, streamStoreKeys } from "./consts";
 import Modules from "./requiredModules";
@@ -29,7 +29,14 @@ export const saveModuleKeys = (): Promise<void> => {
     Modules.ApplicationStreamingOption,
   ).find(
     ([_key, value]) =>
-      Array.isArray(value) && value.some((button: Types.StreamButtons) => button.label == "15 FPS"),
+      Array.isArray(value) &&
+      value.some(
+        (button: Types.StreamButtons) =>
+          button.label ==
+          i18n.Messages.STREAM_FPS_OPTION.format({
+            value: 15,
+          }),
+      ),
   )[0];
 
   streamStoreKeys.ApplicationStreamPresetValues = Object.entries(
@@ -50,7 +57,14 @@ export const saveModuleKeys = (): Promise<void> => {
     Modules.ApplicationStreamingOption,
   ).find(
     ([_key, value]) =>
-      Array.isArray(value) && value.some((button: Types.StreamButtons) => button.label == "720p"),
+      Array.isArray(value) &&
+      value.some(
+        (button: Types.StreamButtons) =>
+          button.label ==
+          i18n.Messages.SCREENSHARE_RESOLUTION_ABBREVIATED.format({
+            resolution: 720,
+          }),
+      ),
   )[0];
 
   streamStoreKeys.ApplicationStreamResolutions = Object.entries(
@@ -160,7 +174,9 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
     })),
     ApplicationStreamFPSButtonsWithSuffixLabel: streamingConstants.fps.map((fps) => ({
       value: fps,
-      label: `${fps} FPS`,
+      label: i18n.Messages.STREAM_FPS_OPTION.format({
+        value: fps,
+      }),
     })),
     ApplicationStreamPresetValues: {
       1: [
@@ -185,12 +201,17 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
     },
     ApplicationStreamResolutionButtons: streamingConstants.resolution.map((resolution) => ({
       value: resolution,
-      label: resolution == 0 ? "Source" : resolution,
+      label: resolution == 0 ? i18n.Messages.SCREENSHARE_SOURCE : resolution,
     })),
     ApplicationStreamResolutionButtonsWithSuffixLabel: streamingConstants.resolution.map(
       (resolution) => ({
         value: resolution,
-        label: resolution == 0 ? "Source" : `${resolution}p`,
+        label:
+          resolution == 0
+            ? i18n.Messages.SCREENSHARE_SOURCE
+            : i18n.Messages.SCREENSHARE_RESOLUTION_ABBREVIATED.format({
+                resolution,
+              }),
       }),
     ),
     ApplicationStreamResolutions: Object.assign(
