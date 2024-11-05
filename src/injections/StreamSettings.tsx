@@ -11,17 +11,13 @@ export default async (): Promise<void> => {
     StreamSettings,
     loader,
     ([{ selectedSource }], res: React.ReactElement & Types.Tree) => {
+      console.log(res);
       const SourceContainer = Utils.findInReactTree(res, (c: React.ReactElement & Types.Tree) =>
-        c?.props?.children?.some((v) =>
-          v?.type?.toString()?.includes(".Messages.GO_LIVE_MODAL_ENABLE_SCREEN_SOUNDSHARE_LABEL"),
-        ),
+        c?.props?.children?.some((v) => v?.type?.toString()?.includes('.id.startsWith("screen")')),
       ) as React.ReactElement & Types.Tree;
       if (SourceContainer?.props)
         SourceContainer.props.children = SourceContainer.props.children.filter(
-          (v) =>
-            !v?.type
-              ?.toString()
-              ?.includes(".Messages.GO_LIVE_MODAL_ENABLE_SCREEN_SOUNDSHARE_LABEL"),
+          (v) => !v?.type?.toString()?.includes("screen:"),
         );
       const qualitySelectorElement = res.props.children.find((c) => Boolean(c?.props?.onFPSChange));
       if (qualitySelectorElement?.props)

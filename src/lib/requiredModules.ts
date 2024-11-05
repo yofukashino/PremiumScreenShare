@@ -14,7 +14,7 @@ Modules.loadModules = async (): Promise<void> => {
     .then(({ exports }) => exports);
   Modules.StreamSettingsPromise = webpack
     .waitForModule<Types.GenericExport>(
-      webpack.filters.bySource("Messages.GO_LIVE_MODAL_APPLICATION_FORM_TITLE"),
+      webpack.filters.bySource(".NOTIFY_STREAM_SETTING_UPDATE,"),
       {
         raw: true,
       },

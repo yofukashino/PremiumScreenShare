@@ -30,13 +30,7 @@ export const saveModuleKeys = (): Promise<void> => {
   ).find(
     ([_key, value]) =>
       Array.isArray(value) &&
-      value.some(
-        (button: Types.StreamButtons) =>
-          button.label ==
-          i18n.Messages.STREAM_FPS_OPTION.format({
-            value: 15,
-          }),
-      ),
+      value.some((button: Types.StreamButtons) => button.label != 15 && button.value == 15),
   )[0];
 
   streamStoreKeys.ApplicationStreamPresetValues = Object.entries(
@@ -58,13 +52,7 @@ export const saveModuleKeys = (): Promise<void> => {
   ).find(
     ([_key, value]) =>
       Array.isArray(value) &&
-      value.some(
-        (button: Types.StreamButtons) =>
-          button.label ==
-          i18n.Messages.SCREENSHARE_RESOLUTION_ABBREVIATED.format({
-            resolution: 720,
-          }),
-      ),
+      value.some((button: Types.StreamButtons) => button.label != 720 && button.value == 720),
   )[0];
 
   streamStoreKeys.ApplicationStreamResolutions = Object.entries(
@@ -97,7 +85,7 @@ export const saveModuleKeys = (): Promise<void> => {
   );
   streamStoreKeys.makeResolutionLabel = webpack.getFunctionKeyBySource(
     Modules.ApplicationStreamingOption,
-    "Messages.SCREENSHARE_RESOLUTION_ABBREVIATED",
+    "Messages.",
   );
   return Promise.resolve();
 };
@@ -174,9 +162,9 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
     })),
     ApplicationStreamFPSButtonsWithSuffixLabel: streamingConstants.fps.map((fps) => ({
       value: fps,
-      label: i18n.Messages.STREAM_FPS_OPTION.format({
-        value: fps,
-      }),
+      label: defaultParameters.ApplicationStreamFPSButtonsWithSuffixLabel.find(
+        (button) => button.value == 15,
+      ).label.replace("15", `${fps}`),
     })),
     ApplicationStreamPresetValues: {
       1: [
@@ -201,17 +189,24 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
     },
     ApplicationStreamResolutionButtons: streamingConstants.resolution.map((resolution) => ({
       value: resolution,
-      label: resolution == 0 ? i18n.Messages.SCREENSHARE_SOURCE : resolution,
+      label:
+        resolution == 0
+          ? defaultParameters.ApplicationStreamResolutionButtonsWithSuffixLabel.find(
+              (button) => button.value == 0,
+            ).label
+          : resolution,
     })),
     ApplicationStreamResolutionButtonsWithSuffixLabel: streamingConstants.resolution.map(
       (resolution) => ({
         value: resolution,
         label:
           resolution == 0
-            ? i18n.Messages.SCREENSHARE_SOURCE
-            : i18n.Messages.SCREENSHARE_RESOLUTION_ABBREVIATED.format({
-                resolution,
-              }),
+            ? defaultParameters.ApplicationStreamResolutionButtonsWithSuffixLabel.find(
+                (button) => button.value == 0,
+              ).label
+            : defaultParameters.ApplicationStreamResolutionButtonsWithSuffixLabel.find(
+                (button) => button.value == 720,
+              ).label.replace("720", `${resolution}`),
       }),
     ),
     ApplicationStreamResolutions: Object.assign(
