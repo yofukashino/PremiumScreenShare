@@ -17,5 +17,5 @@ export const stop = (): void => {
   PluginInjector.uninjectAll();
   Injections.removeInjections();
 };
-export { defaultSettings, streamStoreKeys } from "./lib/consts";
+
 export { Settings } from "./Components/Settings";

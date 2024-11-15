@@ -85,7 +85,7 @@ export const saveModuleKeys = (): Promise<void> => {
   );
   streamStoreKeys.makeResolutionLabel = webpack.getFunctionKeyBySource(
     Modules.ApplicationStreamingOption,
-    "Messages.",
+    "intl.formatToPlainString",
   );
   return Promise.resolve();
 };
@@ -191,22 +191,13 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
       value: resolution,
       label:
         resolution == 0
-          ? defaultParameters.ApplicationStreamResolutionButtonsWithSuffixLabel.find(
-              (button) => button.value == 0,
-            ).label
+          ? Modules.ApplicationStreamingOption[streamStoreKeys.makeResolutionLabel](0)
           : resolution,
     })),
     ApplicationStreamResolutionButtonsWithSuffixLabel: streamingConstants.resolution.map(
       (resolution) => ({
         value: resolution,
-        label:
-          resolution == 0
-            ? defaultParameters.ApplicationStreamResolutionButtonsWithSuffixLabel.find(
-                (button) => button.value == 0,
-              ).label
-            : defaultParameters.ApplicationStreamResolutionButtonsWithSuffixLabel.find(
-                (button) => button.value == 720,
-              ).label.replace("720", `${resolution}`),
+        label: Modules.ApplicationStreamingOption[streamStoreKeys.makeResolutionLabel](resolution),
       }),
     ),
     ApplicationStreamResolutions: Object.assign(
