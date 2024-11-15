@@ -9,7 +9,7 @@
     "discordID": "1121961711080050780",
     "github": "yofukashino"
   },
-  "version": "1.2.7",
+  "version": "1.2.8",
   "updater": {
     "type": "github",
     "id": "yofukashino/PremiumScreenShare"
