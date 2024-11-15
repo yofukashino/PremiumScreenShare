@@ -11,7 +11,6 @@ export default async (): Promise<void> => {
     StreamSettings,
     loader,
     ([{ selectedSource }], res: React.ReactElement & Types.Tree) => {
-      console.log(res);
       const SourceContainer = Utils.findInReactTree(res, (c: React.ReactElement & Types.Tree) =>
         c?.props?.children?.some((v) => v?.type?.toString()?.includes('.id.startsWith("screen")')),
       ) as React.ReactElement & Types.Tree;

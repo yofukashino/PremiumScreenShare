@@ -189,15 +189,20 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
     },
     ApplicationStreamResolutionButtons: streamingConstants.resolution.map((resolution) => ({
       value: resolution,
-      label:
-        resolution == 0
+      get label() {
+        return resolution == 0
           ? Modules.ApplicationStreamingOption[streamStoreKeys.makeResolutionLabel](0)
-          : resolution,
+          : resolution;
+      },
     })),
     ApplicationStreamResolutionButtonsWithSuffixLabel: streamingConstants.resolution.map(
       (resolution) => ({
         value: resolution,
-        label: Modules.ApplicationStreamingOption[streamStoreKeys.makeResolutionLabel](resolution),
+        get label() {
+          return Modules.ApplicationStreamingOption[streamStoreKeys.makeResolutionLabel](
+            resolution,
+          );
+        },
       }),
     ),
     ApplicationStreamResolutions: Object.assign(

@@ -22,16 +22,12 @@ export default async (): Promise<void> => {
       if (MainText) MainText.props.children = "Premium Experience by yofukashino_, Donations Open.";
     }
     const ButtonContainer = Utils.findInReactTree(res, (c: React.ReactElement & Types.Tree) =>
-      c?.props?.children?.props?.iconClassName?.includes("premiumIcon"),
+      c?.props?.children?.type?.toString()?.includes("StreamSettingsUpsellBanner.NitroButton"),
     ) as React.ReactElement & Types.Tree;
     if (ButtonContainer) {
       const {
-        props: {
-          children: {
-            props: { className, iconClassName, size },
-          },
-        },
-      } = ButtonContainer;
+        props: { className, iconClassName, size },
+      } = ButtonContainer.props.children.type({});
       ButtonContainer.props.children = (
         <Button
           onClick={() => open("https://ko-fi.com/yofukashino")}

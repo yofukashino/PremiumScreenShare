@@ -18,4 +18,6 @@ export const stop = (): void => {
   Injections.removeInjections();
 };
 
+export * from "./lib/consts";
+
 export { Settings } from "./Components/Settings";
