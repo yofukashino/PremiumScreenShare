@@ -1,5 +1,5 @@
 import { settings, util, webpack } from "replugged";
-import { React, i18n, lodash } from "replugged/common";
+import { React, lodash } from "replugged/common";
 import { SettingValues } from "../index";
 import { defaultParameters, defaultSettings, streamStoreKeys } from "./consts";
 import Modules from "./requiredModules";
