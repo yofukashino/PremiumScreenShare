@@ -3,6 +3,7 @@ import { SettingValues } from "../index";
 import Utils from "../lib/utils";
 
 import Types from "../types";
+import Modules from "./requiredModules";
 
 export const defaultSettings = {
   fps: {
@@ -128,6 +129,15 @@ export const streamStoreKeys: Record<string, string> = {
   getApplicationResolution: "",
   makeResolutionLabel: "",
 };
+
+export const MappedApplicationStreamingOption: Types.ApplicationStreamingOption = new Proxy(
+  Modules.ApplicationStreamingOption ?? ({} as Types.ApplicationStreamingOption),
+  {
+    get(_, key: string) {
+      return Modules.ApplicationStreamingOption[streamStoreKeys[key]];
+    },
+  },
+);
 
 export const defaultParameters = {} as Types.ApplicationStreamingOption;
 

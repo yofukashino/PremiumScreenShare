@@ -1,7 +1,12 @@
 import { settings, util, webpack } from "replugged";
-import { React, lodash } from "replugged/common";
+import { React, i18n, lodash } from "replugged/common";
 import { SettingValues } from "../index";
-import { defaultParameters, defaultSettings, streamStoreKeys } from "./consts";
+import {
+  defaultParameters,
+  defaultSettings,
+  MappedApplicationStreamingOption,
+  streamStoreKeys,
+} from "./consts";
 import Modules from "./requiredModules";
 import Types from "../types";
 
@@ -162,9 +167,9 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
     })),
     ApplicationStreamFPSButtonsWithSuffixLabel: streamingConstants.fps.map((fps) => ({
       value: fps,
-      label: defaultParameters.ApplicationStreamFPSButtonsWithSuffixLabel.find(
-        (button) => button.value == 15,
-      ).label.replace("15", `${fps}`),
+      get label() {
+        return i18n.intl.format(i18n.t.STREAM_FPS_OPTION, { value: fps });
+      },
     })),
     ApplicationStreamPresetValues: {
       1: [
@@ -191,7 +196,7 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
       value: resolution,
       get label() {
         return resolution == 0
-          ? Modules.ApplicationStreamingOption[streamStoreKeys.makeResolutionLabel](0)
+          ? MappedApplicationStreamingOption.makeResolutionLabel(0)
           : resolution;
       },
     })),
@@ -199,9 +204,7 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
       (resolution) => ({
         value: resolution,
         get label() {
-          return Modules.ApplicationStreamingOption[streamStoreKeys.makeResolutionLabel](
-            resolution,
-          );
+          return MappedApplicationStreamingOption.makeResolutionLabel(resolution);
         },
       }),
     ),
