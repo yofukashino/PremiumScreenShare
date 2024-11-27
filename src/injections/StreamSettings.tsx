@@ -14,7 +14,7 @@ export default async (): Promise<void> => {
       const SourceContainer = Utils.findInReactTree(res, (c: React.ReactElement & Types.Tree) =>
         c?.props?.children?.some((v) => v?.type?.toString()?.includes('.id.startsWith("screen")')),
       ) as React.ReactElement & Types.Tree;
-      if (SourceContainer?.props)
+      if (selectedSource?.id?.startsWith("screen") && SourceContainer?.props)
         SourceContainer.props.children = SourceContainer.props.children.filter(
           (v) => !v?.type?.toString()?.includes("screen:"),
         );

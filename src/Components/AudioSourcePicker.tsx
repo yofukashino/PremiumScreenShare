@@ -1,12 +1,12 @@
 import { React } from "replugged/common";
 import { FormItem, Select } from "replugged/components";
 import { SettingValues } from "../index";
-import { defaultSettings, isLinux } from "../lib/consts";
+import { defaultSettings, soundshareSupported } from "../lib/consts";
 import Modules from "../lib/requiredModules";
 import Utils from "../lib/utils";
 export default (): React.ReactElement => {
   const MediaEngine = Modules.MediaEngineStore?.getMediaEngine();
-  if (!MediaEngine || isLinux) return null;
+  if (!MediaEngine || !soundshareSupported) return null;
   const [options, setOptions] = React.useState<Array<{ label: string; value: string }>>([]);
   const [audioSource, setAudioSource] = Utils.useSettingArray(
     SettingValues,

@@ -1,10 +1,13 @@
 import { types } from "replugged";
 import type { Store as StoreType } from "replugged/dist/renderer/modules/common/flux";
 import type Util from "replugged/dist/renderer/util";
+import { ContextMenuType } from "replugged/components";
 export namespace Types {
   export import DefaultTypes = types;
   export type Store = StoreType;
-  export type Tree = Util.Tree;
+  export type Tree = Util.Tree & React.ReactElement;
+  export type Menu = React.ReactElement<React.ComponentProps<ContextMenuType["ContextMenu"]>> &
+    Record<string, unknown>;
   export type GenericModule = Record<string, DefaultTypes.AnyFunction> & {
     default: DefaultTypes.AnyFunction;
   };
@@ -825,6 +828,10 @@ declare global {
       registerUserInteractionHandler: Types.DefaultTypes.AnyFunction;
       relaunch: Types.DefaultTypes.AnyFunction;
       setBadgeCount: Types.DefaultTypes.AnyFunction;
+    };
+    features: {
+      declareSupported: (name: string) => void;
+      supports: (name: string) => boolean;
     };
     remotePowerMonitor: {
       getSystemIdleTimeMs: Types.DefaultTypes.AnyFunction;

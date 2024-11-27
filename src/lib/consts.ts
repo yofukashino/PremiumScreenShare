@@ -163,4 +163,4 @@ export const streamingConstants = {
   },
 } as Types.StreamingConstants;
 
-export const isLinux = DiscordNative.process.platform.includes("linux");
+export const soundshareSupported = DiscordNative.features.supports("soundshare");

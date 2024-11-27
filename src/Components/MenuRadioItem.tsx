@@ -2,11 +2,12 @@ import { util } from "replugged";
 import { React } from "replugged/common";
 import { ContextMenu } from "replugged/components";
 import { SettingValues } from "../index";
-import { defaultSettings, isLinux } from "../lib/consts";
+import { defaultSettings, soundshareSupported } from "../lib/consts";
 import Modules from "../lib/requiredModules";
 import Utils from "../lib/utils";
+import Types from "../types";
 
-export default (): React.ReactElement => {
+export default (_data, menu: Types.Menu): React.ReactElement => {
   const { MediaEngineStore } = Modules;
   const MediaEngine = MediaEngineStore?.getMediaEngine();
   const [isStreamScreen, setStreamTypeStatus] = React.useState<boolean>(false);
@@ -59,8 +60,19 @@ export default (): React.ReactElement => {
       MediaEngine?.setSoundshareSource(pid, true);
     }
   }, [audioSource]);
+
+  const ItemGroup =
+    isStreamScreen &&
+    (Utils.findInReactTree(menu, (i: Types.Tree) =>
+      i?.props?.children?.some?.((c) => c?.props?.id === "stream-settings-audio-enable"),
+    ) as Types.Tree);
+  if (ItemGroup)
+    ItemGroup.props.children = ItemGroup.props.children.filter(
+      (c) => c?.props?.id !== "stream-settings-audio-enable",
+    );
+
   return (
-    !isLinux &&
+    soundshareSupported &&
     MediaEngine &&
     isStreamScreen && (
       <ContextMenu.MenuItem label="Audio Source" id="audio-source">
