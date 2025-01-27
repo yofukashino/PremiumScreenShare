@@ -46,11 +46,14 @@ Modules.loadModules = async (): Promise<void> => {
     });
 
   Modules.VideoQualityManager ??= await webpack
-    .waitForModule(webpack.filters.bySource("this.getQuality("), {
+    .waitForModule(webpack.filters.bySource("this.connection.getLocalWant("), {
       timeout: 10000,
     })
     .then((mod) =>
-      webpack.getFunctionBySource<Types.DefaultTypes.AnyFunction>(mod, "this.getQuality("),
+      webpack.getFunctionBySource<Types.DefaultTypes.AnyFunction>(
+        mod,
+        "this.connection.getLocalWant(",
+      ),
     )
     .catch(() => {
       throw new Error("Failed To Find VideoQualityManager  Module");
