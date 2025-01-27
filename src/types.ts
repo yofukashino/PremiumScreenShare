@@ -6,8 +6,7 @@ export namespace Types {
   export import DefaultTypes = types;
   export type Store = StoreType;
   export type Tree = Util.Tree & React.ReactElement;
-  export type Menu = React.ReactElement<React.ComponentProps<ContextMenuType["ContextMenu"]>> &
-    Record<string, unknown>;
+  export type Menu = React.ComponentProps<ContextMenuType["ContextMenu"]> & Record<string, unknown>;
   export type GenericModule = Record<string, DefaultTypes.AnyFunction> & {
     default: DefaultTypes.AnyFunction;
   };

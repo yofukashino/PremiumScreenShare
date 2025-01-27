@@ -31,7 +31,9 @@ export default (): void => {
       const maxVideoQuality = {
         width: ApplicationStreamingSettings.width,
         height: ApplicationStreamingSettings.height,
-        pixelCount: 1920 * 1080,
+        pixelCount:
+          (ApplicationStreamingSettings.width || screen.width) *
+          (ApplicationStreamingSettings.height || screen.height),
         framerate: ApplicationStreamingSettings.framerate,
       };
       Object.assign(res, Utils.getBitrate(ApplicationStreamingSettings.height || screen.height));
