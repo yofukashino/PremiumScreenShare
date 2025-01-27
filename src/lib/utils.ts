@@ -2,9 +2,9 @@ import { settings, util, webpack } from "replugged";
 import { React, i18n, lodash } from "replugged/common";
 import { SettingValues } from "../index";
 import {
+  MappedApplicationStreamingOption,
   defaultParameters,
   defaultSettings,
-  MappedApplicationStreamingOption,
   streamStoreKeys,
 } from "./consts";
 import Modules from "./requiredModules";
@@ -168,7 +168,7 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
     ApplicationStreamFPSButtonsWithSuffixLabel: streamingConstants.fps.map((fps) => ({
       value: fps,
       get label() {
-        return i18n.intl.format(i18n.t.STREAM_FPS_OPTION, { value: fps });
+        return i18n.intl.formatToPlainString(i18n.t.STREAM_FPS_OPTION, { value: fps });
       },
     })),
     ApplicationStreamPresetValues: {
