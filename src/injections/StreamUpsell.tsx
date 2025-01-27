@@ -17,12 +17,13 @@ export default async (): Promise<void> => {
     ) as React.ReactElement & Types.Tree;
     if (Label) {
       const NitroIcon = Label.props.children[0];
-      if (NitroIcon) NitroIcon.type = Icons.kofi;
+      if (NitroIcon) NitroIcon.type = Icons.twitch;
       const MainText = Label.props.children[1];
-      if (MainText) MainText.props.children = "Premium Experience by yofukashino_, Donations Open.";
+      if (MainText) MainText.props.children = "Premium Experience by yofukashino_, Follow Twitch.";
     }
+    console.log(res);
     const ButtonContainer = Utils.findInReactTree(res, (c: React.ReactElement & Types.Tree) =>
-      c?.props?.children?.type?.toString()?.includes("StreamSettingsUpsellBanner.NitroButton"),
+      c?.props?.children?.type?.toString()?.includes(".premiumIcon"),
     ) as React.ReactElement & Types.Tree;
     if (ButtonContainer) {
       const {
@@ -30,12 +31,12 @@ export default async (): Promise<void> => {
       } = ButtonContainer.props.children.type({});
       ButtonContainer.props.children = (
         <Button
-          onClick={() => open("https://ko-fi.com/yofukashino")}
+          onClick={() => open("https://twitch.tv/yofukashino_")}
           size={size}
-          className={`${className ? `${className} ` : ""}kofi-button`}
+          className={`${className ? `${className} ` : ""}twitch-button`}
           style={{ display: "flex", alignItems: "center" }}>
-          <Icons.kofi className={iconClassName} />
-          Buy KO-FI
+          <Icons.twitch className={iconClassName} />
+          Follow Twitch
         </Button>
       );
     }
