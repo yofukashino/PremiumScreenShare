@@ -1,6 +1,8 @@
+import { users as UltimateUserStore } from "replugged/common";
 import { PluginInjector } from "../index";
 import Modules from "../lib/requiredModules";
 import Utils from "../lib/utils";
+import Types from "../types";
 
 export default (): void => {
   PluginInjector.after(
@@ -17,17 +19,25 @@ export default (): void => {
       },
       instance: {
         isStreamContext?: boolean;
+        connection: Types.WebRTCConnection;
         goliveMaxQuality: {
           capture: { framerate: number; height: number; width: number };
         };
+        isEdited?: boolean;
       },
     ) => {
-      if (!instance.isStreamContext) {
+      if (
+        !instance.isStreamContext ||
+        (instance.connection.streamUserId &&
+          instance.connection.streamUserId !== UltimateUserStore.getCurrentUser().id)
+      ) {
         return res;
       }
+
       const {
         goliveMaxQuality: { capture: ApplicationStreamingSettings },
       } = instance;
+
       const maxVideoQuality = {
         width: ApplicationStreamingSettings.width,
         height: ApplicationStreamingSettings.height,
@@ -36,12 +46,14 @@ export default (): void => {
           (ApplicationStreamingSettings.height || screen.height),
         framerate: ApplicationStreamingSettings.framerate,
       };
+
       Object.assign(res, Utils.getBitrate(ApplicationStreamingSettings.height || screen.height));
 
       if (!res.capture) {
         return res;
       }
       Object.assign(res.capture, maxVideoQuality);
+
       if (!res.encode) {
         return res;
       }
