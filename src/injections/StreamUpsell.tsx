@@ -21,7 +21,6 @@ export default async (): Promise<void> => {
       const MainText = Label.props.children[1];
       if (MainText) MainText.props.children = "Premium Experience by yofukashino_, Follow Twitch.";
     }
-    console.log(res);
     const ButtonContainer = Utils.findInReactTree(res, (c: React.ReactElement & Types.Tree) =>
       c?.props?.children?.type?.toString()?.includes(".premiumIcon"),
     ) as React.ReactElement & Types.Tree;
