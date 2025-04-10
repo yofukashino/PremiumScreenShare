@@ -90,7 +90,7 @@ export const saveModuleKeys = (): Promise<void> => {
   );
   streamStoreKeys.makeResolutionLabel = webpack.getFunctionKeyBySource(
     Modules.ApplicationStreamingOption,
-    "intl.formatToPlainString",
+    ".formatToPlainString",
   );
   return Promise.resolve();
 };
