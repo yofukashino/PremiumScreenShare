@@ -1,12 +1,7 @@
 import { settings, util, webpack } from "replugged";
 import { React, i18n, lodash } from "replugged/common";
 import { SettingValues } from "../index";
-import {
-  MappedApplicationStreamingOption,
-  defaultParameters,
-  defaultSettings,
-  streamStoreKeys,
-} from "./consts";
+import { defaultParameters, defaultSettings, streamStoreKeys } from "./consts";
 import Modules from "./requiredModules";
 import Types from "../types";
 
@@ -87,10 +82,6 @@ export const saveModuleKeys = (): Promise<void> => {
   streamStoreKeys.getApplicationResolution = webpack.getFunctionKeyBySource(
     Modules.ApplicationStreamingOption,
     "Unknown resolution:",
-  );
-  streamStoreKeys.makeResolutionLabel = webpack.getFunctionKeyBySource(
-    Modules.ApplicationStreamingOption,
-    "intl.formatToPlainString",
   );
   return Promise.resolve();
 };
@@ -196,7 +187,7 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
       value: resolution,
       get label() {
         return resolution == 0
-          ? MappedApplicationStreamingOption.makeResolutionLabel(0)
+          ? i18n.intl.formatToPlainString(i18n.t.SCREENSHARE_SOURCE)
           : resolution;
       },
     })),
@@ -204,7 +195,11 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
       (resolution) => ({
         value: resolution,
         get label() {
-          return MappedApplicationStreamingOption.makeResolutionLabel(resolution);
+          return resolution == 0
+            ? i18n.intl.formatToPlainString(i18n.t.SCREENSHARE_SOURCE)
+            : i18n.intl.formatToPlainString(i18n.t.SCREENSHARE_RESOLUTION_ABBREVIATED, {
+                resolution,
+              });
         },
       }),
     ),
@@ -216,7 +211,13 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
       }),
     ),
     ApplicationStreamSettingRequirements: streamingConstants.resolutionWithPresets
-      .map((resolution) => streamingConstants.fpsWithPresets.map((fps) => ({ resolution, fps })))
+      .map((resolution) =>
+        streamingConstants.fpsWithPresets.map((fps) => ({
+          resolution,
+          fps,
+          quality: "high_streaming_quality",
+        })),
+      )
       .flat(Infinity),
     GoLiveDeviceResolutionButtons: streamingConstants.resolution
       .filter(
@@ -260,7 +261,7 @@ export const getBitrate = (
       return {
         bitrateMax: 94814814,
         bitrateMin: 2962962,
-        bitrateTarget: 320000,
+        bitrateTarget: 32000000,
       };
     }
     case 480: {
@@ -293,7 +294,7 @@ export const getBitrate = (
     }
     default: {
       return {
-        bitrateMax: 4008057,
+        bitrateMax: 213333333,
         bitrateMin: 6666666,
         bitrateTarget: 16000000,
       };

@@ -522,6 +522,13 @@ export namespace Types {
     connection: WebRTCConnection;
     contextType: string;
     isMuted: boolean;
+    goliveMaxQuality: {
+      capture: { framerate: number; height: number; width: number };
+      encode: { framerate: number; height: number; width: number };
+      bitrateMax: number;
+      bitrateMin: number;
+      bitrateTarget: number;
+    };
     isStreamContext: boolean;
     ladder: {
       ladder: {
