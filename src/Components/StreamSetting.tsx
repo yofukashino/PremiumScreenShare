@@ -45,7 +45,7 @@ export const Resolution = () => (
       clearable={true}
       disabled={false}
       options={resoOptions}
-      {...Utils.useClearableSettings(SettingValues, "resolution.1", defaultSettings.resolution[2])}>
+      {...Utils.useClearableSettings(SettingValues, "resolution.2", defaultSettings.resolution[2])}>
       1080p
     </SelectItem>
     <SelectItem
@@ -53,7 +53,7 @@ export const Resolution = () => (
       clearable={true}
       disabled={false}
       options={resoOptions}
-      {...Utils.useClearableSettings(SettingValues, "resolution.2", defaultSettings.resolution[3])}>
+      {...Utils.useClearableSettings(SettingValues, "resolution.3", defaultSettings.resolution[3])}>
       1440p
     </SelectItem>
   </>
