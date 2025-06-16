@@ -173,4 +173,6 @@ export const streamingConstants = {
   },
 } as Types.StreamingConstants;
 
-export const soundshareSupported = DiscordNative.features.supports("soundshare");
+export const soundshareSupported =
+  DiscordNative.features.supports("soundshare") &&
+  !DiscordNative.features.supports("native_screenshare_picker");

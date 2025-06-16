@@ -214,7 +214,7 @@ export const setCustomParameters = (streamingConstants: Types.StreamingConstants
       .map((resolution) =>
         streamingConstants.fpsWithPresets.map((fps) => ({
           resolution,
-          fps
+          fps,
         })),
       )
       .flat(Infinity),

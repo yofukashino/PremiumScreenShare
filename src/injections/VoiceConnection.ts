@@ -10,7 +10,12 @@ export default (): void => {
     VoiceConnection.prototype,
     "setGoLiveSource",
     (
-      args: [Record<string, Record<string, unknown>>, string],
+      args: [
+        Record<string, Record<string, unknown>> & {
+          desktopDescription: { soundshareId: number; id?: string; hdrCaptureMode?: string };
+        },
+        string,
+      ],
       instance: Types.DefaultTypes.ObjectExports & Types.VoiceEngine,
     ) => {
       if (args[0].desktopDescription)
@@ -21,10 +26,10 @@ export default (): void => {
           ? "always"
           : "never";
       if (
-        (args?.[0]?.desktopDescription?.id as string).startsWith("screen") &&
+        args?.[0]?.desktopDescription?.id?.startsWith?.("screen") &&
         args?.[0]?.desktopDescription?.soundshareId
       ) {
-        args[0].desktopDescription.soundshareId = instance.soundshareId;
+        args[0].desktopDescription.soundshareId = instance.soundshareId as number;
       }
       return args;
     },
@@ -34,16 +39,18 @@ export default (): void => {
     VoiceConnection.prototype,
     "setGoLiveSource",
     (
-      [{ desktopDescription }]: [Record<string, Record<string, unknown>>, string],
+      [{ desktopDescription }]: [
+        Record<string, Record<string, unknown>> & {
+          desktopDescription: { soundshareId: number; id?: string };
+        },
+        string,
+      ],
       res,
       instance: Types.DefaultTypes.ObjectExports & Types.VoiceEngine,
     ) => {
       const windowId = SettingValues.get("audioSource", defaultSettings.audioSource);
       const pid = Utils.getPidFromSourceId(windowId);
-      if (
-        !(desktopDescription.id as string).startsWith("screen") ||
-        desktopDescription.soundshareId == pid
-      ) {
+      if (!desktopDescription?.id?.startsWith("screen") || desktopDescription.soundshareId == pid) {
         return res;
       }
 

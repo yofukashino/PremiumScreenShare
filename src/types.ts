@@ -444,7 +444,7 @@ export namespace Types {
     selfVideo: boolean;
     soundshareActive: boolean;
     goLiveSourceIdentifier: string | null;
-    soundshareId: boolean | number;
+    soundshareId?: number;
     soundshareSentSpeakingEvent: boolean;
     sourceDesktopDegradationPreference: number;
     stats: {
@@ -662,6 +662,9 @@ export namespace Types {
     StreamUpsellPromise?: Promise<GenericModule>;
     VoiceConnection?: DefaultTypes.AnyFunction;
     WebRTCConnection?: WebRTCConnection;
+    PremiumQualityChecker?: DefaultTypes.ModuleExports;
+    StreamRefreshModalPromise?: Promise<DefaultTypes.ModuleExports>;
+    getStreamSettingContextPromise?: Promise<DefaultTypes.AnyFunction>;
     VideoQualityManager?: DefaultTypes.AnyFunction;
     getNativeSources?: DefaultTypes.AnyFunction;
     MediaEngineStore?: MediaEngineStore;

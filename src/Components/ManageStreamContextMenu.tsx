@@ -23,6 +23,7 @@ export default (_data, menu: Types.Menu): React.ReactElement => {
     setStreamTypeStatus(streamConnection?.goLiveSourceIdentifier?.startsWith("screen"));
   };
   const getPreviewAndSetOptions = async () => {
+    if (!soundshareSupported) return;
     const ScreenSources = (await Modules.getNativeSources(MediaEngine, ["window", "screen"], {
       width: 1,
       height: 1,

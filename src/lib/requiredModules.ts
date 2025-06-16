@@ -26,6 +26,27 @@ Modules.loadModules = async (): Promise<void> => {
     })
     .then((r) => r.exports);
 
+  Modules.getStreamSettingContextPromise ??= webpack
+    .waitForModule(webpack.filters.bySource("Using uninitialized GoLiveModalContextDispatch"))
+    .then((c) => webpack.getFunctionBySource<Types.DefaultTypes.AnyFunction>(c, "return["));
+
+  Modules.StreamRefreshModalPromise = webpack.waitForModule<Types.DefaultTypes.ModuleExports>(
+    webpack.filters.bySource("stream-options"),
+  );
+
+  Modules.PremiumQualityChecker ??= await webpack
+    .waitForModule<Types.DefaultTypes.RawModule>(
+      webpack.filters.bySource(/\w+===\w+\.resolution&&\w+===\w+\.fps/),
+      {
+        timeout: 10000,
+        raw: true,
+      },
+    )
+    .then((r) => r.exports as Types.DefaultTypes.ModuleExports)
+    .catch(() => {
+      throw new Error("Failed To Find VoiceConnection  Module");
+    });
+
   Modules.VoiceConnection ??= await webpack
     .waitForModule<Types.DefaultTypes.AnyFunction>(
       webpack.filters.bySource("clearAllSpeaking(){}"),
