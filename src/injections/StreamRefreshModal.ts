@@ -5,15 +5,29 @@ import Modules from "../lib/requiredModules";
 export default async (): Promise<void> => {
   const StreamRefreshModal = await Modules.StreamRefreshModalPromise;
   const fps = Object.values(StreamRefreshModal).find(
-    (c) => Array.isArray(c) && c?.every((v) => !isNaN(v)),
+    (c) => Array.isArray(c) && c?.every((v) => !v || !isNaN(v)),
   );
+  console.log(StreamRefreshModal, fps);
+  Object.defineProperty(fps, "map", {
+    value: Array.prototype.map.bind(fps),
+    enumerable: false,
+    configurable: true,
+  });
+
+  PluginInjector.after(fps, "map", ([fn]: [() => unknown]) => {
+    return streamingConstants.fps.map(fn);
+  });
+
   const resolution = Object.values(StreamRefreshModal).find(
     (c) =>
       Array.isArray(c) &&
       c?.some((v) => v?.canUse?.toString()?.includes?.(".CAMERA") && v.value === 0),
   );
-  PluginInjector.after(fps, "map", ([fn]: [() => unknown]) => {
-    return streamingConstants.fps.map(fn);
+
+  Object.defineProperty(resolution, "filter", {
+    value: Array.prototype.filter.bind(fps),
+    enumerable: false,
+    configurable: true,
   });
 
   PluginInjector.after(resolution, "filter", (_args, values) => {
