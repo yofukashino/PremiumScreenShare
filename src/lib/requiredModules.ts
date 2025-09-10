@@ -44,16 +44,13 @@ Modules.loadModules = async (): Promise<void> => {
     )
     .then((r) => r.exports as Types.DefaultTypes.ModuleExports)
     .catch(() => {
-      throw new Error("Failed To Find VoiceConnection  Module");
+      throw new Error("Failed To Find PremiumQualityChecker  Module");
     });
 
   Modules.VoiceConnection ??= await webpack
-    .waitForModule<Types.DefaultTypes.AnyFunction>(
-      webpack.filters.bySource("clearAllSpeaking(){}"),
-      {
-        timeout: 10000,
-      },
-    )
+    .waitForPrototype<Types.DefaultTypes.AnyFunction & { clearAllSpeaking }>(["clearAllSpeaking"], {
+      timeout: 10000,
+    })
     .catch(() => {
       throw new Error("Failed To Find VoiceConnection  Module");
     });
@@ -64,20 +61,6 @@ Modules.loadModules = async (): Promise<void> => {
     })
     .catch(() => {
       throw new Error("Failed To Find WebRTCConnection  Module");
-    });
-
-  Modules.VideoQualityManager ??= await webpack
-    .waitForModule(webpack.filters.bySource("this.connection.getLocalWant("), {
-      timeout: 10000,
-    })
-    .then((mod) =>
-      webpack.getFunctionBySource<Types.DefaultTypes.AnyFunction>(
-        mod,
-        "this.connection.getLocalWant(",
-      ),
-    )
-    .catch(() => {
-      throw new Error("Failed To Find VideoQualityManager  Module");
     });
 
   Modules.getNativeSources ??= await webpack

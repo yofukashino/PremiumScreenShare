@@ -8,10 +8,9 @@ import injectManaggeStreamContextMenu from "./ManageStreamContextMenu";
 import injectSettingValues from "./SettingValues";
 import injectStreamOptions from "./StreamOptions";
 import injectStreamQualitySelector from "./StreamQualitySelector";
-import injectStreamRefreshModal from "./StreamRefreshModal";
 import injectStreamSettings from "./StreamSettings";
 import injectStreamUpsell from "./StreamUpsell";
-import injectVideoQualityManager from "./VideoQualityManager";
+
 import injectVoiceConnection from "./VoiceConnection";
 import injectWebRTCUtils from "./WebRTCUtils";
 
@@ -25,10 +24,8 @@ export const applyInjections = async (): Promise<void> => {
   injectSettingValues();
   injectStreamOptions();
   void injectStreamQualitySelector();
-  void injectStreamRefreshModal();
   void injectStreamSettings();
   void injectStreamUpsell();
-  injectVideoQualityManager();
   injectVoiceConnection();
   injectWebRTCUtils();
   Utils.setCustomParameters(streamingConstants);

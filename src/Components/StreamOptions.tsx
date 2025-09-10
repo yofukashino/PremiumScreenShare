@@ -5,16 +5,7 @@ import { defaultSettings, soundshareSupported } from "../lib/consts";
 import Modules from "../lib/requiredModules";
 import Utils from "../lib/utils";
 
-export default (_data, menuProps): React.ReactElement => {
-  const menuGroup = menuProps.children?.find((c) =>
-    c?.props?.children?.some?.((v) => v?.props?.id === "resolution"),
-  );
-  const radioItems = menuGroup.props.children.filter(
-    (c) => ["frame-rate", "resolution"].includes(c?.props?.id) && Array.isArray(c?.props.children),
-  );
-  radioItems.forEach((c) => {
-    c.props.children = c.props.children.filter((v) => !v.props.id.endsWith("-undefined"));
-  });
+export default (): React.ReactElement => {
   const { getStreamSettingContextPromise, getNativeSources, MediaEngineStore } = Modules;
   const MediaEngine = MediaEngineStore?.getMediaEngine();
   if (!MediaEngine || !soundshareSupported) return null;
