@@ -1,6 +1,6 @@
 import { util } from "replugged";
 import { React, classNames, marginStyles } from "replugged/common";
-import { ButtonItem, Category, Divider, Notice, Stack, Switch } from "replugged/components";
+import { Button, ButtonItem, Category, Divider, Notice, Stack, Switch } from "replugged/components";
 import { PluginLogger, SettingValues } from "@this";
 import { DefaultSettings } from "@consts";
 
@@ -26,7 +26,7 @@ const removeDeprecatedSettings = (): void => {
   }
 
   const fps = SettingValues.get("fps");
-  console.log(fps);
+
   if (Object.keys(fps).some((r) => ["1", "2", "3"].includes(r))) {
     type FPS = typeof fps;
     PluginLogger.log("Removing deprecated fps setting keys.");
@@ -97,6 +97,8 @@ export const Settings = (): React.ReactElement => {
         {...util.useSetting(SettingValues, "upsell", DefaultSettings.upsell)}
       />
       <ButtonItem
+        color={Button.Colors.RED}
+        button="Reset"
         label="Reset Settings"
         description="Press In-Case setting Crash or You want to reset settings to default."
         onClick={() => {

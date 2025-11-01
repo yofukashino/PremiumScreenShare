@@ -2,10 +2,7 @@ import { types } from "replugged";
 import type * as flux from "replugged/dist/renderer/modules/common/flux";
 import type util from "replugged/dist/renderer/util";
 
-import type {
-  ApplicationStreamingOption,
-  PartialApplicationStreamingOption,
-} from "@lib/RequiredModules/ApplicationStreamingOption";
+import type { PartialApplicationStreamingOption } from "@lib/RequiredModules/ApplicationStreamingOption";
 import type { MediaEngineStore } from "@lib/RequiredModules/MediaEngineStore";
 import type { NativeSources } from "@lib/RequiredModules/NativeSources";
 import type { StreamQualitySelector } from "@lib/RequiredModules/StreamQualitySelector";

@@ -78,18 +78,18 @@ export const getBitrate = (
   }
 };
 
-export const getPidFromSourceId = (id: string): number | void => {
+export const getPidFromSourceId = (id: string): number => {
   const DiscordUtils = DiscordNative.nativeModules.requireModule("discord_utils");
   if (!DiscordUtils.getPidFromWindowHandle || !id) return;
   const [type, handle] = id.split(":");
 
   if (type === "window") {
     const pid = DiscordUtils.getPidFromWindowHandle(handle);
-    return !pid ? void 0 : pid;
+    return !pid ? -1 : pid;
   }
 
   if (type.startsWith("screen")) return 1;
-  return null;
+  return -1;
 };
 
 export default {

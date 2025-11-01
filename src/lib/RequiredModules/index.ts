@@ -65,7 +65,6 @@ Modules.loadModules = async function (): Promise<void> {
       Modules[name] = mod.default;
     }),
   );
-  console.log(Modules);
 };
 
 export const {

@@ -28,6 +28,14 @@ export default [
         replace: (_, prefix: string, resolution: string) =>
           `${prefix}(replugged.plugins.getExports("dev.tharki.PremiumScreenShare")._getResolution(${resolution}) ?? ${resolution}).filter`,
       },
+      {
+        match: /!==\i\.ApplicationStreamResolutions\.RESOLUTION_720/,
+        replace: () => "==null",
+      },
+      {
+        match: /===\i\.ApplicationStreamFPS\.FPS_60/,
+        replace: () => "===null",
+      },
     ],
   },
   {

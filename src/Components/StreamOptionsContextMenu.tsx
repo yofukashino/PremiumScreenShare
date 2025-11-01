@@ -20,7 +20,7 @@ export default (): React.ReactElement => {
     return sourceType === "screen";
   }, [StreamSettingContext.use]);
 
-  const getPreviewAndSetOptions = async () => {
+  const getPreviewAndSetOptions = async (): Promise<void> => {
     if (!MediaEngine || !SoundshareSupported || !isScreen) return;
     const ScreenSources = await NativeSources.get(MediaEngine, ["window", "screen"], {
       width: 1,
@@ -40,7 +40,7 @@ export default (): React.ReactElement => {
   };
 
   React.useEffect(() => {
-    getPreviewAndSetOptions();
+    void getPreviewAndSetOptions();
     const checkInterval = setInterval(getPreviewAndSetOptions, 3000);
     return () => clearInterval(checkInterval);
   }, []);
@@ -52,20 +52,37 @@ export default (): React.ReactElement => {
     }
   }, [options]);
 
-  if (!MediaEngine || !SoundshareSupported || !isScreen) return null;
+  const [hdrCaptureMode, setHdrCaptureMode] = util.useSettingArray(
+    SettingValues,
+    "hdrCaptureMode",
+    DefaultSettings.hdrCaptureMode,
+  );
 
   return (
-    <ContextMenu.MenuItem label="Audio Source" id="audio-source">
-      {options.map(({ id, label }) => (
-        <ContextMenu.MenuRadioItem
-          id={id}
-          label={label}
-          checked={id === audioSource}
-          action={() => {
-            setAudioSource(id);
-          }}
-        />
-      ))}
-    </ContextMenu.MenuItem>
+    <>
+      <ContextMenu.MenuCheckboxItem
+        id="hdr-capture-mode"
+        label="HDR Capture Mode"
+        checked={hdrCaptureMode}
+        action={() => {
+          setHdrCaptureMode(!hdrCaptureMode);
+        }}
+      />
+      {!MediaEngine || !SoundshareSupported || !isScreen ? null : (
+        <ContextMenu.MenuItem label="Audio Source" id="audio-source">
+          {options.map(({ id, label }) => (
+            <ContextMenu.MenuRadioItem
+              key={id}
+              id={id}
+              label={label}
+              checked={id === audioSource}
+              action={() => {
+                setAudioSource(id);
+              }}
+            />
+          ))}
+        </ContextMenu.MenuItem>
+      )}
+    </>
   );
 };

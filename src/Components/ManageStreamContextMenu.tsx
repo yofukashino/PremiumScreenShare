@@ -19,14 +19,14 @@ export default (_data, menu): React.ReactElement => {
     DefaultSettings.audioSource,
   );
 
-  const getStreamType = () => {
+  const getStreamType = (): void => {
     const connectionArray = Array.from(MediaEngine?.connections ?? []);
     const streamConnection = connectionArray?.find((c) => c?.goLiveSourceIdentifier);
 
     setIsStreamScreen(streamConnection?.goLiveSourceIdentifier?.startsWith("screen"));
   };
 
-  const getPreviewAndSetOptions = async () => {
+  const getPreviewAndSetOptions = async (): Promise<void> => {
     if (!MediaEngine || !SoundshareSupported) return;
 
     const ScreenSources = await NativeSources.get(MediaEngine, ["window", "screen"], {
@@ -48,7 +48,7 @@ export default (_data, menu): React.ReactElement => {
   };
   React.useEffect(() => {
     getStreamType();
-    getPreviewAndSetOptions();
+    void getPreviewAndSetOptions();
     const checkInterval = setInterval(getPreviewAndSetOptions, 3000);
     return () => clearInterval(checkInterval);
   }, []);
@@ -69,7 +69,7 @@ export default (_data, menu): React.ReactElement => {
 
   const ItemGroup =
     isStreamScreen &&
-    (util.findInReactTree(menu, (i: Types.ReactTree) =>
+    (util.findInReactTree(menu as Types.ReactTree, (i: Types.ReactTree) =>
       i?.props?.children?.some?.((c) => c?.props?.id === "stream-settings-audio-enable"),
     ) as Types.ReactTree);
   if (ItemGroup)
@@ -83,6 +83,7 @@ export default (_data, menu): React.ReactElement => {
     <ContextMenu.MenuItem label="Audio Source" id="audio-source">
       {options.map(({ id, label }) => (
         <ContextMenu.MenuRadioItem
+          key={id}
           id={id}
           label={label}
           checked={id === audioSource}

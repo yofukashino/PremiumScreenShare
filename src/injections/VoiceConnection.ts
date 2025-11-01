@@ -31,7 +31,7 @@ PluginInjector.after(
     const windowId = SettingValues.get("audioSource", DefaultSettings.audioSource);
     const pid = Utils.getPidFromSourceId(windowId);
 
-    if (!desktopDescription?.id?.startsWith("screen") || desktopDescription.soundshareId == pid) {
+    if (!desktopDescription?.id?.startsWith("screen") || desktopDescription.soundshareId === pid) {
       return res;
     }
 

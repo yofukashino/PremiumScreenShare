@@ -16,7 +16,7 @@ export default (): React.ReactElement => {
     DefaultSettings.audioSource,
   );
 
-  const getPreviewAndSetOptions = async () => {
+  const getPreviewAndSetOptions = async (): Promise<void> => {
     if (!MediaEngine || !SoundshareSupported) return;
 
     const ScreenSources = await NativeSources.get(MediaEngine, ["window", "screen"], {
@@ -39,7 +39,7 @@ export default (): React.ReactElement => {
   };
 
   React.useEffect(() => {
-    getPreviewAndSetOptions();
+    void getPreviewAndSetOptions();
     const checkInterval = setInterval(getPreviewAndSetOptions, 3000);
     return () => clearInterval(checkInterval);
   }, []);

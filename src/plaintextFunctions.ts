@@ -1,7 +1,11 @@
-import { isDisabled, StreamingConstants } from "@consts";
+import { StreamingConstants, isDisabled } from "@consts";
 import Utils from "@Utils";
 
-export const _getBirtate = (_width, height, _framerate): Record<string, number> => {
+export const _getBirtate = (
+  _width: number,
+  height: number,
+  _framerate: number,
+): Record<string, number> => {
   if (isDisabled()) return;
   return Utils.getBitrate(height || screen.height);
 };
