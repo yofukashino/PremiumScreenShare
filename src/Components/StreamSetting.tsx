@@ -89,87 +89,44 @@ const ResolutionWithSource = [
   ...ResolutionOptions,
 ];
 
-export const FPS = (): React.ReactElement => {
-  const [FPS15, setFPS15] = util.useSettingArray(SettingValues, "fps.15");
-  const [FPS30, setFPS30] = util.useSettingArray(SettingValues, "fps.30");
-  const [FPS60, setFPS60] = util.useSettingArray(SettingValues, "fps.60");
-  return (
-    <Stack gap={24}>
-      <Select
-        label="FPS 15"
-        description="Replace 15 FPS with custom FPS"
-        clearable={true}
-        disabled={false}
-        options={FPSOptions}
-        value={FPS15}
-        onChange={setFPS15}
-      />
+export const FPS = (): React.ReactElement => (
+  <Stack gap={24}>
+    {Object.keys(DefaultSettings.fps).map((fps: keyof typeof DefaultSettings.fps) => {
+      return (
+        <Select
+          key={fps}
+          label={`FPS ${fps}`}
+          description={`Replace ${fps} FPS with custom FPS`}
+          clearable={true}
+          disabled={false}
+          options={FPSOptions}
+          {...util.useSetting(SettingValues, `fps.${fps}`)}
+        />
+      );
+    })}
+  </Stack>
+);
 
-      <Select
-        label="FPS 30"
-        description="Replace 30 FPS with custom FPS"
-        clearable={true}
-        disabled={false}
-        options={FPSOptions}
-        value={FPS30}
-        onChange={setFPS30}
-      />
-      <Select
-        label="FPS 60"
-        description="Replace 60 FPS with custom FPS"
-        clearable={true}
-        disabled={false}
-        options={FPSOptions}
-        value={FPS60}
-        onChange={setFPS60}
-      />
-    </Stack>
-  );
-};
+export const Resolution = (): React.ReactElement => (
+  <Stack gap={24}>
+    {Object.keys(DefaultSettings.resolution).map(
+      (resolution: keyof typeof DefaultSettings.resolution) => {
+        return (
+          <Select
+            key={resolution}
+            label={`${resolution}p`}
+            description={`Replace ${resolution}p with custom resolution`}
+            clearable={true}
+            disabled={false}
+            options={ResolutionOptions}
+            {...util.useSetting(SettingValues, `resolution.${resolution}`)}
+          />
+        );
+      },
+    )}
+  </Stack>
+);
 
-export const Resolution = (): React.ReactElement => {
-  const [Resolution720, setResolution720] = util.useSettingArray(SettingValues, "resolution.720");
-  const [Resolution1080, setResolution1080] = util.useSettingArray(
-    SettingValues,
-    "resolution.1080",
-  );
-  const [Resolution1440, setResolution1440] = util.useSettingArray(
-    SettingValues,
-    "resolution.1440",
-  );
-
-  return (
-    <Stack gap={24}>
-      <Select
-        label="720p"
-        description="Replace 720p with custom resolution"
-        clearable={true}
-        disabled={false}
-        options={ResolutionOptions}
-        value={Resolution720}
-        onChange={setResolution720}
-      />
-      <Select
-        label="1080p"
-        description="Replace 1080p with custom resolution"
-        clearable={true}
-        disabled={false}
-        options={ResolutionOptions}
-        value={Resolution1080}
-        onChange={setResolution1080}
-      />
-      <Select
-        label="1440p"
-        description="Replace 1440p with custom resolution"
-        clearable={true}
-        disabled={false}
-        options={ResolutionOptions}
-        value={Resolution1440}
-        onChange={setResolution1440}
-      />
-    </Stack>
-  );
-};
 export const SmoothVideo = (): React.ReactElement => (
   <Stack gap={24}>
     <Select
@@ -192,6 +149,7 @@ export const SmoothVideo = (): React.ReactElement => (
     />
   </Stack>
 );
+
 export const BetterReadability = (): React.ReactElement => (
   <Stack gap={24}>
     <Select
