@@ -32,7 +32,6 @@ export default [
   },
   {
     find: "getGoliveLQQuality()",
-
     replacements: [
       {
         match: /Math\.min/g,

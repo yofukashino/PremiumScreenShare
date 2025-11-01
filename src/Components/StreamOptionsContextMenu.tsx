@@ -1,39 +1,31 @@
 import { util } from "replugged";
 import { React } from "replugged/common";
 import { ContextMenu } from "replugged/components";
-import { SettingValues } from "../index";
+import { SettingValues } from "@this";
 import { DefaultSettings, SoundshareSupported } from "@consts";
-import { MediaEngineStore, NativeSources } from "@lib/RequiredModules";
-import Utils from "@Utils";
-import Types from "@Types";
+import { MediaEngineStore, NativeSources, StreamSettingContext } from "@lib/RequiredModules";
 
-export default (_data, menu): React.ReactElement => {
+export default (): React.ReactElement => {
   const MediaEngine = MediaEngineStore?.getMediaEngine();
-  const [isStreamScreen, setIsStreamScreen] = React.useState<boolean>(false);
 
   const [options, setOptions] = React.useState<Array<{ label: string; id: string }>>([]);
-
   const [audioSource, setAudioSource] = util.useSettingArray(
     SettingValues,
     "audioSource",
     DefaultSettings.audioSource,
   );
 
-  const getStreamType = () => {
-    const connectionArray = Array.from(MediaEngine?.connections ?? []);
-    const streamConnection = connectionArray?.find((c) => c?.goLiveSourceIdentifier);
-
-    setIsStreamScreen(streamConnection?.goLiveSourceIdentifier?.startsWith("screen"));
-  };
+  const isScreen = React.useMemo(() => {
+    const [{ sourceType }] = StreamSettingContext.use?.() ?? [{ sourceType: "" }];
+    return sourceType === "screen";
+  }, [StreamSettingContext.use]);
 
   const getPreviewAndSetOptions = async () => {
-    if (!MediaEngine || !SoundshareSupported) return;
-
+    if (!MediaEngine || !SoundshareSupported || !isScreen) return;
     const ScreenSources = await NativeSources.get(MediaEngine, ["window", "screen"], {
       width: 1,
       height: 1,
     });
-
     const PreviewOptions = ScreenSources.map((p) => ({
       label: p.name,
       id: p.id,
@@ -46,8 +38,8 @@ export default (_data, menu): React.ReactElement => {
       ...PreviewOptions,
     ]);
   };
+
   React.useEffect(() => {
-    getStreamType();
     getPreviewAndSetOptions();
     const checkInterval = setInterval(getPreviewAndSetOptions, 3000);
     return () => clearInterval(checkInterval);
@@ -60,24 +52,7 @@ export default (_data, menu): React.ReactElement => {
     }
   }, [options]);
 
-  React.useEffect(() => {
-    if (audioSource) {
-      const pid = Utils.getPidFromSourceId(audioSource);
-      MediaEngine?.setSoundshareSource(pid, true);
-    }
-  }, [audioSource]);
-
-  const ItemGroup =
-    isStreamScreen &&
-    (util.findInReactTree(menu, (i: Types.ReactTree) =>
-      i?.props?.children?.some?.((c) => c?.props?.id === "stream-settings-audio-enable"),
-    ) as Types.ReactTree);
-  if (ItemGroup)
-    ItemGroup.props.children = ItemGroup.props.children.filter(
-      (c) => c?.props?.id !== "stream-settings-audio-enable",
-    );
-
-  if (!MediaEngine || !SoundshareSupported || !isStreamScreen) return null;
+  if (!MediaEngine || !SoundshareSupported || !isScreen) return null;
 
   return (
     <ContextMenu.MenuItem label="Audio Source" id="audio-source">

@@ -1,23 +1,24 @@
 import { Injector, Logger, settings } from "replugged";
-import { defaultSettings } from "./lib/consts";
+import { DefaultSettings } from "@consts";
+import Settings from "@components/Settings";
+import Injections from "@Injections";
+
 import "./styles.css";
+
 export const PluginInjector = new Injector();
 export const { utils: PluginInjectorUtils } = PluginInjector;
 export const PluginLogger = Logger.plugin("PremiumScreenShare", "#ffffff80");
-export const SettingValues = settings.init("dev.tharki.PremiumScreenShare", defaultSettings);
-import Settings from "./Components/Settings";
-import Injections from "./injections/index";
+export const SettingValues = settings.init("dev.tharki.PremiumScreenShare", DefaultSettings);
 
 export const start = (): void => {
   Settings.registerSettings();
-  void Injections.applyInjections().catch((err) => PluginLogger.error(err));
+  void Injections.applyInjections();
 };
 
 export const stop = (): void => {
-  PluginInjector.uninjectAll();
   Injections.removeInjections();
 };
 
-export { Settings } from "./Components/Settings";
+export { Settings } from "@components/Settings";
 
 export { _getFPS, _getResolution, _getBirtate } from "./plaintextFunctions";

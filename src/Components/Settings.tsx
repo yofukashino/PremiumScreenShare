@@ -1,78 +1,109 @@
-import { React } from "replugged/common";
-import { ButtonItem, Category, Divider, Notice, SwitchItem } from "replugged/components";
-import { PluginLogger, SettingValues } from "../index";
-import { defaultSettings } from "../lib/consts";
-import StreamSetting from "./StreamSetting";
-import Utils from "../lib/utils";
-import Types from "../types";
-export const registerSettings = (): void => {
+import { util } from "replugged";
+import { React, classNames, marginStyles } from "replugged/common";
+import { ButtonItem, Category, Divider, Notice, Stack, Switch } from "replugged/components";
+import { PluginLogger, SettingValues } from "@this";
+import { DefaultSettings } from "@consts";
+
+import StreamSetting from "@components/StreamSetting";
+
+const removeDeprecatedSettings = (): void => {
   const resolutions = SettingValues.get("resolution");
-  if (resolutions[4]) {
-    PluginLogger.log("Removing 480p as it's deprecated by discord.");
+
+  if (Object.keys(resolutions).some((r) => ["1", "2", "3"].includes(r))) {
+    type Resolutions = typeof resolutions;
+    PluginLogger.log("Removing deprecated resolution setting keys.");
     SettingValues.set(
       "resolution",
-      Object.entries(resolutions).reduce((acc, [key, val]: [string, string]) => {
-        if (resolutions[1] === val) return acc;
-        acc[Number(key) - 1] = val;
-        return acc;
-      }, {} as Record<1 | 2 | 3, string>),
+      Object.entries({ ...DefaultSettings.resolution, ...resolutions }).reduce(
+        (acc, [key, val]: [string, string]) => {
+          if (["1", "2", "3"].includes(key)) return acc;
+          acc[key] = val;
+          return acc;
+        },
+        {} as Resolutions,
+      ),
     );
   }
-  for (const key in defaultSettings) {
-    if (SettingValues.has(key as keyof Types.Settings)) return;
-    PluginLogger.log(`Adding new setting ${key} with value`, defaultSettings[key], ".");
-    SettingValues.set(key as keyof Types.Settings, defaultSettings[key]);
+
+  const fps = SettingValues.get("fps");
+  console.log(fps);
+  if (Object.keys(fps).some((r) => ["1", "2", "3"].includes(r))) {
+    type FPS = typeof fps;
+    PluginLogger.log("Removing deprecated fps setting keys.");
+    SettingValues.set(
+      "fps",
+      Object.entries({ ...DefaultSettings.fps, ...fps }).reduce(
+        (acc, [key, val]: [string, string]) => {
+          if (["1", "2", "3"].includes(key)) return acc;
+          acc[key] = val;
+          return acc;
+        },
+        {} as FPS,
+      ),
+    );
   }
 };
+
+export const registerSettings = (): void => {
+  removeDeprecatedSettings();
+
+  type DefaultSettings = typeof DefaultSettings;
+  type key = keyof DefaultSettings;
+  type value = DefaultSettings[key];
+
+  for (const key in DefaultSettings) {
+    if (SettingValues.has(key as key)) return;
+    PluginLogger.log(`Adding new setting ${key} with value ${DefaultSettings[key]}.`);
+    SettingValues.set(key as key, DefaultSettings[key] as value);
+  }
+};
+
 export const resetSettings = (forceUpdate?: () => void): void => {
   PluginLogger.log("Resetting PremiumScreenShare's Settings.");
-  for (const key of Object.keys(SettingValues.all()))
-    SettingValues.delete(key as keyof Types.Settings);
+  type DefaultSettings = typeof DefaultSettings;
+  type key = keyof DefaultSettings;
+  for (const key in DefaultSettings) SettingValues.delete(key as key);
   registerSettings();
   forceUpdate?.();
 };
 
-export const Settings = () => {
+export const Settings = (): React.ReactElement => {
   const [key, setKey] = React.useState<string>();
   const forceUpdate = (): void => {
     setKey(`${Date.now()}`);
   };
 
   return (
-    <div>
-      <Category title="FPS" note="Depends on your screen FPS" open={false}>
+    <Stack gap={24}>
+      <Category label="FPS" description="Depends on your screen FPS" open={false}>
         <StreamSetting.FPS key={key} />
       </Category>
-      <Category title="Resolution" note="Depends on your screen resolution" open={false}>
+      <Category label="Resolution" description="Depends on your screen resolution" open={false}>
         <StreamSetting.Resolution key={key} />
       </Category>
-      <Category title="Preset Smoother Video" open={false}>
+      <Category label="Preset Smoother Video" open={false}>
         <StreamSetting.SmoothVideo key={key} />
       </Category>
-      <Category title="Preset Better Readability" open={false}>
+      <Category label="Preset Better Readability" open={false}>
         <StreamSetting.BetterReadability key={key} />
       </Category>
       <Notice messageType={Notice.Types.WARNING}>
         Resolution Above 1440p can cause flickering in streams.
       </Notice>
-      <Divider
-        style={{
-          margin: "10px 0px 10px 0px",
-        }}
+      <Divider className={classNames(marginStyles.marginBottom8, marginStyles.marginTop8)} />
+      <Switch
+        label="Disable Upsell"
+        description="Disable Upsell Completely in Streaming Modal"
+        {...util.useSetting(SettingValues, "upsell", DefaultSettings.upsell)}
       />
-      <SwitchItem
-        note="Disable Upsell Completely in Streaming Modal"
-        {...Utils.useSetting(SettingValues, "upsell", defaultSettings.upsell)}>
-        Disable Upsell
-      </SwitchItem>
       <ButtonItem
-        button="Reset Settings"
+        label="Reset Settings"
+        description="Press In-Case setting Crash or You want to reset settings to default."
         onClick={() => {
           resetSettings(forceUpdate);
-        }}>
-        Press In-Case setting Crash or You want to reset settings to default.
-      </ButtonItem>
-    </div>
+        }}
+      />
+    </Stack>
   );
 };
 

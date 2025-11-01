@@ -1,20 +1,20 @@
-import { SettingValues } from "../index";
+import { plugins } from "replugged";
+import { i18n } from "replugged/common";
+import { SettingValues } from "@this";
+import Utils from "@Utils";
 
-import Utils from "../lib/utils";
+import type Types from "@Types";
 
-import Types from "../types";
-import Modules from "./requiredModules";
-
-export const defaultSettings = {
+export const DefaultSettings = {
   fps: {
-    1: "15",
-    2: "30",
-    3: "60",
+    "15": "15",
+    "30": "30",
+    "60": "60",
   },
   resolution: {
-    1: "720",
-    2: "1080",
-    3: "1440",
+    "720": "720",
+    "1080": "1080",
+    "1440": "1440",
   },
   smoothVideo: {
     resolution: "720",
@@ -29,150 +29,145 @@ export const defaultSettings = {
   upsell: false,
 };
 
-export const fpsOptions = [
-  {
-    label: "5 FPS",
-    value: "5",
-  },
-  {
-    label: "10 FPS",
-    value: "10",
-  },
-  {
-    label: "15 FPS",
-    value: "15",
-  },
-  {
-    label: "30 FPS",
-    value: "30",
-  },
-  {
-    label: "45 FPS",
-    value: "45",
-  },
-  {
-    label: "60 FPS",
-    value: "60",
-  },
-  {
-    label: "120 FPS",
-    value: "120",
-  },
-  {
-    label: "144 FPS",
-    value: "144",
-  },
-  {
-    label: "240 FPS",
-    value: "240",
-  },
-  {
-    label: "360 FPS",
-    value: "360",
-  },
-];
-
-export const resoOptions = [
-  {
-    label: "144p",
-    value: "144",
-  },
-  {
-    label: "240p",
-    value: "240",
-  },
-  {
-    label: "360p",
-    value: "360",
-  },
-  {
-    label: "480p",
-    value: "480",
-  },
-  {
-    label: "720p",
-    value: "720",
-  },
-  {
-    label: "1080p",
-    value: "1080",
-  },
-  {
-    label: "1440p",
-    value: "1440",
-  },
-  {
-    label: "2160p",
-    value: "2160",
-  },
-];
-
-export const resoWithSource = [
-  {
-    label: "Source",
-    value: "0",
-  },
-  ...resoOptions,
-];
-
-export const streamStoreKeys: Record<string, string> = {
-  ApplicationStreamFPS: "",
-  ApplicationStreamFPSButtons: "",
-  ApplicationStreamFPSButtonsWithSuffixLabel: "",
-  ApplicationStreamPresetValues: "",
-  ApplicationStreamResolutionButtons: "",
-  ApplicationStreamResolutionButtonsWithSuffixLabel: "",
-  ApplicationStreamResolutions: "",
-  ApplicationStreamSettingRequirements: "",
-  GoLiveDeviceResolutionButtons: "",
-  getApplicationFramerate: "",
-  getApplicationResolution: "",
-  makeResolutionLabel: "",
-};
-
-export const MappedApplicationStreamingOption: Types.ApplicationStreamingOption = new Proxy(
-  Modules.ApplicationStreamingOption ?? ({} as Types.ApplicationStreamingOption),
-  {
-    get(_, key: string) {
-      return Modules.ApplicationStreamingOption[streamStoreKeys[key]];
-    },
-  },
-);
-
-export const defaultParameters = {} as Types.ApplicationStreamingOption;
-
-export const streamingConstants = {
+export const StreamingConstants: Types.StreamingConstants = {
   get fps() {
-    return Object.values(SettingValues.get("fps", defaultSettings.fps))
+    return Object.values(SettingValues.get("fps", DefaultSettings.fps))
       .map((fps) => Number(fps))
       .sort(Utils.ascending)
-      .filter(Utils.removeDuplicate);
+      .filter(Utils.removeDuplicate)
+      .filter((f) => f);
   },
   get fpsWithPresets() {
     return [
-      Number(SettingValues.get("betterReadability", defaultSettings.betterReadability).fps),
-      Number(SettingValues.get("smoothVideo", defaultSettings.smoothVideo).fps),
+      Number(SettingValues.get("betterReadability", DefaultSettings.betterReadability).fps),
+      Number(SettingValues.get("smoothVideo", DefaultSettings.smoothVideo).fps),
       ...this.fps,
     ];
   },
   get resolution() {
     return [
-      ...Object.values(SettingValues.get("resolution", defaultSettings.resolution))
+      ...Object.values(SettingValues.get("resolution", DefaultSettings.resolution))
         .map((resolution) => Number(resolution))
         .sort(Utils.ascending)
-        .filter(Utils.removeDuplicate),
+        .filter(Utils.removeDuplicate)
+        .filter((r) => r),
       0,
     ];
   },
   get resolutionWithPresets() {
     return [
-      Number(SettingValues.get("betterReadability", defaultSettings.betterReadability).resolution),
-      Number(SettingValues.get("smoothVideo", defaultSettings.smoothVideo).resolution),
+      Number(SettingValues.get("betterReadability", DefaultSettings.betterReadability).resolution),
+      Number(SettingValues.get("smoothVideo", DefaultSettings.smoothVideo).resolution),
       ...this.resolution,
     ];
   },
-} as Types.StreamingConstants;
+};
 
-export const soundshareSupported =
+export const ApplicationStreamingPatched = Symbol.for("PATCHED");
+
+export const PremiumApplicationStreamingValues = {
+  get ApplicationStreamFPS() {
+    return Object.assign(
+      {},
+      ...StreamingConstants.fps.map((fps) => {
+        const label = `FPS_${fps}`;
+        return { [fps]: label, [label]: fps };
+      }),
+    );
+  },
+  get ApplicationStreamFPSButtons() {
+    return StreamingConstants.fps.map((fps) => ({
+      value: fps,
+      label: fps,
+    }));
+  },
+  get ApplicationStreamFPSButtonsWithSuffixLabel() {
+    return StreamingConstants.fps.map((fps) => ({
+      value: fps,
+      get label() {
+        return i18n.intl.formatToPlainString(i18n.t.STREAM_FPS_OPTION, { value: fps });
+      },
+    }));
+  },
+
+  get ApplicationStreamPresetValues() {
+    const smoothVideo = SettingValues.get("smoothVideo", DefaultSettings.smoothVideo);
+    const betterReadability = SettingValues.get(
+      "betterReadability",
+      DefaultSettings.betterReadability,
+    );
+    return {
+      1: [
+        {
+          resolution: Number(smoothVideo.resolution),
+          fps: Number(smoothVideo.fps),
+        },
+      ],
+      2: [
+        {
+          resolution: Number(betterReadability.resolution),
+          fps: Number(betterReadability.fps),
+        },
+      ],
+      3: [],
+    };
+  },
+
+  get ApplicationStreamResolutionButtons() {
+    return StreamingConstants.resolution.map((resolution) => ({
+      value: resolution,
+      get label() {
+        return resolution === 0
+          ? i18n.intl.formatToPlainString(i18n.t.SCREENSHARE_SOURCE)
+          : resolution;
+      },
+    }));
+  },
+  get ApplicationStreamResolutionButtonsWithSuffixLabel() {
+    return StreamingConstants.resolution.map((resolution) => ({
+      value: resolution,
+      get label() {
+        return resolution === 0
+          ? i18n.intl.formatToPlainString(i18n.t.SCREENSHARE_SOURCE)
+          : i18n.intl.formatToPlainString(i18n.t.SCREENSHARE_RESOLUTION_ABBREVIATED, {
+              resolution,
+            });
+      },
+    }));
+  },
+
+  get ApplicationStreamResolutions() {
+    return Object.assign(
+      {},
+      ...StreamingConstants.resolution.map((resolution) => {
+        const label = `RESOLUTION_${resolution === 0 ? "SOURCE" : resolution}`;
+        return { [resolution]: label, [label]: resolution };
+      }),
+    );
+  },
+
+  get ApplicationStreamSettingRequirements() {
+    return StreamingConstants.resolutionWithPresets
+      .map((resolution) =>
+        StreamingConstants.fpsWithPresets.map((fps) => ({
+          resolution,
+          fps,
+        })),
+      )
+      .flat(10);
+  },
+
+  get GoLiveDeviceResolutionButtons() {
+    const resolutionSettings = SettingValues.get("resolution", DefaultSettings.resolution);
+    return StreamingConstants.resolution
+      .filter((resolution) => resolution !== Number(resolutionSettings[720]) && resolution !== 0)
+      .map((resolution) => ({ value: resolution, label: resolution }));
+  },
+};
+
+export const SoundshareSupported =
   DiscordNative.features.supports("soundshare") &&
   !DiscordNative.features.supports("native_screenshare_picker");
+
+export const isDisabled = (): boolean =>
+  plugins.getDisabled().includes("dev.tharki.PremiumScreenShare");

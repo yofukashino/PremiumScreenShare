@@ -1,60 +1,57 @@
+import { util } from "replugged";
 import { React } from "replugged/common";
-import { FormItem, Select } from "replugged/components";
-import { SettingValues } from "../index";
-import { defaultSettings, soundshareSupported } from "../lib/consts";
-import Modules from "../lib/requiredModules";
-import Utils from "../lib/utils";
+import { Select } from "replugged/components";
+import { SettingValues } from "@this";
+import { DefaultSettings, SoundshareSupported } from "@consts";
+import { MediaEngineStore, NativeSources } from "@lib/RequiredModules";
+
 export default (): React.ReactElement => {
-  const MediaEngine = Modules.MediaEngineStore?.getMediaEngine();
-  if (!MediaEngine || !soundshareSupported) return null;
+  const MediaEngine = MediaEngineStore?.getMediaEngine();
+
   const [options, setOptions] = React.useState<Array<{ label: string; value: string }>>([]);
-  const [audioSource, setAudioSource] = Utils.useSettingArray(
+
+  const [audioSource, setAudioSource] = util.useSettingArray(
     SettingValues,
     "audioSource",
-    defaultSettings.audioSource,
+    DefaultSettings.audioSource,
   );
+
   const getPreviewAndSetOptions = async () => {
-    const ScreenSources = (await Modules.getNativeSources(MediaEngine, ["window", "screen"], {
+    if (!MediaEngine || !SoundshareSupported) return;
+
+    const ScreenSources = await NativeSources.get(MediaEngine, ["window", "screen"], {
       width: 1,
       height: 1,
-    })) as Array<{
-      name: string;
-      id: string;
-      url: string;
-    }>;
-    const previewOptions = ScreenSources.map((p) => ({
+    });
+
+    const PreviewOptions = ScreenSources.map((p) => ({
       label: p.name,
       value: p.id,
     }));
+
     setOptions(() => [
       {
         label: "None",
         value: "none",
       },
-      ...previewOptions,
+      ...PreviewOptions,
     ]);
   };
+
   React.useEffect(() => {
     getPreviewAndSetOptions();
     const checkInterval = setInterval(getPreviewAndSetOptions, 3000);
     return () => clearInterval(checkInterval);
   }, []);
+
   React.useEffect(() => {
-    if (!audioSource || (options.length && !options.some((o) => o.value === audioSource))) {
-      setAudioSource("none");
-    }
-  }, [JSON.stringify(options)]);
+    const noOptions = options.length && !options.some((o) => o.value === audioSource);
+    if (!audioSource || noOptions) setAudioSource("none");
+  }, [options]);
+
+  if (!MediaEngine || !SoundshareSupported) return null;
+
   return (
-    <FormItem
-      title="Audio Source"
-      style={{
-        width: "95%",
-        marginLeft: "auto",
-        marginRight: "auto",
-        marginTop: "10px",
-      }}
-      divider={false}>
-      <Select options={options} value={audioSource} onChange={setAudioSource} />
-    </FormItem>
+    <Select label="Audio Source" options={options} value={audioSource} onChange={setAudioSource} />
   );
 };

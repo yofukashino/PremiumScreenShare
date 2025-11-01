@@ -1,39 +1,35 @@
-import { PluginInjector } from "../index";
-import { defaultParameters, streamingConstants } from "../lib/consts";
-import Modules from "../lib/requiredModules";
-import Utils from "../lib/utils";
-import injectApplicationStreamingOption from "./ApplicationStreamingOption";
-import injectPremiumQualityChecker from "./PremiumQualityChecker";
-import injectManaggeStreamContextMenu from "./ManageStreamContextMenu";
-import injectSettingValues from "./SettingValues";
-import injectStreamOptions from "./StreamOptions";
-import injectStreamQualitySelector from "./StreamQualitySelector";
-import injectStreamSettings from "./StreamSettings";
-import injectStreamUpsell from "./StreamUpsell";
+import { PluginInjector, PluginLogger } from "@this";
+import Modules, { ApplicationStreamingOption } from "@lib/RequiredModules";
+import { ApplicationStreamingPatched } from "@consts";
 
-import injectVoiceConnection from "./VoiceConnection";
-import injectWebRTCUtils from "./WebRTCUtils";
+const InjectionNames = [
+  "ApplicationStreamingOption.ts",
+  "ManageStreamContextMenu.tsx",
+  "StreamOptions.ts",
+  "StreamQualityType.ts",
+  "VoiceConnection.ts",
+  "WebRTCConnection.ts",
+] as const;
+
+const LazyInjectionNames = [
+  "StreamQualitySelector.tsx",
+  "StreamSettings.tsx",
+  "StreamUpsell.tsx",
+] as const;
 
 export const applyInjections = async (): Promise<void> => {
-  await Modules.loadModules();
-  await Utils.saveModuleKeys();
-  await Utils.saveDefaultParameters();
-  injectApplicationStreamingOption();
-  injectPremiumQualityChecker();
-  injectManaggeStreamContextMenu();
-  injectSettingValues();
-  injectStreamOptions();
-  void injectStreamQualitySelector();
-  void injectStreamSettings();
-  void injectStreamUpsell();
-  injectVoiceConnection();
-  injectWebRTCUtils();
-  Utils.setCustomParameters(streamingConstants);
+  try {
+    await Modules.loadModules();
+    await Promise.all(InjectionNames.map((name) => import(`./${name}`)));
+    void Promise.all(LazyInjectionNames.map((name) => import(`./${name}`)));
+  } catch (err) {
+    PluginLogger.error(err);
+  }
 };
 
 export const removeInjections = (): void => {
   PluginInjector.uninjectAll();
-  Utils.setStreamParameters(defaultParameters);
+  delete ApplicationStreamingOption[ApplicationStreamingPatched];
 };
 
 export default { applyInjections, removeInjections };

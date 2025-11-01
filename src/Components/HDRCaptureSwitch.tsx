@@ -1,17 +1,18 @@
-import { Checkbox, CheckboxItem, Flex } from "replugged/components";
-import { SettingValues } from "../index";
-import { defaultSettings } from "../lib/consts";
-import Utils from "../lib/utils";
+import { util } from "replugged";
+import { Checkbox, Flex } from "replugged/components";
+import { SettingValues } from "@this";
+import { DefaultSettings } from "@consts";
+
 export default (): React.ReactElement => (
   <Flex
     style={{
       marginTop: "16px",
       paddingLeft: "16px",
     }}>
-    <CheckboxItem
-      {...Utils.useSetting(SettingValues, "hdrCaptureMode", defaultSettings.hdrCaptureMode)}
-      type={Checkbox.Types.INVERTED}>
-      HDR Capture Mode
-    </CheckboxItem>
+    <Checkbox
+      label="HDR Capture Mode"
+      type="inverted"
+      {...util.useSetting(SettingValues, "hdrCaptureMode", DefaultSettings.hdrCaptureMode)}
+    />
   </Flex>
 );

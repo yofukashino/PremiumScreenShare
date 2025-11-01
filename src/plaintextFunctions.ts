@@ -1,12 +1,14 @@
-import { streamingConstants } from "./lib/consts";
-import Utils from "./lib/utils";
+import { isDisabled, StreamingConstants } from "@consts";
+import Utils from "@Utils";
 
 export const _getBirtate = (_width, height, _framerate): Record<string, number> => {
+  if (isDisabled()) return;
   return Utils.getBitrate(height || screen.height);
 };
 
-export const _getFPS = (): typeof streamingConstants.fps => {
-  return streamingConstants.fps;
+export const _getFPS = (): number[] => {
+  if (isDisabled()) return;
+  return StreamingConstants.fps;
 };
 
 export const _getResolution = (
@@ -14,8 +16,10 @@ export const _getResolution = (
     value: number;
   }>,
 ): Array<{ value: number; canUse: () => boolean }> => {
+  if (isDisabled()) return;
   const source = orig.some((c) => c.value === 0);
-  return streamingConstants.resolution
+
+  return StreamingConstants.resolution
     .filter((c) => source || c !== 0)
     .map((c) => ({
       value: c,

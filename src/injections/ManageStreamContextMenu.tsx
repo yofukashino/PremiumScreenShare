@@ -1,11 +1,10 @@
-import { PluginInjectorUtils } from "../index";
-import ContextMenuEntry from "../Components/ManageStreamContextMenu";
-import Types from "../types";
-export default (): void => {
-  PluginInjectorUtils.addMenuItem(
-    Types.DefaultTypes.ContextMenuTypes.ManageStreams,
-    ContextMenuEntry,
-    0,
-    0,
-  );
-};
+import { PluginInjectorUtils } from "@this";
+import ManageStreamContextMenu from "@components/ManageStreamContextMenu";
+import Types from "@Types";
+
+PluginInjectorUtils.addMenuItem(
+  Types.DefaultTypes.ContextMenuTypes.ManageStreams,
+  ManageStreamContextMenu,
+  0,
+  0,
+);

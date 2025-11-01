@@ -22,16 +22,16 @@
   "author": "Nanakusa",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^18.18.0",
-    "@types/react": "^18.2.23",
-    "@typescript-eslint/eslint-plugin": "^6.7.3",
-    "@typescript-eslint/parser": "^6.7.3",
-    "eslint": "^8.50.0",
-    "eslint-config-dmitmel": "github:dmitmel/eslint-config-dmitmel",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-react": "^7.33.2",
-    "prettier": "^2.8.8",
-    "replugged": "^4.10.2",
-    "typescript": "^5.0.0"
+    "@eslint/js": "^9.25.0",
+    "@types/node": "^22.14.1",
+    "@types/react": "^18.2.31",
+    "eslint": "^9.25.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.0.0",
+    "jiti": "^2.6.1",
+    "prettier": "^3.5.3",
+    "replugged": "^4.11.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.0"
   }
 }
