@@ -7,7 +7,7 @@ const loader = webpack.getFunctionKeyBySource(StreamSettings, ".getVoiceChannelI
 
 PluginInjector.after(StreamSettings, loader, ([{ selectedSource }], res) => {
   const SourceContainer = util.findInReactTree(res, (c: Types.ReactTree) =>
-    c?.props?.children?.some((v) => v?.type?.toString()?.includes('.id.startsWith("screen")')),
+    c?.props?.children?.some?.((v) => v?.type?.toString()?.includes('.id.startsWith("screen")')),
   ) as Types.ReactTree;
 
   if (selectedSource?.id?.startsWith("screen") && SourceContainer?.props)

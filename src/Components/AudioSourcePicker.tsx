@@ -52,6 +52,13 @@ export default (): React.ReactElement => {
   if (!MediaEngine || !SoundshareSupported) return null;
 
   return (
-    <Select label="Audio Source" options={options} value={audioSource} onChange={setAudioSource} />
+    <div style={{ width: "90%", justifySelf: "center" }}>
+      <Select
+        label="Audio Source"
+        options={options}
+        value={audioSource}
+        onChange={setAudioSource}
+      />
+    </div>
   );
 };

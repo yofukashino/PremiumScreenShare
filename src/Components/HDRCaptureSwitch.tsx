@@ -8,9 +8,10 @@ export default (): React.ReactElement => (
     style={{
       marginTop: "16px",
       paddingLeft: "16px",
+      marginBottom: "16px",
     }}>
     <Checkbox
-      label=""
+      label="HDR Capture Mode"
       type="inverted"
       {...util.useSetting(SettingValues, "hdrCaptureMode", DefaultSettings.hdrCaptureMode)}
     />
